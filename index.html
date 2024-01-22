@@ -8,43 +8,43 @@
     Are we missing an important library? Let us know @generative_xyz.
     -->
 
-    <!-- p5js@1.5.0    -->
+    <!-- p5js@1.5.0    
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
-
-    <!-- c2.min.js@1.0.0-->
+-->
+    <!-- c2.min.js@1.0.0
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/c2/1.0.0/c2.min.js"></script>
-     
+     -->
     <!-- chromajs@2.4.2
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
     -->
-    <!-- p5.grain.js@0.6.1-->
+    <!-- p5.grain.js@0.6.1
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/p5.grain/0.6.1/p5.grain.min.js"></script>
-
+-->
 
     <!-- threejs@r124
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
     -->
 
-    <!-- tonejs@14.8.49 -->
+    <!-- tonejs@14.8.49 
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-
-    <!-- web3js@1.2.7-->
+-->
+    <!-- web3js@1.2.7
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+-->
 
-
-    <!-- svgjs@3.1.2   -->
+    <!-- svgjs@3.1.2  
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
-
-    <!-- aframejs@1.2.0   -->
+ -->
+    <!-- aframejs@1.2.0  
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.min.js"></script>
-
-    <!-- babylonjs@5.47.0-->
+ -->
+    <!-- babylonjs@5.47.0
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/5.47.0/babylon.js"></script>
+-->
 
-
-    <!-- paperjs@0.12.17-->
+    <!-- paperjs@0.12.17
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.17/paper-full.min.js"></script>
-
+-->
 
     <!-- regljs@2.1.0 -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
@@ -221,6 +221,114 @@ document.body.prepend(container)
 
         // Start rendering loop
         render();
+
+    const regl = require('../regl')()
+const vectorizeText = require('vectorize-text')
+const perspective = require('gl-mat4/perspective')
+const lookAt = require('gl-mat4/lookAt')
+
+const textMesh = vectorizeText('hello regl!', {
+  textAlign: 'center',
+  textBaseline: 'middle'
+})
+
+const feedBackTexture = regl.texture({
+  copy: true,
+  min: 'linear',
+  mag: 'linear'
+})
+
+const drawFeedback = regl({
+  frag: `
+  precision mediump float;
+  uniform sampler2D texture;
+  uniform float t;
+  varying vec2 uv;
+  void main () {
+    vec2 warp = uv + 0.01 * sin(t) * vec2(0.5 - uv.y, uv.x - 0.5)
+      - 0.01 * (uv - 0.5);
+    gl_FragColor = vec4(0.98 * texture2D(texture, warp).rgb, 1);
+  }`,
+
+  vert: `
+  precision mediump float;
+  attribute vec2 position;
+  varying vec2 uv;
+  void main () {
+    uv = position;
+    gl_Position = vec4(2.0 * position - 1.0, 0, 1);
+  }`,
+
+  attributes: {
+    position: [-2, 0, 0, -2, 2, 2]
+  },
+
+  uniforms: {
+    texture: feedBackTexture,
+    t: ({tick}) => 0.001 * tick
+  },
+
+  depth: {enable: false},
+
+  count: 3
+})
+
+const drawText = regl({
+  frag: `
+  precision mediump float;
+  uniform float t;
+  void main () {
+    gl_FragColor = vec4(
+      1.0 + cos(2.0 * t),
+      1.0 + cos(2.1 * t + 1.0),
+      1.0 + cos(2.2 * t + 2.0),
+      1);
+  }`,
+
+  vert: `
+  attribute vec2 position;
+  uniform mat4 projection, view;
+  void main () {
+    gl_Position = projection * view * vec4(position, 0, 1);
+  }`,
+
+  attributes: {
+    position: textMesh.positions
+  },
+
+  elements: textMesh.edges,
+
+  uniforms: {
+    t: ({tick}) => 0.01 * tick,
+
+    view: ({tick}) => {
+      const t = 0.01 * tick
+      return lookAt([],
+        [5 * Math.sin(t), 0, -5 * Math.cos(t)],
+        [0, 0, 0],
+        [0, -1, 0])
+    },
+
+    projection: ({viewportWidth, viewportHeight}) =>
+      perspective([],
+        Math.PI / 4,
+        viewportWidth / viewportHeight,
+        0.01,
+        1000)
+  },
+
+  depth: {enable: false}
+})
+
+regl.frame(() => {
+  drawFeedback()
+  drawText()
+  feedBackTexture({
+    copy: true,
+    min: 'linear',
+    mag: 'linear'
+  })
+})
     // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your code here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 </script>
