@@ -9,9 +9,8 @@
     Are we missing an important library? Let us know @generative_xyz.
     -->
 
-    <!-- p5js@1.5.0
+    <!-- p5js@1.5.0     -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
-    -->
 
     <!-- c2.min.js@1.0.0
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/c2/1.0.0/c2.min.js"></script>
@@ -232,6 +231,37 @@ const drawCheckerboard = regl({
 regl.frame(() => {
   drawCheckerboard()
 })
+            // GRADIENT SCRIPT 
+        let dim;
+
+function setup() {
+  createCanvas(800, 800);
+  dim = width / 0.1;
+  background(0);
+  colorMode(HSB, 360, 400, 100);
+  noStroke();
+  ellipseMode(RADIUS);
+  frameRate(1);
+}
+
+function draw() {
+  background(0);
+  for (let x = 0; x <= width; x += dim) {
+    drawGradient(x, height / 2);
+  }
+}
+
+function drawGradient(x, y) {
+  let radius = dim / 2;
+  let h = random(0, 360);
+  for (let r = radius; r > 0; --r) {
+    fill(h, 90, 90);
+    ellipse(x, y, r, r);
+    h = (h + 1) % 360;
+  }
+}
+let img;
+let smallPoint, largePoint
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     </script>
