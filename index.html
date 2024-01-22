@@ -9,17 +9,15 @@
     Are we missing an important library? Let us know @generative_xyz.
     -->
 
-    <!-- p5js@1.5.0
+    <!-- p5js@1.5.0    -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
-    -->
 
-    <!-- c2.min.js@1.0.0
+    <!-- c2.min.js@1.0.0 -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/c2/1.0.0/c2.min.js"></script>
-    -->
 
-    <!-- chromajs@2.4.2
+
+    <!-- chromajs@2.4.2     -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
-    -->
 
     <!-- p5.grain.js@0.6.1
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/p5.grain/0.6.1/p5.grain.min.js"></script>
@@ -37,13 +35,11 @@
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
     -->
 
-    <!-- svgjs@3.1.2
+    <!-- svgjs@3.1.2     -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
-    -->
 
-    <!-- aframejs@1.2.0
+    <!-- aframejs@1.2.0     -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.min.js"></script>
-    -->
 
     <!-- babylonjs@5.47.0
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/5.47.0/babylon.js"></script>
@@ -53,17 +49,50 @@
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.17/paper-full.min.js"></script>
     -->
 
-    <!-- regljs@2.1.0
+    <!-- regljs@2.1.0 -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
-    -->
+
 
     <script type="text/javascript">
 
-        // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-        // 
-        // 
-        // 
-        // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# Assuming you have a DataFrame called 'bitcoin_data' with relevant columns
+# For example, 'sender', 'receiver', 'amount', 'timestamp', etc.
+
+# Sample data creation (replace this with your actual data loading)
+data = {
+    'sender': ['Anya', 'Bob', 'Charlie', 'Lelle', 'Alice'],
+    'receiver': ['Lelle', 'Charlie', 'Anya', 'David', 'Eve'],
+    'amount': [0.5, 1.2, 0.8, 0.3, 0.7],
+    'timestamp': ['2023-01-01', '2023-01-02', '2023-01-03', '2023-01-04', '2023-01-05']
+}
+
+bitcoin_data = pd.DataFrame(data)
+
+# Create a directed graph from the DataFrame
+G = nx.from_pandas_edgelist(bitcoin_data, 'sender', 'receiver', ['amount', 'timestamp'], create_using=nx.DiGraph())
+
+# Plot the graph (this is just a basic visualization)
+nx.draw(G, with_labels=True, font_weight='bold')
+plt.show()
+
+# Analyze graph features
+input_density = nx.density(G.in_degree())
+output_density = nx.density(G.out_degree())
+node_shapes = list(dict(G.nodes).values())
+line_types = list(dict(G.edges).values())
+bridge_length = nx.bridges(G)
+input_line_types = list(G.in_edges('your_node_name'))  # replace 'your_node_name' with an actual node in your graph
+
+# Print or use these features as needed
+print("Input Density:", input_density)
+print("Output Density:", output_density)
+print("Node Shapes:", node_shapes)
+print("Line Types:", line_types)
+print("Bridge Length:", len(bridge_length))
+print("Input Line Types for a specific node:", input_line_types)
 
     </script>
 
@@ -128,21 +157,63 @@
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
-    function T1(rand) {
+    function Trait0(rand) {
         // calculate rarity by yourself
-        if (rand > 0.5) {
+        if (rand > 0.1) {
             return true;
         } else {
             return false
         }
     }
+    function Trait1(rand) {
+    if (rand > 0.2) {
+        return true;
+    } else {
+        return false
+    }
+}
+
+function Trait2(rand) {
+    if (rand > 0.3) {
+        return true;
+    } else {
+        return false
+    }
+}
+function Trait3(rand) {
+    if (rand > 0.4) {
+        return true;
+    } else {
+        return false
+    }
+}  
+function Trait4(rand) {
+    if (rand > 0.5) {
+        return true;
+    } else {
+        return false
+    }
+}
+    function Trait5(rand) {
+    if (rand > 0.6) {
+        return true;
+    } else {
+        return false
+    }
+}
 
     // window.$generativeTraits contain list traits for token
     // you need to populate a $generativeTraits object in the window object
     window.$generativeTraits = {
-        "T1": T1(rand),
+        "Trait0": Trait0(rand),
+        "Trait1": Trait1(rand)
+        "Trait2": Trait2(rand)
+        "Trait3": Trait3(rand)
+        "Trait4": Trait3(rand)
+        "Trait5": Trait3(rand)
     }
     console.log(window.$generativeTraits)
+
 
     // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
