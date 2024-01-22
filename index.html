@@ -2,23 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>A simple template for launching your art on Bitcoin</title>
+    <title>Chipi</title>
 
     <!--
     Generative supports the most popular creative coding libraries. Simply uncomment the library you want to use below.
     Are we missing an important library? Let us know @generative_xyz.
     -->
 
-    <!-- p5js@1.5.0    -->
+    <!-- p5js@1.5.0
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
-
-    <!-- c2.min.js@1.0.0 -->
+    -->
+    <!-- c2.min.js@1.0.0
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/c2/1.0.0/c2.min.js"></script>
-
-
-    <!-- chromajs@2.4.2     -->
+     -->
+    <!-- chromajs@2.4.2
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
-
+    -->
     <!-- p5.grain.js@0.6.1
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/p5.grain/0.6.1/p5.grain.min.js"></script>
     -->
@@ -35,12 +34,12 @@
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
     -->
 
-    <!-- svgjs@3.1.2     -->
+    <!-- svgjs@3.1.2 
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
-
-    <!-- aframejs@1.2.0     -->
+    -->
+    <!-- aframejs@1.2.0   
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.min.js"></script>
-
+    -->
     <!-- babylonjs@5.47.0
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/5.47.0/babylon.js"></script>
     -->
@@ -51,7 +50,6 @@
 
     <!-- regljs@2.1.0 -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
-
 
 
     <script id="snippet-random-code" type="text/javascript">
@@ -130,7 +128,6 @@
         return false
     }
 }
-
 function Trait2(rand) {
     if (rand > 0.3) {
         return true;
@@ -167,8 +164,8 @@ function Trait4(rand) {
         "Trait1": Trait1(rand)
         "Trait2": Trait2(rand)
         "Trait3": Trait3(rand)
-        "Trait4": Trait3(rand)
-        "Trait5": Trait3(rand)
+        "Trait4": Trait4(rand)
+        "Trait5": Trait5(rand)
     }
     console.log(window.$generativeTraits)
 
@@ -181,7 +178,47 @@ function Trait4(rand) {
     const container = document.createElement("div")
     container.innerHTML = "<span>seed: " + seed + "</span><br>";
     document.body.prepend(container)
+        // Initialize regl
+        const regl = require('regl')({
+            canvas: document.getElementById('generativeCanvas'),
+        });
 
+        // Your generative art code using regl goes here
+        const draw = regl({
+            frag: `
+                precision mediump float;
+                uniform float time;
+                void main () {
+                    gl_FragColor = vec4(sin(time), cos(time), 0.0, 1.0);
+                }
+            `,
+            vert: `
+                precision mediump float;
+                attribute vec2 position;
+                void main () {
+                    gl_Position = vec4(position, 0, 1);
+                }
+            `,
+            attributes: {
+                position: [-2, 0, 0, -2, 2, 2],
+            },
+            count: 3,
+            uniforms: {
+                time: ({ time }) => time,
+            },
+        });
+
+        // Rendering loop
+        function render() {
+            regl.clear({
+                color: [0, 0, 0, 1],
+            });
+            draw();
+            requestAnimationFrame(render);
+        }
+
+        // Start rendering loop
+        render();
     // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your code here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 </script>
