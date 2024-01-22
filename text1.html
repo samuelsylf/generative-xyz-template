@@ -97,7 +97,6 @@
   <p>This example implements the game of life in regl.</p>
 
  */
-
 const regl = require('../regl')()
 
 const RADIUS = 512
@@ -173,6 +172,65 @@ regl.frame(() => {
     regl.draw()
     updateLife()
   })
+})
+            const regl = require('../regl')()
+
+const drawCheckerboard = regl({
+  frag: `
+  precision mediump float;
+  uniform sampler2D texture;
+  uniform float tick;
+  varying vec2 uv;
+  void main () {
+    mat3 m = mat3(
+      cos(tick), sin(tick), -1.1 + cos(tick),
+      -sin(tick), cos(tick), 0,
+      0, 0, 1);
+    vec3 p = m * vec3(uv, 1);
+    gl_FragColor = texture2D(texture, p.xy / p.z);
+  }`,
+
+  vert: `
+  precision mediump float;
+  attribute vec2 position;
+  varying vec2 uv;
+  void main () {
+    uv = position;
+    gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
+  }`,
+
+  attributes: {
+    position: [
+      -2, 0,
+      0, -2,
+      2, 2]
+  },
+
+  uniforms: {
+    tick: ({tick}) => 0.005 * tick,
+
+    texture: regl.texture({
+      min: 'linear mipmap linear',
+      mag: 'nearest',
+      wrap: 'repeat',
+      data: [
+        [255, 255, 255, 255, 0, 0, 0, 0],
+        [255, 255, 255, 255, 0, 0, 0, 0],
+        [255, 255, 255, 255, 0, 0, 0, 0],
+        [255, 255, 255, 255, 0, 0, 0, 0],
+        [0, 0, 0, 0, 255, 255, 255, 255],
+        [0, 0, 0, 0, 255, 255, 255, 255],
+        [0, 0, 0, 0, 255, 255, 255, 255],
+        [0, 0, 0, 0, 255, 255, 255, 255]
+      ]
+    })
+  },
+
+  count: 3
+})
+
+regl.frame(() => {
+  drawCheckerboard()
 })
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
@@ -279,6 +337,30 @@ regl.frame(() => {
             return false
         }
     }
+     function T6(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.6) {
+            return true;
+        } else {
+            return false
+        }
+    }
+     function T7(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.7) {
+            return true;
+        } else {
+            return false
+        }
+    }
+     function T8(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.8) {
+            return true;
+        } else {
+            return false
+        }
+    }
 
     // window.$generativeTraits contain list traits for token
     // you need to populate a $generativeTraits object in the window object
@@ -288,7 +370,9 @@ regl.frame(() => {
         "T3": T3(rand),
         "T4": T4(rand),
         "T5": T5(rand),
-        
+        "T5": T6(rand),
+        "T5": T7(rand),
+        "T5": T8(rand),
     }
     console.log(window.$generativeTraits)
 
@@ -345,6 +429,7 @@ regl.frame(() => {
         // Start rendering loop
         render();
 
+    
     // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your code here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 </script>
