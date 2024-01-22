@@ -51,24 +51,23 @@
 
     <!--        // Initialize regl  / add here or not ?? -->
 
-    <script id="snippet-random-code" type="text/javascript">
-
         // DO NOT EDIT THIS SECTION
 
-        let seed = window.location.href.split('/').find(t => t.includes('i0'));
-
-        if (seed == null) {
-            const alphabet = "0123456789abcdefghijklmnopqrstuvwsyz";
-            seed = new URLSearchParams(window.location.search).get("seed") || Array(64).fill(0).map(_ => alphabet[(Math.random() * alphabet.length) | 0]).join('') + "i0";
-        } else {
-            let pattern = "seed=";
-            for (let i = 0; i < seed.length - pattern.length; ++i) {
-                if (seed.substring(i, i + pattern.length) == pattern) {
-                    seed = seed.substring(i + pattern.length);
-                    break;
-                }
-            }
+        <script id="snippet-contract-code" type="text/javascript">
+        const tokenIdRand = (Math.floor(Math.random() * 1000000) + 1) * 1000000 + (Math.floor(Math.random() * 100) + 1);
+        let tokenData = {
+          "tokenId": tokenIdRand,
+          "seed": tokenIdRand.toString(),
+        };
+    </script>
+    
+    <script id="snippet-random-code" type="text/javascript">
+        const urlSeed = new URLSearchParams(window.location.search).get('seed');
+        if (urlSeed && urlSeed.length > 0) {
+            tokenData.seed = urlSeed;
         }
+        
+        const seed = tokenData.seed
 
         function cyrb128($) {
             let _ = 1779033703, u = 3144134277, i = 1013904242, l = 2773480762;
@@ -88,7 +87,7 @@
         // IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
         // This function generates a random number between 0 and 1 with on-chain seed.
 
-        let mathRand = sfc32(...cyrb128(seed));
+         let mathRand = sfc32(...cyrb128(seed));
 
     </script>
     <style>
@@ -226,6 +225,10 @@ img.onload = () => {
                 time: ({ time }) => time,
             },
         });
+
+        // Generative code that appends HTML elements
+        const container = document.getElementById('generativeContainer');
+        container.innerHTML = "<span>GM. I'm Seed #" + seed + "</span>";
 
         // Rendering loop
         function render() {
