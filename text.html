@@ -60,17 +60,17 @@
 
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         // MathRand function for randomness
-        function mathRand(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+    //    function mathRand(min, max) {
+      //      return Math.random() * (max - min) + min;
+        //}
 
         // Initialize regl
-        const regl = createRegl({
-            container: document.getElementById('generativeContainer'),
-        });
+//        const regl = createRegl({
+  //          container: document.getElementById('generativeContainer'),
+     //   });
 
         // Load text.js
-        const text = createText(regl);
+//        const text = createText(regl);
 
         /*
   tags: basic
@@ -253,6 +253,38 @@ regl.frame(() => {
 
     function T1(rand) {
         // calculate rarity by yourself
+        if (rand > 0.1) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T2(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.2) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T3(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.3) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T4(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.4) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T5(rand) {
+        // calculate rarity by yourself
         if (rand > 0.5) {
             return true;
         } else {
@@ -264,6 +296,11 @@ regl.frame(() => {
     // you need to populate a $generativeTraits object in the window object
     window.$generativeTraits = {
         "T1": T1(rand),
+        "T2": T2(rand),
+        "T3": T3(rand),
+        "T4": T4(rand),
+        "T5": T5(rand),
+        
     }
     console.log(window.$generativeTraits)
 
