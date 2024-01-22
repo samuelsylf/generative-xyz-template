@@ -54,10 +54,7 @@
     <!-- regljs@2.1.0 -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
 
-    <!--        // Initialize regl  -->
-        const regl = require('regl')({
-            canvas: document.getElementById('generativeCanvas'),
-        });
+    <!--        // Initialize regl  / add here or not ?? -->
 
     <script id="snippet-random-code" type="text/javascript">
 
@@ -188,9 +185,7 @@ function Trait4(time) {
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your code here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
         // Initialize regl
-        const regl = require('regl')({
-            canvas: document.getElementById('generativeCanvas'),
-        });
+       const regl = require('regl')({ canvas: document.getElementById('generativeCanvas') });
 
         // Your generative art code using regl goes here
         const draw = regl({
