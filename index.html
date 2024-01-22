@@ -108,100 +108,21 @@
     </style>
 </head>
 <body>
-<canvas id="generativeCanvas" width="800" height="600"></canvas>
-<script type="text/javascript">
-    const rand = mathRand();
+    <!-- Added a container for generative content -->
+    <div id="generativeContainer"></div>
 
-    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    <canvas id="generativeCanvas" width="800" height="600"></canvas>
+    <script>
+        // Initialize regl
+        const regl = createRegl({
+            canvas: document.getElementById('generativeCanvas'),
+        });
 
-     const traits = {
+        // Define traits
+        const traits = {
             colorVariation: (time) => [Math.sin(time), Math.cos(time), 0.0, 1.0],
             positionVariation: [-2, 0, 0, -2, 2, 2],
         };
-
-    function Trait0(time) {
-        // calculate rarity by yourself
-        if (time > 0.1) {
-            return true;
-        } else {
-            return false
-        }
-    }
-    function Trait1(time) {
-    if (time > 0.2) {
-        return true;
-    } else {
-        return false
-    }
-}
-function Trait2(time) {
-    if (time > 0.3) {
-        return true;
-    } else {
-        return false
-    }
-}
-function Trait3(time) {
-    if (time > 0.4) {
-        return true;
-    } else {
-        return false
-    }
-}  
-function Trait4(time) {
-    if (time > 0.5) {
-        return true;
-    } else {
-        return false
-    }
-}
-    function Trait5(time) {
-    if (time > 0.6) {
-        return true;
-    } else {
-        return false
-    }
-}
-
-    // window.$generativeTraits contain list traits for token
-    // you need to populate a $generativeTraits object in the window object
-    window.$generativeTraits = {
-        "Trait0": Trait0(time),
-        "Trait1": Trait1(time)
-        "Trait2": Trait2(time)
-        "Trait3": Trait3(time)
-        "Trait4": Trait4(time)
-        "Trait5": Trait5(time)
-    }
-    console.log(window.$generativeTraits)
-
-
-    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-
-    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your code here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-    const container = document.createElement("div")
-container.innerHTML = "<span>GM. I'm Seed #" + seed + "</span>";
-document.body.prepend(container)
-
-        // Initialize regl
-       const regl = require('regl')({ canvas: document.getElementById('generativeCanvas') });
-        // Initialize other experimental model
-    const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-const matrix = new DOMMatrix([1, 0.2, 0.8, 1, 0, 0]);
-
-const img = new Image();
-img.src = "canvas_createpattern.png";
-
-img.onload = () => {
-  const pattern = ctx.createPattern(img, "repeat");
-  pattern.setTransform(matrix.rotate(-45).scale(1.5));
-  ctx.fillStyle = pattern;
-  ctx.fillRect(0, 0, 400, 400);
-};
 
         // Your generative art code using regl goes here
         const draw = regl({
@@ -209,7 +130,7 @@ img.onload = () => {
                 precision mediump float;
                 uniform float time;
                 void main () {
-                    gl_FragColor = vec4(sin(time), cos(time), 0.0, 1.0);
+                    gl_FragColor = vec4(${traits.colorVariation('time').join(', ')});
                 }
             `,
             vert: `
@@ -220,13 +141,17 @@ img.onload = () => {
                 }
             `,
             attributes: {
-                position: [-2, 0, 0, -2, 2, 2],
+                position: traits.positionVariation,
             },
             count: 3,
             uniforms: {
                 time: ({ time }) => time,
             },
         });
+
+        // Generative code that appends HTML elements
+        const container = document.getElementById('generativeContainer');
+        container.innerHTML = "<span>GM. I'm Seed #" + seed + "</span>";
 
         // Rendering loop
         function render() {
@@ -239,8 +164,6 @@ img.onload = () => {
 
         // Start rendering loop
         render();
-    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your code here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-</script>
+    </script>
 </body>
 </html>
