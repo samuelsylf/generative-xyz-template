@@ -6,6 +6,8 @@
     <title>Generative Art Template</title>
     <!-- Include regl library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
+    <!-- Include text.js (downloaded locally) -->
+    <script src="path/to/text.js"></script>
 </head>
 <body>
     <!-- Container for generative content -->
@@ -13,18 +15,26 @@
 
     <!-- Generative art script -->
     <script>
+        // MathRand function for randomness
+        function mathRand(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
         // Initialize regl
         const regl = createRegl({
             container: document.getElementById('generativeContainer'),
         });
 
-        // Generative code using regl
+        // Load text.js
+        const text = createText(regl);
+
+        // Generative code using regl, mathRand, and vectorized text
         const draw = regl({
             frag: `
                 precision mediump float;
                 uniform float time;
                 void main () {
-                    gl_FragColor = vec4(sin(time), cos(time), 0.0, 1.0);
+                    gl_FragColor = vec4(mathRand(0.0, 1.0), mathRand(0.0, 1.0), mathRand(0.0, 1.0), 1.0);
                 }
             `,
             vert: `
@@ -35,7 +45,7 @@
                 }
             `,
             attributes: {
-                position: [-2, 0, 0, -2, 2, 2],
+                position: [mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2)],
             },
             count: 3,
             uniforms: {
@@ -43,9 +53,17 @@
             },
         });
 
-        // Generative code that appends HTML elements
+        // Generative code that appends HTML elements with vectorized text
         const container = document.getElementById('generativeContainer');
         container.innerHTML = "<span>GM. I'm Seed #" + seed + "</span>";
+
+        // Vectorized text rendering
+        const textDraw = text({
+            font: '12px sans-serif',
+            text: 'Hello, Vectorized Text!',
+            color: [1, 1, 1, 1],
+            position: [10, 10],
+        });
 
         // Rendering loop
         function render() {
@@ -53,6 +71,7 @@
                 color: [0, 0, 0, 1],
             });
             draw();
+            textDraw();
             requestAnimationFrame(render);
         }
 
