@@ -117,44 +117,44 @@
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
-    function Trait0(rand) {
+    function Trait0(regl) {
         // calculate rarity by yourself
-        if (rand > 0.1) {
+        if (regl > 0.1) {
             return true;
         } else {
             return false
         }
     }
-    function Trait1(rand) {
-    if (rand > 0.2) {
+    function Trait1(regl) {
+    if (regl > 0.2) {
         return true;
     } else {
         return false
     }
 }
-function Trait2(rand) {
-    if (rand > 0.3) {
+function Trait2(regl) {
+    if (regl > 0.3) {
         return true;
     } else {
         return false
     }
 }
-function Trait3(rand) {
-    if (rand > 0.4) {
+function Trait3(regl) {
+    if (regl > 0.4) {
         return true;
     } else {
         return false
     }
 }  
-function Trait4(rand) {
-    if (rand > 0.5) {
+function Trait4(regl) {
+    if (regl > 0.5) {
         return true;
     } else {
         return false
     }
 }
-    function Trait5(rand) {
-    if (rand > 0.6) {
+    function Trait5(regl) {
+    if (regl > 0.6) {
         return true;
     } else {
         return false
@@ -164,12 +164,12 @@ function Trait4(rand) {
     // window.$generativeTraits contain list traits for token
     // you need to populate a $generativeTraits object in the window object
     window.$generativeTraits = {
-        "Trait0": Trait0(rand),
-        "Trait1": Trait1(rand)
-        "Trait2": Trait2(rand)
-        "Trait3": Trait3(rand)
-        "Trait4": Trait4(rand)
-        "Trait5": Trait5(rand)
+        "Trait0": Trait0(regl),
+        "Trait1": Trait1(regl)
+        "Trait2": Trait2(regl)
+        "Trait3": Trait3(regl)
+        "Trait4": Trait4(regl)
+        "Trait5": Trait5(regl)
     }
     console.log(window.$generativeTraits)
 
@@ -179,9 +179,6 @@ function Trait4(rand) {
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your code here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
-    const container = document.createElement("div")
-    container.innerHTML = "<span>seed: " + seed + "</span><br>";
-    document.body.prepend(container)
         // Initialize regl
         const regl = require('regl')({
             canvas: document.getElementById('generativeCanvas'),
