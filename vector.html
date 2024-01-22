@@ -72,13 +72,31 @@
         // Load text.js
 //        const text = createText(regl);
 
-/*
+        // ADDING MORE:
+            // MathRand function for randomness
+        function mathRand(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // Initialize regl
+        const regl = createRegl({
+            container: document.getElementById('generativeContainer'),
+        });
+
+        // Load life.js
+        const life = (function () {
+            // Paste the content of life.js here
+            // ...
+
+            return regl({
+                // Configuration options for life.js
+                // ...
+                /*
   tags: fbo, basic
 
   <p>This example implements the game of life in regl.</p>
 
  */
-
 const regl = require('../regl')()
 
 const RADIUS = 512
@@ -155,6 +173,33 @@ regl.frame(() => {
     updateLife()
   })
 })
+            });
+        })();
+
+        // Generative code using regl, mathRand, and life.js
+        const draw = regl({
+            frag: `
+                precision mediump float;
+                uniform float time;
+                void main () {
+                    gl_FragColor = vec4(mathRand(0.0, 1.0), mathRand(0.0, 1.0), mathRand(0.0, 1.0), 1.0);
+                }
+            `,
+            vert: `
+                precision mediump float;
+                attribute vec2 position;
+                void main () {
+                    gl_Position = vec4(position, 0, 1);
+                }
+            `,
+            attributes: {
+                position: [mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2)],
+            },
+            count: 3,
+            uniforms: {
+                time: ({ time }) => time,
+            },
+        });
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     </script>
@@ -282,7 +327,7 @@ regl.frame(() => {
     container.innerHTML = "<span>seed: " + seed + "</span><br>";
     document.body.prepend(container)
 
-        // Generative code using regl, mathRand, and vectorized text
+        // Generative code using regl, mathRand, and life.js
         const draw = regl({
             frag: `
                 precision mediump float;
@@ -307,12 +352,10 @@ regl.frame(() => {
             },
         });
 
-        // Vectorized text rendering
-        const textDraw = text({
-            font: '12px sans-serif',
-            text: 'Hello, Vectorized Text!',
-            color: [1, 1, 1, 1],
-            position: [10, 10],
+        // Life.js rendering
+        const lifeDraw = life({
+            // Configuration options for life.js
+            // ...
         });
 
         // Rendering loop
@@ -321,7 +364,7 @@ regl.frame(() => {
                 color: [0, 0, 0, 1],
             });
             draw();
-            textDraw();
+            lifeDraw();
             requestAnimationFrame(render);
         }
 
