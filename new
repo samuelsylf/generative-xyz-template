@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Art Template</title>
+    <!-- Include regl library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
+</head>
+<body>
+    <!-- Container for generative content -->
+    <div id="generativeContainer"></div>
+
+    <!-- Generative art script -->
+    <script>
+        // Initialize regl
+        const regl = createRegl({
+            container: document.getElementById('generativeContainer'),
+        });
+
+        // Generative code using regl
+        const draw = regl({
+            frag: `
+                precision mediump float;
+                uniform float time;
+                void main () {
+                    gl_FragColor = vec4(sin(time), cos(time), 0.0, 1.0);
+                }
+            `,
+            vert: `
+                precision mediump float;
+                attribute vec2 position;
+                void main () {
+                    gl_Position = vec4(position, 0, 1);
+                }
+            `,
+            attributes: {
+                position: [-2, 0, 0, -2, 2, 2],
+            },
+            count: 3,
+            uniforms: {
+                time: ({ time }) => time,
+            },
+        });
+
+        // Generative code that appends HTML elements
+        const container = document.getElementById('generativeContainer');
+        container.innerHTML = "<span>GM. I'm Seed #" + seed + "</span>";
+
+        // Rendering loop
+        function render() {
+            regl.clear({
+                color: [0, 0, 0, 1],
+            });
+            draw();
+            requestAnimationFrame(render);
+        }
+
+        // Start rendering loop
+        render();
+    </script>
+</body>
+</html>
