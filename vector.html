@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chipi</title>
+
+    <!--
+    Generative supports the most popular creative coding libraries. Simply uncomment the library you want to use below.
+    Are we missing an important library? Let us know @generative_xyz.
+    -->
+
+    <!-- p5js@1.5.0
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+    -->
+
+    <!-- c2.min.js@1.0.0
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/c2/1.0.0/c2.min.js"></script>
+    -->
+
+    <!-- chromajs@2.4.2
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+    -->
+
+    <!-- p5.grain.js@0.6.1
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/p5.grain/0.6.1/p5.grain.min.js"></script>
+    -->
+
+    <!-- threejs@r124
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
+    -->
+
+    <!-- tonejs@14.8.49
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    -->
+
+    <!-- web3js@1.2.7
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+    -->
+
+    <!-- svgjs@3.1.2
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
+    -->
+
+    <!-- aframejs@1.2.0
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.min.js"></script>
+    -->
+
+    <!-- babylonjs@5.47.0
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/5.47.0/babylon.js"></script>
+    -->
+
+    <!-- paperjs@0.12.17
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.17/paper-full.min.js"></script>
+    -->
+
+    <!-- regljs@2.1.0     -->    
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
+
+    <script type="text/javascript">
+
+        // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // MathRand function for randomness
+    //    function mathRand(min, max) {
+      //      return Math.random() * (max - min) + min;
+        //}
+
+        // Initialize regl
+//        const regl = createRegl({
+  //          container: document.getElementById('generativeContainer'),
+     //   });
+
+        // Load text.js
+//        const text = createText(regl);
+
+/*
+  tags: fbo, basic
+
+  <p>This example implements the game of life in regl.</p>
+
+ */
+
+const regl = require('../regl')()
+
+const RADIUS = 512
+const INITIAL_CONDITIONS = (Array(RADIUS * RADIUS * 4)).fill(0).map(
+  () => Math.random() > 0.9 ? 255 : 0)
+
+const state = (Array(2)).fill().map(() =>
+  regl.framebuffer({
+    color: regl.texture({
+      radius: RADIUS,
+      data: INITIAL_CONDITIONS,
+      wrap: 'repeat'
+    }),
+    depthStencil: false
+  }))
+
+const updateLife = regl({
+  frag: `
+  precision mediump float;
+  uniform sampler2D prevState;
+  varying vec2 uv;
+  void main() {
+    float n = 0.0;
+    for(int dx=-1; dx<=1; ++dx)
+    for(int dy=-1; dy<=1; ++dy) {
+      n += texture2D(prevState, uv+vec2(dx,dy)/float(${RADIUS})).r;
+    }
+    float s = texture2D(prevState, uv).r;
+    if(n > 3.0+s || n < 3.0) {
+      gl_FragColor = vec4(0,0,0,1);
+    } else {
+      gl_FragColor = vec4(1,1,1,1);
+    }
+  }`,
+
+  framebuffer: ({tick}) => state[(tick + 1) % 2]
+})
+
+const setupQuad = regl({
+  frag: `
+  precision mediump float;
+  uniform sampler2D prevState;
+  varying vec2 uv;
+  void main() {
+    float state = texture2D(prevState, uv).r;
+    gl_FragColor = vec4(vec3(state), 1);
+  }`,
+
+  vert: `
+  precision mediump float;
+  attribute vec2 position;
+  varying vec2 uv;
+  void main() {
+    uv = 0.5 * (position + 1.0);
+    gl_Position = vec4(position, 0, 1);
+  }`,
+
+  attributes: {
+    position: [ -4, -4, 4, -4, 0, 4 ]
+  },
+
+  uniforms: {
+    prevState: ({tick}) => state[tick % 2]
+  },
+
+  depth: { enable: false },
+
+  count: 3
+})
+
+regl.frame(() => {
+  setupQuad(() => {
+    regl.draw()
+    updateLife()
+  })
+})
+        // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+    </script>
+
+    <script id="snippet-random-code" type="text/javascript">
+
+        // DO NOT EDIT THIS SECTION
+
+        let seed = window.location.href.split('/').find(t => t.includes('i0'));
+
+        if (seed == null) {
+            const alphabet = "0123456789abcdefghijklmnopqrstuvwsyz";
+            seed = new URLSearchParams(window.location.search).get("seed") || Array(64).fill(0).map(_ => alphabet[(Math.random() * alphabet.length) | 0]).join('') + "i0";
+        } else {
+            let pattern = "seed=";
+            for (let i = 0; i < seed.length - pattern.length; ++i) {
+                if (seed.substring(i, i + pattern.length) == pattern) {
+                    seed = seed.substring(i + pattern.length);
+                    break;
+                }
+            }
+        }
+
+        function cyrb128($) {
+            let _ = 1779033703, u = 3144134277, i = 1013904242, l = 2773480762;
+            for (let n = 0, r; n < $.length; n++) _ = u ^ Math.imul(_ ^ (r = $.charCodeAt(n)), 597399067), u = i ^ Math.imul(u ^ r, 2869860233), i = l ^ Math.imul(i ^ r, 951274213), l = _ ^ Math.imul(l ^ r, 2716044179);
+            return _ = Math.imul(i ^ _ >>> 18, 597399067), u = Math.imul(l ^ u >>> 22, 2869860233), i = Math.imul(_ ^ i >>> 17, 951274213), l = Math.imul(u ^ l >>> 19, 2716044179), [(_ ^ u ^ i ^ l) >>> 0, (u ^ _) >>> 0, (i ^ _) >>> 0, (l ^ _) >>> 0]
+        }
+
+        function sfc32($, _, u, i) {
+            return function () {
+                u >>>= 0, i >>>= 0;
+                var l = ($ >>>= 0) + (_ >>>= 0) | 0;
+                return $ = _ ^ _ >>> 9, _ = u + (u << 3) | 0, u = (u = u << 21 | u >>> 11) + (l = l + (i = i + 1 | 0) | 0) | 0, (l >>> 0) / 4294967296
+            }
+        }
+
+
+        // IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
+        // This function generates a random number between 0 and 1 with on-chain seed.
+
+        let mathRand = sfc32(...cyrb128(seed));
+
+    </script>
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+    const rand = mathRand();
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+    function T1(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.1) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T2(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.2) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T3(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.3) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T4(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.4) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T5(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.5) {
+            return true;
+        } else {
+            return false
+        }
+    }
+
+    // window.$generativeTraits contain list traits for token
+    // you need to populate a $generativeTraits object in the window object
+    window.$generativeTraits = {
+        "T1": T1(rand),
+        "T2": T2(rand),
+        "T3": T3(rand),
+        "T4": T4(rand),
+        "T5": T5(rand),
+        
+    }
+    console.log(window.$generativeTraits)
+
+    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your code here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+    const container = document.createElement("div")
+    container.innerHTML = "<span>seed: " + seed + "</span><br>";
+    document.body.prepend(container)
+
+        // Generative code using regl, mathRand, and vectorized text
+        const draw = regl({
+            frag: `
+                precision mediump float;
+                uniform float time;
+                void main () {
+                    gl_FragColor = vec4(mathRand(0.0, 1.0), mathRand(0.0, 1.0), mathRand(0.0, 1.0), 1.0);
+                }
+            `,
+            vert: `
+                precision mediump float;
+                attribute vec2 position;
+                void main () {
+                    gl_Position = vec4(position, 0, 1);
+                }
+            `,
+            attributes: {
+                position: [mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2)],
+            },
+            count: 3,
+            uniforms: {
+                time: ({ time }) => time,
+            },
+        });
+
+        // Vectorized text rendering
+        const textDraw = text({
+            font: '12px sans-serif',
+            text: 'Hello, Vectorized Text!',
+            color: [1, 1, 1, 1],
+            position: [10, 10],
+        });
+
+        // Rendering loop
+        function render() {
+            regl.clear({
+                color: [0, 0, 0, 1],
+            });
+            draw();
+            textDraw();
+            requestAnimationFrame(render);
+        }
+
+        // Start rendering loop
+        render();
+
+    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your code here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+</script>
+</body>
+</html>
