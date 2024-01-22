@@ -53,48 +53,6 @@
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
 
 
-    <script type="text/javascript">
-
-import networkx as nx
-import matplotlib.pyplot as plt
-
-# Assuming you have a DataFrame called 'bitcoin_data' with relevant columns
-# For example, 'sender', 'receiver', 'amount', 'timestamp', etc.
-
-# Sample data creation (replace this with your actual data loading)
-data = {
-    'sender': ['Anya', 'Bob', 'Charlie', 'Lelle', 'Alice'],
-    'receiver': ['Lelle', 'Charlie', 'Anya', 'David', 'Eve'],
-    'amount': [0.5, 1.2, 0.8, 0.3, 0.7],
-    'timestamp': ['2023-01-01', '2023-01-02', '2023-01-03', '2023-01-04', '2023-01-05']
-}
-
-bitcoin_data = pd.DataFrame(data)
-
-# Create a directed graph from the DataFrame
-G = nx.from_pandas_edgelist(bitcoin_data, 'sender', 'receiver', ['amount', 'timestamp'], create_using=nx.DiGraph())
-
-# Plot the graph (this is just a basic visualization)
-nx.draw(G, with_labels=True, font_weight='bold')
-plt.show()
-
-# Analyze graph features
-input_density = nx.density(G.in_degree())
-output_density = nx.density(G.out_degree())
-node_shapes = list(dict(G.nodes).values())
-line_types = list(dict(G.edges).values())
-bridge_length = nx.bridges(G)
-input_line_types = list(G.in_edges('your_node_name'))  # replace 'your_node_name' with an actual node in your graph
-
-# Print or use these features as needed
-print("Input Density:", input_density)
-print("Output Density:", output_density)
-print("Node Shapes:", node_shapes)
-print("Line Types:", line_types)
-print("Bridge Length:", len(bridge_length))
-print("Input Line Types for a specific node:", input_line_types)
-
-    </script>
 
     <script id="snippet-random-code" type="text/javascript">
 
