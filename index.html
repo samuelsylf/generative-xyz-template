@@ -178,36 +178,29 @@ function Trait4(time) {
 
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your code here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
+    <div id="generativeContainer"></div>
     const container = document.createElement("div")
 container.innerHTML = "<span>GM. I'm Seed #" + seed + "</span>";
 document.body.prepend(container)
 
+    <script>
+        // MathRand function for randomness
+        function mathRand(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
         // Initialize regl
-       const regl = require('regl')({ canvas: document.getElementById('generativeCanvas') });
-        // Initialize other experimental model
-    const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+        const regl = createRegl({
+            container: document.getElementById('generativeContainer'),
+        });
 
-const matrix = new DOMMatrix([1, 0.2, 0.8, 1, 0, 0]);
-
-const img = new Image();
-img.src = "canvas_createpattern.png";
-
-img.onload = () => {
-  const pattern = ctx.createPattern(img, "repeat");
-  pattern.setTransform(matrix.rotate(-45).scale(1.5));
-  ctx.fillStyle = pattern;
-  ctx.fillRect(0, 0, 400, 400);
-};
-
-        // Your generative art code using regl goes here
+        // Generative code using regl and mathRand
         const draw = regl({
             frag: `
                 precision mediump float;
                 uniform float time;
                 void main () {
-                    gl_FragColor = vec4(sin(time), cos(time), 0.0, 1.0);
+                    gl_FragColor = vec4(mathRand(0.0, 1.0), mathRand(0.0, 1.0), mathRand(0.0, 1.0), 1.0);
                 }
             `,
             vert: `
@@ -218,26 +211,13 @@ img.onload = () => {
                 }
             `,
             attributes: {
-                position: [-2, 0, 0, -2, 2, 2],
+                position: [mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2), mathRand(-2, 2)],
             },
             count: 3,
             uniforms: {
                 time: ({ time }) => time,
             },
         });
-
-        // Generative code that appends HTML elements
-        const container = document.getElementById('generativeContainer');
-        container.innerHTML = "<span>GM. I'm Seed #" + seed + "</span>";
-
-        // Rendering loop
-        function render() {
-            regl.clear({
-                color: [0, 0, 0, 1],
-            });
-            draw();
-            requestAnimationFrame(render);
-        }
 
         // Start rendering loop
         render();
