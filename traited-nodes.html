@@ -103,7 +103,7 @@ class Particle {
 // Trait functions
 function T1(rand) {
   // calculate rarity by yourself
-  if (rand > 50) {
+  if (rand > 0.5) {
     return true;
   } else {
     return false;
@@ -112,7 +112,7 @@ function T1(rand) {
 
 function T2(rand) {
   // calculate rarity by yourself
-  if (rand < 51) {
+  if (rand < 0.1) {
     return true;
   } else {
     return false;
@@ -121,7 +121,7 @@ function T2(rand) {
 
 function T3(rand) {
   // calculate rarity by yourself
-  if (rand > 500) {
+  if (rand > 0.8) {
     return 2; // This trait will control the movement speed
   } else {
     return 1; // Default movement speed
@@ -198,7 +198,7 @@ function generateRandomColor() {
 
     function T1(rand) {
         // calculate rarity by yourself
-        if (rand > 50) {
+        if (rand > 0.5) {
             return true;
         } else {
             return false
@@ -206,7 +206,7 @@ function generateRandomColor() {
     }
         function T2(rand) {
         // calculate rarity by yourself
-        if (rand < 51) {
+        if (rand > 0.1) {
             return true;
         } else {
             return false
@@ -214,7 +214,7 @@ function generateRandomColor() {
     }
         function T3(rand) {
         // calculate rarity by yourself
-        if (rand > 500) {
+        if (rand > 0.8) {
             return true;
         } else {
             return false
@@ -222,7 +222,7 @@ function generateRandomColor() {
     }
         function T4(rand) {
         // calculate rarity by yourself
-        if (rand > 150) {
+        if (rand > 0.9) {
             return true;
         } else {
             return false
@@ -230,7 +230,7 @@ function generateRandomColor() {
     }
         function T5(rand) {
         // calculate rarity by yourself
-        if (rand > 150) {
+        if (rand > 0.99) {
             return true;
         } else {
             return false
