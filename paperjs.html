@@ -530,6 +530,7 @@ function onKeyDown(event) {
         render();
 
 	    	    // Adding paperjs – question: do I need script> before and after this?
+	<script>
         let p5Canvas;
 
         function setup() {
@@ -541,11 +542,12 @@ function onKeyDown(event) {
         function draw() {
             // p5.js draw code
         }
-//end of paperjs – /script?>
+	</script>
+	<canvas id="p5Canvas">
  <canvas id="paperCanvas">
 
  <script type="text/paperscript" canvas="paperCanvas">
-    </canvas>
+    </canvas></canvas>
     </script>
 </body>
 </html>
