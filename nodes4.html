@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chipi</title>
+
+    <!-- Include your preferred generative library (e.g., regl) -->
+
+    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+
+        // Add your script for generative art here
+        // ...
+      // GRADIENT SCRIPT 
+// This class describes the properties of a single particle.
+class Particle {
+  // Setting the coordinates, radius, and the speed of a particle in both axes.
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.r = random(4, 20); // Randomizing the size of particles
+    this.xSpeed = random(-1, 1);
+    this.ySpeed = random(-1, 1);
+    this.colorTrait = T1(random()); // Trait for color variation
+    this.positionTrait = T2(random()); // Trait for initial position variation
+    this.movementTrait = T3(random()); // Trait for movement variation
+    this.color = generateRandomColor();
+    this.noiseOffsetX = random(0, 1000);
+    this.noiseOffsetY = random(0, 1000);
+  }
+
+  // Creation of a particle.
+  createParticle() {
+    noStroke();
+    fill(this.color);
+    ellipse(this.x, this.y, this.r * 2);
+  }
+
+  // Setting the particle in motion.
+  moveParticle() {
+    // Adding noise for smoother movements
+    this.x += map(noise(this.noiseOffsetX), 0, 1, -1, 1) * this.movementTrait;
+    this.y += map(noise(this.noiseOffsetY), 0, 1, -1, 1) * this.movementTrait;
+
+    // Incrementing noise offsets for the next frame
+    this.noiseOffsetX += 0.01;
+    this.noiseOffsetY += 0.01;
+
+    // Bouncing off the edges
+    if (this.x < 0 || this.x > width) this.xSpeed *= -1;
+    if (this.y < 0 || this.y > height) this.ySpeed *= -1;
+
+    this.x += this.xSpeed;
+    this.y += this.ySpeed;
+  }
+
+  // This function creates connections (lines) between particles which are less than a certain distance apart.
+  joinParticles(particles) {
+    particles.forEach((element) => {
+      let dis = dist(this.x, this.y, element.x, element.y);
+      if (dis < 100) {
+        // Gradient effect
+        let interColor = lerpColor(this.color, element.color, map(dis, 0, 100, 0, 1));
+        strokeWeight(1);
+        stroke(interColor.levels[0], interColor.levels[1], interColor.levels[2], map(dis, 0, 100, 50, 0));
+
+        // Magnetic effect towards the mouse
+        let angle = atan2(mouseY - this.y, mouseX - this.x);
+        this.x += cos(angle) * 0.2;
+        this.y += sin(angle) * 0.2;
+
+        line(this.x, this.y, element.x, element.y);
+
+        // Explosive effect on collision
+        if (dis < this.r + element.r) {
+          let newR = max(this.r, element.r) * 1.5;
+          let newX = (this.x + element.x) / 2;
+          let newY = (this.y + element.y) / 2;
+          particles.push(new ParticleExplosion(newX, newY, newR));
+        }
+      }
+    });
+  }
+}
+
+// Trait functions
+function T1(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function T2(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function T3(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.3) {
+    return 2; // This trait will control the movement speed
+  } else {
+    return 1; // Default movement speed
+  }
+}
+
+// Function to generate a random color
+function generateRandomColor() {
+  return color(random(25), random(25), random(25));
+}
+
+// This class describes the properties of a single particle explosion.
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.color = generateRandomColor();
+    this.life = 255;
+  }
+
+  // Creation of a particle explosion.
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.x, this.y, this.r * 2);
+    this.life -= 5;
+  }
+}
+
+// An array to add multiple particles.
+let particles = [];
+
+function setup() {
+  createCanvas(720, 400);
+  for (let i = 0; i < width / 10; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function draw() {
+  background('#0f0f0f');
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].createParticle();
+    particles[i].moveParticle();
+    particles[i].joinParticles(particles.slice(i));
+  }
+}
+
+// Function to generate a random color palette
+function generateRandomColor() {
+  let hue = random(0, 360);
+  let saturation = random(10, 300);
+  let brightness = random(50, 300);
+  return color(hue, saturation, brightness, 250);
+}
+
+    <script id="snippet-random-code" type="text/javascript">
+
+        // This section generates a random number using the provided seed
+        // ...
+
+    </script>
+
+    <script type="text/javascript">
+
+        // Add your traits and generative code here
+        // ...
+    const rand = mathRand();
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+// Trait functions
+function T1(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function T2(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function T3(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.3) {
+    return 2; // This trait will control the movement speed
+  } else {
+    return 1; // Default movement speed
+        }
+    }
+        function T4(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.4) {
+            return true;
+        } else {
+            return false
+        }
+    }
+        function T5(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.9) {
+            return true;
+        } else {
+            return false
+        }
+    }
+
+    // window.$generativeTraits contain list traits for token
+    // you need to populate a $generativeTraits object in the window object
+    window.$generativeTraits = {
+        "T1": T1(rand),
+        "T2": T2(rand),
+        "T3": T3(rand),
+        "T4": T4(rand),
+        "T5": T5(rand),
+
+    }
+    console.log(window.$generativeTraits)
+
+    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+        // Rendering loop
+        function render() {
+            regl.clear({
+                color: [0, 0, 0, 1],
+            });
+            draw();
+            lifeDraw();
+            requestAnimationFrame(render);
+        }
+
+        // Start rendering loop
+        render();
+
+    </script>
+</body>
+</html>
