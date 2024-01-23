@@ -31,6 +31,7 @@
         // ...
       // GRADIENT SCRIPT 
 // This class describes the properties of a single particle.
+
 class Particle {
   constructor() {
     this.x = random(width);
@@ -50,6 +51,21 @@ class Particle {
     noStroke();
     fill(this.color);
     ellipse(this.x, this.y, this.r * 2);
+  }
+    // Function to add random effects
+  addRandomEffect() {
+    let rand = random();
+    if (rand < 0.02) {
+      // Change color randomly
+      this.color = generateRandomColor();
+    } else if (rand < 0.04) {
+      // Change size randomly
+      this.r = random(4, 20);
+    } else if (rand < 0.06) {
+      // Create a small explosion
+      particles.push(new ParticleExplosion(this.x, this.y, 10));
+    }
+    // Add more random effects as needed
   }
 
   moveParticle() {
@@ -124,13 +140,14 @@ function draw() {
   for (let i = 0; i < particles.length; i++) {
     particles[i].createParticle();
     particles[i].moveParticle();
+    particles[i].addRandomEffect(); // Add random effects
     particles[i].joinParticles(particles.slice(i));
   }
 }
 // Trait functions
 function T1(rand) {
   // calculate rarity by yourself
-  if (rand > 0.1) {
+  if (rand > 0.02) {
     return true;
   } else {
     return false;
@@ -139,7 +156,7 @@ function T1(rand) {
 
 function T2(rand) {
   // calculate rarity by yourself
-  if (rand > 0.2) {
+  if (rand > 0.04) {
     return true;
   } else {
     return false;
@@ -148,7 +165,7 @@ function T2(rand) {
 
 function T3(rand) {
   // calculate rarity by yourself
-  if (rand > 0.3) {
+  if (rand > 0.06) {
     return 2; // This trait will control the movement speed
   } else {
     return 1; // Default movement speed
@@ -235,7 +252,6 @@ for (let i = 0; i < particles.length; i++) {
     particles[i].createParticle();  // This line should not have any arguments
   particles[i].moveParticle();
   particles[i].joinParticles(particles.slice(i));
-
     // Trails effect
     particles[i].color.levels[3] = 10; // Reduce alpha for trails
   }
@@ -692,11 +708,8 @@ var moveRainbow = new function() {
     <script id="snippet-random-code" type="text/javascript">
 
         // This section generates a random number using the provided seed
-        // ...
+        // ... tästä poistettu  < /script>  < script type="text/javascript"
 
-    </script>
-
-    <script type="text/javascript">
 
         // Add your traits and generative code here
         // ...
@@ -706,7 +719,7 @@ var moveRainbow = new function() {
 
     function T1(rand) {
         // calculate rarity by yourself
-        if (rand > 0.1) {
+        if (rand > 0.02) {
             return true;
         } else {
             return false
@@ -714,7 +727,7 @@ var moveRainbow = new function() {
     }
         function T2(rand) {
         // calculate rarity by yourself
-        if (rand > 0.2) {
+        if (rand > 0.04) {
             return true;
         } else {
             return false
@@ -722,7 +735,7 @@ var moveRainbow = new function() {
     }
         function T3(rand) {
         // calculate rarity by yourself
-        if (rand > 0.3) {
+        if (rand > 0.06) {
             return true;
         } else {
             return false
