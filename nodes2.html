@@ -97,35 +97,6 @@ class Particle {
     });
   }
 }
-
-// Trait functions
-function T1(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.1) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function T2(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.2) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function T3(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.3) {
-    return 2; // This trait will control the movement speed
-  } else {
-    return 1; // Default movement speed
-  }
-}
-
 // This class describes the properties of a single particle explosion.
 class ParticleExplosion {
   constructor(x, y, r) {
