@@ -162,19 +162,7 @@ function setup() {
     particles.push(new Particle());
   }
 }
-	    // Adding paperjs – question: do I need script> before and after this?
-        let p5Canvas;
-
-        function setup() {
-            // Initialize p5.js canvas
-            p5Canvas = createCanvas(720, 400);
-            // Additional setup for p5.js if needed
-        }
-
-        function draw() {
-            // p5.js draw code
-        }
-//end of paperjs – /script?>
+	    
 function draw() {
   background('#0f0f0f');
   for (let i = 0; i < particles.length; i++) {
@@ -526,9 +514,6 @@ function onKeyDown(event) {
 
     // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
-	//        <canvas id="paperCanvas">
-
-//    <script type="text/paperscript" canvas="paperCanvas">
         // Paper.js setup and code
 
         // Rendering loop
@@ -543,7 +528,11 @@ function onKeyDown(event) {
 
         // Start rendering loop
         render();
-//</canvas>
+
+ <canvas id="paperCanvas">
+
+ <script type="text/paperscript" canvas="paperCanvas">
+    </canvas>
     </script>
 </body>
 </html>
