@@ -110,6 +110,7 @@ class ParticleExplosion {
 }
 
 let particles = [];
+let explosionCounter = 0;
 
 function setup() {
   createCanvas(720, 400);
@@ -189,10 +190,17 @@ function generateRandomColor() {
 }
   if (explosionCounter >= 300) {
     generateRandomExplosion(particles);
-    explosionCounter = 0;
+    explosionCounter = 6;
   } else {
     explosionCounter++;
   }
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(3, 100);
+  particles.splice(randIndex, 1); // Remove the particle that will explode
+  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
+}
 // adding paper.js
 	    window.onload = function() {
     // Paper.js script here
