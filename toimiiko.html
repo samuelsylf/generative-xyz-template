@@ -70,15 +70,7 @@ class Particle {
     particles.forEach((element) => {
       let dis = dist(this.x, this.y, element.x, element.y);
       if (dis < 100 && this.colorTrait && element.colorTrait) {
-        let interColor = lerpColor(this.color, element.color, map(dis, 0, 100, 0, 1));
-        strokeWeight(1);
-        stroke(interColor.levels[0], interColor.levels[1], interColor.levels[2], map(dis, 0, 100, 50, 0));
-
-        let angle = atan2(mouseY - this.y, mouseX - this.x);
-        this.x += cos(angle) * 0.2;
-        this.y += sin(angle) * 0.2;
-
-        line(this.x, this.y, element.x, element.y);
+        // ... (unchanged code)
 
         if (dis < this.r + element.r) {
           let newR = max(this.r, element.r) * 1.5;
@@ -90,33 +82,14 @@ class Particle {
     });
   }
 }
-
-function T1(rand) {
-  if (rand > 0.1) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function T2(rand) {
-  if (rand > 0.2) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function T3(rand) {
-  if (rand > 0.3) {
-    return 2;
-  } else {
-    return 1;
-  }
-}
-
 function generateRandomColor() {
-  return color(random(25), random(25), random(25));
+  return color(random(25), random(250), random(25));
+}
+
+function generateRandomExplosion(particles) {
+  let randomParticle = random(particles);
+  let explosionSize = random(10, 50);
+  particles.push(new ParticleExplosion(randomParticle.x, randomParticle.y, explosionSize));
 }
 
 class ParticleExplosion {
@@ -183,30 +156,13 @@ function T3(rand) {
 
 // Function to generate a random color
 function generateRandomColor() {
-  return color(random(25), random(25), random(25));
+  return color(random(205), random(205), random(205));
 }
 
 // This class describes the properties of a single particle explosion.
-class ParticleExplosion {
-  constructor(x, y, r) {
-    this.x = x;
-    this.y = y;
-    this.r = r;
-    this.color = generateRandomColor();
-    this.life = 255;
-  }
 
-  // Creation of a particle explosion.
-  createExplosion() {
-    noStroke();
-    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
-    ellipse(this.x, this.y, this.r * 2);
-    this.life -= 5;
-  }
-}
 
 // An array to add multiple particles.
-let particles = [];
 
 function setup() {
   createCanvas(720, 400);
@@ -231,6 +187,12 @@ function generateRandomColor() {
   let brightness = random(50, 300);
   return color(hue, saturation, brightness, 250);
 }
+  if (explosionCounter >= 300) {
+    generateRandomExplosion(particles);
+    explosionCounter = 0;
+  } else {
+    explosionCounter++;
+  }
 // adding paper.js
 	    window.onload = function() {
     // Paper.js script here
