@@ -100,34 +100,6 @@ class Particle {
   }
 }
 
-// Trait functions
-function T1(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.1) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function T2(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.2) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function T3(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.3) {
-    return 2; // This trait will control the movement speed
-  } else {
-    return 1; // Default movement speed
-  }
-}
-
 // Function to generate a random color
 function generateRandomColor() {
   return color(random(25), random(25), random(25));
@@ -178,14 +150,13 @@ function generateRandomColor() {
   let brightness = random(50, 300);
   return color(hue, saturation, brightness, 250);
 }
-
     <script id="snippet-random-code" type="text/javascript">
 
         // This section generates a random number using the provided seed
         // ...
 
     </script>
-
+    
     <script type="text/javascript">
 
         // Add your traits and generative code here
