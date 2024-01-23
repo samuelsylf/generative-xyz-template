@@ -45,7 +45,7 @@ class Particle {
     this.noiseOffsetX = random(0, 1000);
     this.noiseOffsetY = random(0, 1000);
   }
-
+    // Creation of a particle.
   createParticle() {
     noStroke();
     fill(this.color);
@@ -175,7 +175,7 @@ function setup() {
 function draw() {
   background('#0f0f0f');
   for (let i = 0; i < particles.length; i++) {
-    particles[i].createParticle();
+    particles[i].createParticle(0);
     particles[i].moveParticle();
     particles[i].joinParticles(particles.slice(i));
   }
@@ -201,6 +201,44 @@ function generateRandomExplosion(particles) {
   particles.splice(randIndex, 1); // Remove the particle that will explode
   particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
 }
+// Function to generate a random color palette
+function generateRandomColor() {
+  let hue = random(0, 360);
+  let saturation = random(10, 300);
+  let brightness = random(50, 300);
+  return color(hue, saturation, brightness, 250);
+}
+
+// Function to generate a random explosion color
+function generateExplosionColor() {
+  return color(random(0, 255), random(0, 255), random(0, 255), 200);
+}
+
+// Function to generate a random explosion
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(30, 100);
+  particles.splice(randIndex, 1); // Remove the particle that will explode
+  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize, generateExplosionColor()));
+}
+
+function setup() {
+  createCanvas(720, 400);
+  colorMode(HSB); // Use HSB color mode for a vibrant color palette
+  for (let i = 0; i < width / 10; i++) {
+    particles.push(new Particle());
+  }
+}
+
+for (let i = 0; i < particles.length; i++) {
+    particles[i].createParticle();  // This line should not have any arguments
+  particles[i].moveParticle();
+  particles[i].joinParticles(particles.slice(i));
+
+    // Trails effect
+    particles[i].color.levels[3] = 10; // Reduce alpha for trails
+  }
 // adding paper.js
 	    window.onload = function() {
     // Paper.js script here
