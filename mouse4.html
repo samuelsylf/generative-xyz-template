@@ -61,13 +61,6 @@
 let system;
 let interval = 5; // Adjust the interval between particle creation
 let numParticles = 5; // Adjust the number of particles created at each interval
-let colors = [
-  color(255, 12, 12),   // Red
-  color(12, 255, 12),   // Green
-  color(12, 12, 255),   // Blue
-  color(255, 255, 12), // Yellow
-  // Add more colors as needed
-];
 
 function setup() {
   createCanvas(720, 400);
@@ -154,20 +147,18 @@ class ParticleSystem {
   }
 }
 function generateRandomColor() {
-  // Randomly select two colors from the array
-  let color1 = random(colors);
-  let color2 = random(colors);
+  const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8); // Adjusted alpha value range
+  const h = randColor.hsl()[0]; // Get the hue value
+  const s = randColor.hsl()[1]; // Get the saturation value
 
   // Introduce more variance in hue and saturation
   const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
 
-  // Interpolate between the two colors
-  let randColor = lerpColor(color1, color2, random(1));
-
-  // Adjust the alpha value
-  randColor.setAlpha(0.2 + Math.random() * 0.8);
-
-  return randColor;
+  return color(
+    modifiedColor.rgb()[0],
+    modifiedColor.rgb()[1],
+    modifiedColor.rgb()[2],
+    modifiedColor.alpha() * 255
   );
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
