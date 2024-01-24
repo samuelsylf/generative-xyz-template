@@ -58,103 +58,13 @@
     <script type="text/javascript">
 
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-let particleSystem;
 let system;
-let particles = [];
-let explosionCounter = 1;
 
 function generateRandomColor() {
   // Use Chroma.js to generate a random color with increased randomness
-  const randColor = chroma.random().alpha(Math.random()); // Include random alpha value
+  const randColor = chroma.random().alpha(Math.random()); // Include a random alpha value
   return color(randColor.rgb()[0], randColor.rgb()[1], randColor.rgb()[2]);
 }
-// Use Chroma.js to generate a color scheme
-//  old       colorScheme = chroma.scale(['#3498db', '#e74c3c']).mode('lch').colors(20);
-//    colorScheme = chroma.scale(['#3498db', '#e74c3c']).mode('lch').colors(20).map(color => chroma(color).brighten(1.2).saturate(1.5));
-//chroma.interpolate.color(colorScheme[Math.floor(colorIndex)], colorScheme[Math.ceil(colorIndex)], colorIndex % 1, 'rgb');
-}
-                class Particle {
-            constructor() {
-                this.x = random(width);
-                this.y = random(height);
-                this.r = random(4, 20);
-                this.color = this.generateInterpolatedColor();
-                // Additional properties...
-            }
-
-            createParticle() {
-                noStroke();
-                fill(this.color.levels[0], this.color.levels[1], this.color.levels[2]);
-                ellipse(this.x, this.y, this.r * 2);
-            }
-                    joinParticles(particles) {
-                // Join particles...
-            }
-            moveParticle() {
-                // Move the particle...
-            }
-            // Additional methods...
-        }
-
-// Trait functions
-function T1(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.02) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function T2(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.04) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function T3(rand) {
-  // calculate rarity by yourself
-  if (rand > 0.06) {
-    return 2; // This trait will control the movement speed
-  } else {
-    return 1; // Default movement speed
-  }
-}
-function T4(rand) {
-  // Add more traits as needed
-  return rand > 0.5 ? 1 : -1; // Example trait influencing direction
-}
-
-function T5(rand) {
-  // Add more traits as needed
-  return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
-}
-function setup() {
-  createCanvas(720, 400);
-  colorMode(HSB);
-
-  // Initialize particle system
-  system = new ParticleSystem(createVector(width / 2, 50));
-}
-
-function draw() {
-  background(51);
-
-  // Draw particle system
-  system.addParticle();
-  system.run();
-}
-//        function draw() {
-//            background(51);
-//            for (let i = 0; i < particles.length; i++) {
-//                particles[i].createParticle();
-//                particles[i].moveParticle();
-//                particles[i].joinParticles(particles.slice(i));
-//            }
-//        }
 
 class Particle {
   constructor(position, color) {
@@ -194,6 +104,7 @@ class Particle {
     return this.lifespan < 2;
   }
 }
+
 class ParticleSystem {
   constructor(position) {
     this.origin = position.copy();
@@ -213,6 +124,22 @@ class ParticleSystem {
       }
     }
   }
+}
+
+function setup() {
+  createCanvas(720, 400);
+  colorMode(HSB);
+
+  // Initialize particle system
+  system = new ParticleSystem(createVector(width / 2, 50));
+}
+
+function draw() {
+  background(51);
+
+  // Draw particle system
+  system.addParticle();
+  system.run();
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
