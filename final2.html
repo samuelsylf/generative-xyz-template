@@ -107,7 +107,7 @@ function draw() {
   rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
 
   // Draw particle system
-  system.run();
+  system.run(); // Corrected: Call run on the system object
 }
 
 class Particle {
