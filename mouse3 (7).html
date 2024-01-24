@@ -80,10 +80,17 @@ function draw() {
     }
   }
 
-  // Adjust overall transparency of the canvas
-  let canvasAlpha = map(numParticles, 0, 200, 0, 255); // Adjust the range based on your preference
-  fill(125, canvasAlpha);
-  rect(150, 150, width, height); // Draw a semi-transparent rectangle over the canvas
+// Adjust overall transparency of the canvas
+let canvasAlpha = map(numParticles, 0, 200, 0, 255); // Adjust the range based on your preference
+
+// Randomize position and size of the semi-transparent rectangle
+let rectX = random(width);
+let rectY = random(height);
+let rectWidth = random(width - rectX);  // Ensure it fits within the canvas
+let rectHeight = random(height - rectY);  // Ensure it fits within the canvas
+
+fill(125, canvasAlpha);
+rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
 
   // Draw particle system
   system.run();
