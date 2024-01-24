@@ -59,6 +59,16 @@
     <script type="text/javascript">
 
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            // Function to seed the random number generator
+    function seedRandom(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // Use a seed for your random number generator
+    const seed = Math.random(); // You can set a fixed seed here if needed
+    const rand = seedRandom(seed);
+        // code ↓↓↓↓↓↓↓↓↓↓↓
 let particleSystem;
 
 function generateRandomColor() {
@@ -255,6 +265,16 @@ ParticleSystem.prototype.run = function() {
 <script type="text/javascript">
     const rand = mathRand();
 
+    // Function to seed the random number generator
+    function seedRandom(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // Use a seed for your random number generator
+    const seed = Math.random(); // You can set a fixed seed here if needed
+    const rand = seedRandom(seed);
+    
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
     function T1(rand) {
