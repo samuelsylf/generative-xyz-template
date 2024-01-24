@@ -170,8 +170,8 @@ class ParticleSystem {
     let trait5Result = T5(seed);
 
     let particleColor = applyColorChangeTrait(generateRandomColor(), seed);
-    let minParticleSize = 10; // Adjust the minimum size based on your preference
-    let maxParticleSize = 130; // Adjust the maximum size based on your preference
+    let minParticleSize = 500; // Adjust the minimum size based on your preference
+    let maxParticleSize = 2130; // Adjust the maximum size based on your preference
 
     let particleSize = map(random(), 0, 1, minParticleSize, maxParticleSize); // Map random value to size range
 
