@@ -60,6 +60,13 @@
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 let system;
 
+let color = generateRandomColor();
+
+// Example usage of T5 trait with color change
+color = applyColorChangeTrait(color);
+
+// Now, 'color' has been modified by the color change trait if T5 is active
+
 function generateRandomColor() {
   // Use Chroma.js to generate a random color with increased randomness
   const randColor = chroma.random().alpha(Math.random()); // Include random alpha value
@@ -69,6 +76,16 @@ function generateRandomColor() {
     randColor.rgb()[2],
     125  // Adjust the alpha value directly
   );
+}
+
+function applyColorChangeTrait(color) {
+  // Add logic for the color change trait here
+  // For example, you can randomly adjust hue, saturation, or brightness
+  if (Math.random() > 0.5) {
+    color = color.darken(0.2); // Example: Darken the color
+  }
+
+  return color;
 }
 
 class Particle {
@@ -243,11 +260,13 @@ function draw() {
         return rand > 0.5 ? true : false; // Example trait influencing direction
     }
 
-    function T5(rand) {
-        // Add more traits as needed
-        return rand > 0.7 ? true : false; // Example trait influencing lifespan
-    }
+function T5(color, rand) {
+  // Apply color change trait
+  colorChangeTrait(color, rand);
 
+  // Add more traits as needed
+  return rand > 0.7 ? true : false; // Example trait influencing lifespan
+}
     // window.$generativeTraits contain list traits for token
     // you need to populate a $generativeTraits object in the window object
     window.$generativeTraits = {
