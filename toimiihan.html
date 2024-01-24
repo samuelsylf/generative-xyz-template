@@ -100,9 +100,9 @@ function T5(rand) {
   return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
 }
 function generateRandomColor() {
-   // Use Chroma.js to generate a random color
-    const randColor = chroma.random();
-    return color(randColor.rgb()[0], randColor.rgb()[1], randColor.rgb()[2]);
+// Use Chroma.js to generate a random color with increased randomness
+const randColor = chroma.random().alpha(Math.random()); // Include random alpha value
+return color(randColor.rgb()[0], randColor.rgb()[1], randColor.rgb()[2]);
 }
 function setup() {
   createCanvas(720, 400);
