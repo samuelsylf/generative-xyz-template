@@ -121,6 +121,21 @@ class Particle {
     this.size = random(8, 120);
     this.gravity = createVector(0, 0.01); // Adjusted gravitational effect
   }
+    addParticle() {
+    // Apply traits to determine particle properties
+    let trait1Result = T1(random());
+    let trait2Result = T2(random());
+    let trait3Result = T3(random());
+    let trait4Result = T4(random());
+    let trait5Result = T5(random());
+
+    // Use trait results to customize particle properties
+    let particleColor = generateRandomColor(); // You can modify this based on traits
+    let particleSize = trait3Result === 2 ? 20 : 10; // Example: Size depends on trait3
+
+    // Create particle with customized properties
+    this.particles.push(new Particle(this.origin, particleColor, particleSize));
+  }
 
   run() {
     this.update();
