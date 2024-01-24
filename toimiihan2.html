@@ -238,44 +238,40 @@ function draw() {
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
-    function T1(rand) {
-        // calculate rarity by yourself
-        if (rand > 0.02) {
-            return true;
-        } else {
-            return false;
-        }
+// Trait functions
+function T1(rand) {
+    // calculate rarity by yourself
+    return rand > 0.02;
+}
+
+function T2(rand) {
+    // calculate rarity by yourself
+    return rand > 0.04;
+}
+
+function T3(rand) {
+    // calculate rarity by yourself
+    return rand > 0.06;
+}
+
+function T4(rand) {
+    // Add more traits as needed
+    return rand > 0.5; // Example trait influencing direction
+}
+
+function T5(rand) {
+    // Add more traits as needed
+    return rand > 0.7; // Example trait influencing lifespan
+}
+
+function applyColorChangeTrait(color, rand) {
+    // Add logic for the color change trait here
+    // For example, you can randomly adjust hue, saturation, or brightness
+    if (rand > 0.5) {
+        color = color.darken(0.2); // Example: Darken the color
     }
 
-    function T2(rand) {
-        // calculate rarity by yourself
-        if (rand > 0.04) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function T3(rand) {
-        // calculate rarity by yourself
-        if (rand > 0.06) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function T4(rand) {
-        // Add more traits as needed
-        return rand > 0.5 ? true : false; // Example trait influencing direction
-    }
-
-function T5(color, rand) {
-  // Apply color change trait
-  colorChangeTrait(color, rand);
-
-  // Add more traits as needed
-  return rand > 0.7 ? true : false; // Example trait influencing lifespan
+    return color;
 }
     // window.$generativeTraits contain list traits for token
     // you need to populate a $generativeTraits object in the window object
