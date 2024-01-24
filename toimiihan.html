@@ -61,12 +61,6 @@
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 let particleSystem;
 
-function generateRandomColor() {
-        // Use the seeded random number generator for color randomness
-        const colorRand = seedRandom(seed + 1); // You can adjust the seed offset
-        function generateRandomColor() {
-        return `rgb(${Math.floor(colorRand() * 255)}, ${Math.floor(colorRand() * 255)}, ${Math.floor(colorRand() * 255)})`;
-
 let particles = [];
 let explosionCounter = 1;
 
