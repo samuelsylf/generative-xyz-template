@@ -100,8 +100,8 @@ class Particle {
 
 display() {
   noStroke();
-  let alphaValue = random(50, 200); // Adjust the range based on your preference
-  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alphaValue);
+  this.color.levels[3] = random(50, 200); // Adjust the range based on your preference
+  fill(this.color);
   ellipse(this.position.x, this.position.y, this.size, this.size);
 }
 
