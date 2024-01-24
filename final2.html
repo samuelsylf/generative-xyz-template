@@ -83,6 +83,9 @@ function draw() {
     system.addParticle(); // Corrected: Call addParticle on the system object
   }
 
+  // Draw particle system
+  system.run(); // Corrected: Call run on the system object
+
   // Set the seed for consistent random values
   randomSeed(seed);
 
@@ -105,9 +108,6 @@ function draw() {
 
   fill(rectColor.levels[0], rectColor.levels[1], rectColor.levels[2], canvasAlpha);
   rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
-
-  // Draw particle system
-  system.run(); // Corrected: Call run on the system object
 }
 
 class Particle {
