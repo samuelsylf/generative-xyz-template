@@ -59,11 +59,26 @@
     <script type="text/javascript">
 
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        //lisätty viimeksi:
+            // Function to seed the random number generator
+    function seedRandom(seed) {
+        // Use the current timestamp as a dynamic factor for more randomness
+        var timestamp = new Date().getTime();
+        seed += timestamp;
+        
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // Use a seed for your random number generator
+    const seed = Math.random(); // You can set a fixed seed here if needed
+    const rand = seedRandom(seed);
+// code:
 let particleSystem;
 
 function generateRandomColor() {
         // Use the seeded random number generator for color randomness
-        const colorRand = seedRandom(seed + 1); // You can adjust the seed offset
+        const colorRand = seedRandom(seed + 177); // You can adjust the seed offset
         return color(random(150), random(250), random(75));
     }
 
