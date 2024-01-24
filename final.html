@@ -273,32 +273,38 @@ function generateRandomColor() {
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 // Trait functions
-function T1(rand) {
+function T1(seed) {
+    const rand = randomSeed(seed);
     // calculate rarity by yourself
     return rand > 0.02;
 }
 
-function T2(rand) {
+function T2(seed) {
+    const rand = randomSeed(seed);
     // calculate rarity by yourself
     return rand > 0.04;
 }
 
-function T3(rand) {
+function T3(seed) {
+    const rand = randomSeed(seed);
     // calculate rarity by yourself
     return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
 }
 
-function T4(rand) {
+function T4(seed) {
+    const rand = randomSeed(seed);
     // Add more traits as needed
     return rand > 0.5 ? 1 : -1; // Example trait influencing direction
 }
 
-function T5(rand) {
+function T5(seed) {
+    const rand = randomSeed(seed);
     // Add more traits as needed
     return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
 }
 
-function applyColorChangeTrait(color, rand) {
+function applyColorChangeTrait(color, seed) {
+    const rand = randomSeed(seed);
     // Add logic for the color change trait here
     // For example, you can randomly adjust hue, saturation, or brightness
     if (rand > 0.2) {
