@@ -63,6 +63,29 @@ let particleSystem;
 let particles = [];
 let explosionCounter = 1;
 
+                class Particle {
+            constructor() {
+                this.x = random(width);
+                this.y = random(height);
+                this.r = random(4, 20);
+                this.color = this.generateInterpolatedColor();
+                // Additional properties...
+            }
+
+            createParticle() {
+                noStroke();
+                fill(this.color.levels[0], this.color.levels[1], this.color.levels[2]);
+                ellipse(this.x, this.y, this.r * 2);
+            }
+                    joinParticles(particles) {
+                // Join particles...
+            }
+            moveParticle() {
+                // Move the particle...
+            }
+            // Additional methods...
+        }
+
 // Trait functions
 function T1(rand) {
   // calculate rarity by yourself
@@ -103,6 +126,8 @@ function generateRandomColor() {
 // Use Chroma.js to generate a random color with increased randomness
 const randColor = chroma.random().alpha(Math.random()); // Include random alpha value
 return color(randColor.rgb()[0], randColor.rgb()[1], randColor.rgb()[2]);
+    // Use Chroma.js to generate a color scheme
+            colorScheme = chroma.scale(['#3498db', '#e74c3c']).mode('lch').colors(10);
 }
 function setup() {
   createCanvas(720, 400);
@@ -182,7 +207,7 @@ let ParticleSystem = function(position) {
 ParticleSystem.prototype.addParticle = function() {
   this.particles.push(new CreativeParticle(this.origin));
 };
-
+        
 ParticleSystem.prototype.run = function() {
   for (let i = this.particles.length - 1; i >= 0; i--) {
     let p = this.particles[i];
