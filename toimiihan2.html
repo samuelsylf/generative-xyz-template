@@ -100,8 +100,8 @@ class Particle {
 
 display() {
   noStroke();
-  let alphaValue = map(this.lifespan, 0, 220, 0, 125);
-  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alphaValue);
+  let fillColor = color(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.lifespan);
+  fill(fillColor);
   ellipse(this.position.x, this.position.y, this.size, this.size);
 }
 
