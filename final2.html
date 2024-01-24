@@ -161,6 +161,15 @@ class ParticleSystem {
     this.origin = position.copy();
     this.particles = [];
   }
+      applyColorChangeTrait(color, seed) {
+    // Add logic for the color change trait here
+    // For example, you can randomly adjust hue, saturation, or brightness
+    if (T1(seed)) {
+        color = color.darken(0.1); // Example: Darken the color
+    }
+
+    return color;
+  }
 
   addParticle() {
     let trait1Result = T1(seed);
