@@ -274,7 +274,7 @@ ParticleSystem.prototype.run = function() {
     // Use a seed for your random number generator
     const seed = Math.random(); // You can set a fixed seed here if needed
     const rand = seedRandom(seed);
-    
+
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
     function T1(rand) {
@@ -282,36 +282,40 @@ ParticleSystem.prototype.run = function() {
         if (rand > 0.02) {
             return true;
         } else {
-            return false;
+            return false
         }
     }
-
-    function T2(rand) {
+      function T2(rand) {
         // calculate rarity by yourself
         if (rand > 0.04) {
             return true;
         } else {
-            return false;
+            return false
         }
     }
-
-    function T3(rand) {
+      function T3(rand) {
         // calculate rarity by yourself
         if (rand > 0.06) {
             return true;
         } else {
-            return false;
+            return false
         }
     }
-
-    function T4(rand) {
-        // Add more traits as needed
-        return rand > 0.5 ? true : false; // Example trait influencing direction
+          function T5(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.5) {
+            return true;
+        } else {
+            return false
+        }
     }
-
-    function T5(rand) {
-        // Add more traits as needed
-        return rand > 0.7 ? true : false; // Example trait influencing lifespan
+              function T5(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.7) {
+            return true;
+        } else {
+            return false
+        }
     }
 
     // window.$generativeTraits contain list traits for token
