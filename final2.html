@@ -159,34 +159,14 @@ class ParticleSystem {
     this.origin = position.copy();
     this.particles = [];
   }
-      applyColorChangeTrait(color, seed) {
-    // Add logic for the color change trait here
-    // For example, you can randomly adjust hue, saturation, or brightness
-    if (T1(seed)) {
-        color = color.darken(0.1); // Example: Darken the color
-    }
-
-    return color;
-  }
-
-addParticle() {
-  let trait1Result = T1(seed);
-  let trait2Result = T2(seed);
-  let trait3Result = T3(seed);
-  let trait4Result = T4(seed);
-  let trait5Result = T5(seed);
-
-  let particleColor = this.applyColorChangeTrait(generateRandomColor(), seed); // Added 'this.' before applyColorChangeTrait
-  let minParticleSize = 2; // Adjust the minimum size based on your preference
-  let maxParticleSize = 35; // Adjust the maximum size based on your preference
-
-  let particleSize = map(random(), 10, 65, minParticleSize, maxParticleSize); // Map random value to size range
-
-  this.particles.push(new Particle(this.origin, particleColor, particleSize));
-}
-  }
 
   run() {
+    // Add particle at regular intervals
+    if (frameCount % interval === 0) {
+      this.addParticle();
+    }
+
+    // Update and display existing particles
     for (let i = this.particles.length - 1; i >= 0; i--) {
       let p = this.particles[i];
       p.run();
@@ -194,6 +174,32 @@ addParticle() {
         this.particles.splice(i, 1);
       }
     }
+  }
+
+  applyColorChangeTrait(color, seed) {
+    // Add logic for the color change trait here
+    // For example, you can randomly adjust hue, saturation, or brightness
+    if (T1(seed)) {
+      color = color.darken(0.1); // Example: Darken the color
+    }
+
+    return color;
+  }
+
+  addParticle() {
+    let trait1Result = T1(seed);
+    let trait2Result = T2(seed);
+    let trait3Result = T3(seed);
+    let trait4Result = T4(seed);
+    let trait5Result = T5(seed);
+
+    let particleColor = this.applyColorChangeTrait(generateRandomColor(), seed);
+    let minParticleSize = 5; // Adjust the minimum size based on your preference
+    let maxParticleSize = 35; // Adjust the maximum size based on your preference
+
+    let particleSize = map(random(), 5, 35, minParticleSize, maxParticleSize); // Map random value to size range
+
+    this.particles.push(new Particle(this.origin, particleColor, particleSize));
   }
 }
 
