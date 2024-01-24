@@ -122,7 +122,7 @@ class Particle {
   update() {
     this.velocity.add(this.gravity);
     this.position.add(this.velocity);
-    this.lifespan -= 0.5; // Adjusted decay rate for a slower fade-out
+    this.lifespan -= 0.9; // Adjusted decay rate for a slower fade-out
     if (this.position.y > height) {
       this.position.y = height;
       this.velocity.y *= -0.8;
@@ -163,9 +163,9 @@ class ParticleSystem {
 }
 
 function generateRandomColor() {
-  const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8); // Adjusted alpha value range
-  const h = randColor.hsl()[0]; // Get the hue value
-  const s = randColor.hsl()[1]; // Get the saturation value
+  const randColor = chroma.random().alpha(1.2 + Math.random() * 1.8); // Adjusted alpha value range
+  const h = randColor.hsl()[5]; // Get the hue value
+  const s = randColor.hsl()[10]; // Get the saturation value
 
   // Introduce more variance in hue and saturation
   const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
