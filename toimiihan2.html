@@ -93,12 +93,12 @@ class Particle {
     }
   }
 
- display() {
+display() {
   stroke(200, this.lifespan);
   strokeWeight(2);
-  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], 128, this.lifespan);
+  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.lifespan, 128);
   ellipse(this.position.x, this.position.y, this.size, this.size);
-  }
+}
 
   isDead() {
     return this.lifespan < 2;
