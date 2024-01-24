@@ -163,8 +163,8 @@ class ParticleSystem {
 }
 function generateRandomColor() {
   const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8); // Adjusted alpha value range
-//*  const h = randColor.hsl()[0]; // Get the hue value
-//*  const s = randColor.hsl()[1]; // Get the saturation value
+  const h = randColor.hsl()[0]; // Get the hue value
+  const s = randColor.hsl()[1]; // Get the saturation value
      // Generate random values for hue, saturation, and lightness
   let h = random(360);
   let s = random(50, 100); // Adjust the saturation range based on your preference
@@ -175,7 +175,7 @@ function generateRandomColor() {
   return color(rgbColor[0], rgbColor[1], rgbColor[2], random(50, 255)); // Adjust alpha range
 }
   // Introduce more variance in hue and saturation
-//*  const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
+  const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
 
   return color(
     modifiedColor.rgb()[0],
