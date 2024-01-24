@@ -173,7 +173,7 @@ class ParticleSystem {
     let minParticleSize = 5; // Adjust the minimum size based on your preference
     let maxParticleSize = 35; // Adjust the maximum size based on your preference
 
-    let particleSize = map(random(), 0, 1, minParticleSize, maxParticleSize); // Map random value to size range
+    let particleSize = map(random(), 5, 35, minParticleSize, maxParticleSize); // Map random value to size range
 
     this.particles.push(new Particle(this.origin, particleColor, particleSize));
   }
