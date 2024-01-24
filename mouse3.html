@@ -61,6 +61,13 @@
 let system;
 let interval = 5; // Adjust the interval between particle creation
 let numParticles = 5; // Adjust the number of particles created at each interval
+let colors = [
+  color(255, 0, 0),   // Red
+  color(0, 255, 0),   // Green
+  color(0, 0, 255),   // Blue
+  color(255, 255, 0), // Yellow
+  // Add more colors as needed
+];
 
 function setup() {
   createCanvas(720, 400);
@@ -147,7 +154,9 @@ class ParticleSystem {
   }
 }
 function generateRandomColor() {
-  const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8); // Adjusted alpha value range
+//old  const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8); // Adjusted alpha value range
+     // Randomly select a color from the array:
+  let randColor = random(colors).alpha(0.2 + Math.random() * 0.8);
   const h = randColor.hsl()[0]; // Get the hue value
   const s = randColor.hsl()[1]; // Get the saturation value
 
