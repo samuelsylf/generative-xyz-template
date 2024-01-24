@@ -80,9 +80,7 @@ function draw() {
 
   // Draw particle system at regular intervals
   if (frameCount % interval === 0) {
-    for (let i = 0; i < numParticles; i++) {
-      system.addParticle(); // Corrected: Call addParticle on the system object
-    }
+    system.addParticle(); // Corrected: Call addParticle on the system object
   }
 
   // Set the seed for consistent random values
