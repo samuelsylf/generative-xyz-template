@@ -164,10 +164,10 @@ function generateRandomColor() {
   const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
 
   return color(
-    modifiedColor.rgb()[0],
-    modifiedColor.rgb()[1],
-    modifiedColor.rgb()[2],
-    modifiedColor.alpha() * 255
+    randColor.levels[0],
+    randColor.levels[1],
+    randColor.levels[2],
+    randColor.alpha() * 255
   );
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
