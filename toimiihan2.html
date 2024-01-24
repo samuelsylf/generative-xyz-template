@@ -78,6 +78,17 @@ function generateRandomColor() {
   );
 }
 
+function colorChangeTrait(color, rand) {
+  // Adjust the range based on your preference
+  let alphaChange = map(rand, 0, 1, -50, 50);
+  
+  // Ensure the alpha value stays within valid range (0 to 255)
+  let newAlpha = constrain(color.levels[3] + alphaChange, 0, 125);
+  
+  // Create a new color with the adjusted alpha value
+  return color.levels[3] = newAlpha;
+}
+
 function applyColorChangeTrait(color) {
   // Add logic for the color change trait here
   // For example, you can randomly adjust hue, saturation, or brightness
