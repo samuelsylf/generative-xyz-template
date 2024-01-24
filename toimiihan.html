@@ -59,7 +59,7 @@
 
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 let particleSystem;
-
+let system;
 let particles = [];
 let explosionCounter = 1;
 
@@ -133,31 +133,39 @@ chroma.interpolate.color(colorScheme[Math.floor(colorIndex)], colorScheme[Math.c
 }
 function setup() {
   createCanvas(720, 400);
-  colorMode(HSB); // Use HSB color mode for a vibrant color palette
+  colorMode(HSB);
+
+  // Initialize particles
   for (let i = 0; i < width / 10; i++) {
     particles.push(new Particle());
   }
-}
 
-for (let i = 0; i < particles.length; i++) {
-    particles[i].createParticle();  // This line should not have any arguments
-  particles[i].moveParticle();
-  particles[i].joinParticles(particles.slice(i));
-  }
-
-function setup() {
-  createCanvas(720, 400);
+  // Initialize particle system
   system = new ParticleSystem(createVector(width / 2, 50));
 }
 
-        function draw() {
-            background(51);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].createParticle();
-                particles[i].moveParticle();
-                particles[i].joinParticles(particles.slice(i));
-            }
-        }
+function draw() {
+  background(51);
+
+  // Draw particles
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].createParticle();
+    particles[i].moveParticle();
+    particles[i].joinParticles(particles.slice(i));
+  }
+
+  // Draw particle system
+  system.addParticle();
+  system.run();
+}
+//        function draw() {
+//            background(51);
+//            for (let i = 0; i < particles.length; i++) {
+//                particles[i].createParticle();
+//                particles[i].moveParticle();
+//                particles[i].joinParticles(particles.slice(i));
+//            }
+//        }
 
 // A creative Particle class
 let CreativeParticle = function(position, color) {
