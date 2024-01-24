@@ -66,6 +66,10 @@ function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
 
+  // Initialize particle system
+  system = new ParticleSystem(createVector(width / 2, 50));
+}
+
 function draw() {
   background(51);
 
