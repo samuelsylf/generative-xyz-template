@@ -65,6 +65,8 @@ let numParticles = 5; // Adjust the number of particles created at each interval
 function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
+for (let i = 0; i < width / 10; i++) {
+particles.push(new Particle());
 
   // Initialize particle system
   system = new ParticleSystem(createVector(width / 2, 50));
