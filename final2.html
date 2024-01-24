@@ -58,6 +58,176 @@
     <script type="text/javascript">
 
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        class Particle {
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.r = random(4, 20);
+    this.xSpeed = random(-1, 1);
+    this.ySpeed = random(-1, 1);
+    this.colorTrait = T1(random());
+    this.positionTrait = T2(random());
+    this.movementTrait = T3(random());
+    this.color = generateRandomColor();
+    this.noiseOffsetX = random(0, 1000);
+    this.noiseOffsetY = random(0, 1000);
+  }
+
+  createParticle() {
+    noStroke();
+    fill(this.color);
+    ellipse(this.x, this.y, this.r * 2);
+  }
+
+  moveParticle() {
+    this.x += map(noise(this.noiseOffsetX), 0, 1, -1, 1) * this.movementTrait;
+    this.y += map(noise(this.noiseOffsetY), 0, 1, -1, 1) * this.movementTrait;
+
+    this.noiseOffsetX += 0.01;
+    this.noiseOffsetY += 0.01;
+
+    if (this.x < 0 || this.x > width) this.xSpeed *= -1;
+    if (this.y < 0 || this.y > height) this.ySpeed *= -1;
+
+    this.x += this.xSpeed;
+    this.y += this.ySpeed;
+  }
+
+  joinParticles(particles) {
+    particles.forEach((element) => {
+      let dis = dist(this.x, this.y, element.x, element.y);
+      if (dis < 100 && this.colorTrait && element.colorTrait) {
+        // ... (unchanged code)
+
+        if (dis < this.r + element.r) {
+          let newR = max(this.r, element.r) * 1.5;
+          let newX = (this.x + element.x) / 2;
+          let newY = (this.y + element.y) / 2;
+          particles.push(new ParticleExplosion(newX, newY, newR));
+        }
+      }
+    });
+  }
+}
+function generateRandomColor() {
+  return color(random(25), random(250), random(25));
+}
+
+function generateRandomExplosion(particles) {
+  let randomParticle = random(particles);
+  let explosionSize = random(10, 50);
+  particles.push(new ParticleExplosion(randomParticle.x, randomParticle.y, explosionSize));
+}
+
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.color = generateRandomColor();
+    this.life = 255;
+  }
+
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.x, this.y, this.r * 2);
+    this.life -= 5;
+  }
+}
+
+let particles = [];
+let explosionCounter = 0;
+
+function setup() {
+  createCanvas(720, 400);
+  for (let i = 0; i < width / 10; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function draw() {
+  background('#0f0f0f');
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].createParticle();
+    particles[i].moveParticle();
+    particles[i].joinParticles(particles.slice(i));
+  }
+}
+// Trait functions
+function T1(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function T2(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function T3(rand) {
+  // calculate rarity by yourself
+  if (rand > 0.3) {
+    return 2; // This trait will control the movement speed
+  } else {
+    return 1; // Default movement speed
+  }
+}
+
+// Function to generate a random color
+function generateRandomColor() {
+  return color(random(205), random(205), random(205));
+}
+
+// This class describes the properties of a single particle explosion.
+
+
+// An array to add multiple particles.
+
+function setup() {
+  createCanvas(720, 400);
+  for (let i = 0; i < width / 10; i++) {
+    particles.push(new Particle());
+  }
+}
+	    
+function draw() {
+  background('#0f0f0f');
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].createParticle();
+    particles[i].moveParticle();
+    particles[i].joinParticles(particles.slice(i));
+  }
+}
+
+// Function to generate a random color palette
+function generateRandomColor() {
+  let hue = random(0, 360);
+  let saturation = random(10, 300);
+  let brightness = random(50, 300);
+  return color(hue, saturation, brightness, 250);
+}
+  if (explosionCounter >= 300) {
+    generateRandomExplosion(particles);
+    explosionCounter = 6;
+  } else {
+    explosionCounter++;
+  }
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(3, 100);
+  particles.splice(randIndex, 1); // Remove the particle that will explode
+  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
+}
 let system;
 let interval = 5; // Adjust the interval between particle creation
 let numParticles = 15; // Adjust the number of particles created at each interval
