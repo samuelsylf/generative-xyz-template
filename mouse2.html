@@ -104,15 +104,15 @@ class Particle {
     this.display();
   }
 
-update() {
-  this.velocity.add(this.gravity);
-  this.position.add(this.velocity);
-  this.lifespan -= 0.5; // Adjusted decay rate
-  if (this.position.y > height) {
-    this.position.y = height;
-    this.velocity.y *= -0.8;
+  update() {
+    this.velocity.add(this.gravity);
+    this.position.add(this.velocity);
+    this.lifespan -= 0.2; // Adjusted decay rate for a slower fade-out
+    if (this.position.y > height) {
+      this.position.y = height;
+      this.velocity.y *= -0.8;
+    }
   }
-}
 
 display() {
   noStroke();
