@@ -80,25 +80,25 @@ function draw() {
     }
   }
 
-// Adjust overall transparency of the canvas
-let canvasAlpha = map(numParticles, 0, 100, 0, 125); // Adjust the range based on your preference
+  // Adjust overall transparency of the canvas
+  let canvasAlpha = map(numParticles, 0, 100, 0, 125); // Adjust the range based on your preference
 
-// Set ranges for random values
-let minX = 10; // Minimum X coordinate
-let maxX = width - 150; // Maximum X coordinate
-let minY = 10; // Minimum Y coordinate
-let maxY = height - 150; // Maximum Y coordinate
+  // Set ranges for random values
+  let minX = 10; // Minimum X coordinate
+  let maxX = width - 150; // Maximum X coordinate
+  let minY = 10; // Minimum Y coordinate
+  let maxY = height - 150; // Maximum Y coordinate
 
-let rectX = random(minX, maxX);
-let rectY = random(minY, maxY);
-let rectWidth = random(2, 20); // Adjust the range based on your preference
-let rectHeight = random(2, 20); // Adjust the range based on your preference
+  let rectX = random(minX, maxX);
+  let rectY = random(minY, maxY);
+  let rectWidth = random(2, 20); // Adjust the range based on your preference
+  let rectHeight = random(2, 20); // Adjust the range based on your preference
 
-// Generate a random color
-let rectColor = color(random(55), random(155), random(225));
+  // Generate a random color with more variance in hue and saturation
+  let rectColor = generateRandomColor();
 
-fill(rectColor.levels[0], rectColor.levels[1], rectColor.levels[2], canvasAlpha);
-rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
+  fill(rectColor.levels[0], rectColor.levels[1], rectColor.levels[2], canvasAlpha);
+  rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
 
   // Draw particle system
   system.run();
@@ -129,12 +129,12 @@ class Particle {
     }
   }
 
-display() {
-  noStroke();
-  let alpha = map(this.lifespan, 0, 2200, 0, 255);
-  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
-  ellipse(this.position.x, this.position.y, this.size, this.size);
-}
+  display() {
+    noStroke();
+    let alpha = map(this.lifespan, 0, 2200, 0, 255);
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
+    ellipse(this.position.x, this.position.y, this.size, this.size);
+  }
 
   isDead() {
     return this.lifespan < 2;
@@ -161,6 +161,7 @@ class ParticleSystem {
     }
   }
 }
+
 function generateRandomColor() {
   const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8); // Adjusted alpha value range
   const h = randColor.hsl()[0]; // Get the hue value
