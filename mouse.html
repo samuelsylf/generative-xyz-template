@@ -114,11 +114,11 @@ update() {
   }
 }
 
-  display() {
-    noStroke();
-    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.lifespan);
-    ellipse(this.position.x, this.position.y, this.size, this.size);
-  }
+display() {
+  noStroke();
+  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], map(this.lifespan, 0, 2200, 0, 255));
+  ellipse(this.position.x, this.position.y, this.size, this.size);
+}
 
   isDead() {
     return this.lifespan < 2;
