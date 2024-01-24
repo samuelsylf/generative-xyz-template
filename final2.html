@@ -171,20 +171,21 @@ class ParticleSystem {
     return color;
   }
 
-  addParticle() {
-    let trait1Result = T1(seed);
-    let trait2Result = T2(seed);
-    let trait3Result = T3(seed);
-    let trait4Result = T4(seed);
-    let trait5Result = T5(seed);
+addParticle() {
+  let trait1Result = T1(seed);
+  let trait2Result = T2(seed);
+  let trait3Result = T3(seed);
+  let trait4Result = T4(seed);
+  let trait5Result = T5(seed);
 
-    let particleColor = applyColorChangeTrait(generateRandomColor(), seed);
-    let minParticleSize = 5; // Adjust the minimum size based on your preference
-    let maxParticleSize = 35; // Adjust the maximum size based on your preference
+  let particleColor = this.applyColorChangeTrait(generateRandomColor(), seed); // Added 'this.' before applyColorChangeTrait
+  let minParticleSize = 2; // Adjust the minimum size based on your preference
+  let maxParticleSize = 35; // Adjust the maximum size based on your preference
 
-    let particleSize = map(random(), 5, 35, minParticleSize, maxParticleSize); // Map random value to size range
+  let particleSize = map(random(), 10, 65, minParticleSize, maxParticleSize); // Map random value to size range
 
-    this.particles.push(new Particle(this.origin, particleColor, particleSize));
+  this.particles.push(new Particle(this.origin, particleColor, particleSize));
+}
   }
 
   run() {
