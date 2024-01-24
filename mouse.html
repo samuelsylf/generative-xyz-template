@@ -116,7 +116,8 @@ update() {
 
 display() {
   noStroke();
-  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], map(this.lifespan, 0, 2200, 0, 255));
+  let alpha = map(this.lifespan, 0, 2200, 0, 255);
+  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
   ellipse(this.position.x, this.position.y, this.size, this.size);
 }
 
