@@ -250,7 +250,7 @@ ParticleSystem.prototype.run = function() {
 
     function T1(rand) {
         // calculate rarity by yourself
-        if (rand > 0.2) {
+        if (rand > 0.02) {
             return true;
         } else {
             return false
@@ -258,7 +258,7 @@ ParticleSystem.prototype.run = function() {
     }
       function T2(rand) {
         // calculate rarity by yourself
-        if (rand > 0.4) {
+        if (rand > 0.04) {
             return true;
         } else {
             return false
@@ -266,7 +266,23 @@ ParticleSystem.prototype.run = function() {
     }
       function T3(rand) {
         // calculate rarity by yourself
-        if (rand > 0.8) {
+        if (rand > 0.06) {
+            return true;
+        } else {
+            return false
+        }
+    }
+          function T5(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.5) {
+            return true;
+        } else {
+            return false
+        }
+    }
+              function T5(rand) {
+        // calculate rarity by yourself
+        if (rand > 0.7) {
             return true;
         } else {
             return false
@@ -279,6 +295,8 @@ ParticleSystem.prototype.run = function() {
         "T1": T1(rand),
         "T2": T2(rand),
         "T3": T3(rand),
+        "T4": T4(rand),
+        "T5": T5(rand),
     }
     console.log(window.$generativeTraits)
 
