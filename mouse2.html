@@ -145,12 +145,10 @@ class ParticleSystem {
     }
   }
 }
-
 function generateRandomColor() {
   const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8); // Adjusted alpha value range
-  const alpha = map(randColor.alpha(), 0, 1, 0, 255); // Map alpha to the range 0 to 255
+  const alpha = randColor.alpha() * 255; // Convert alpha to the range 0 to 255
   return color(randColor.rgb()[0], randColor.rgb()[1], randColor.rgb()[2], alpha);
-}
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
