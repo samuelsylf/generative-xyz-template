@@ -285,17 +285,17 @@ function T2(rand) {
 
 function T3(rand) {
     // calculate rarity by yourself
-    return rand > 0.06;
+    return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
 }
 
 function T4(rand) {
     // Add more traits as needed
-    return rand > 0.5; // Example trait influencing direction
+    return rand > 0.5 ? 1 : -1; // Example trait influencing direction
 }
 
 function T5(rand) {
     // Add more traits as needed
-    return rand > 0.7; // Example trait influencing lifespan
+    return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
 }
 
 function applyColorChangeTrait(color, rand) {
@@ -307,15 +307,15 @@ function applyColorChangeTrait(color, rand) {
 
     return color;
 }
-    // window.$generativeTraits contain list traits for token
-    // you need to populate a $generativeTraits object in the window object
-    window.$generativeTraits = {
-        "T1": T1(rand),
-        "T2": T2(rand),
-        "T3": T3(rand),
-        "T4": T4(rand),
-        "T5": T5(rand),
-    };
+
+// Populate the $generativeTraits object in the window
+window.$generativeTraits = {
+    "T1": T1,
+    "T2": T2,
+    "T3": T3,
+    "T4": T4,
+    "T5": T5,
+};
 
     console.log(window.$generativeTraits);
 
