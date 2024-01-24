@@ -130,7 +130,7 @@ class Particle {
   update() {
     this.velocity.add(this.gravity);
     this.position.add(this.velocity);
-    this.lifespan -= 0.5; // Adjusted decay rate for a slower fade-out
+    this.lifespan -= 0.1; // Adjusted decay rate for a slower fade-out
     if (this.position.y > height) {
       this.position.y = height;
       this.velocity.y *= -0.8;
@@ -170,7 +170,10 @@ class ParticleSystem {
     let trait5Result = T5(seed);
 
     let particleColor = applyColorChangeTrait(generateRandomColor(), seed);
-    let particleSize = trait3Result === 2 ? 20 : 10;
+    let minParticleSize = 10; // Adjust the minimum size based on your preference
+    let maxParticleSize = 130; // Adjust the maximum size based on your preference
+
+    let particleSize = map(random(), 0, 1, minParticleSize, maxParticleSize); // Map random value to size range
 
     this.particles.push(new Particle(this.origin, particleColor, particleSize));
   }
