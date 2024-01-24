@@ -80,6 +80,11 @@ function draw() {
     }
   }
 
+  // Adjust overall transparency of the canvas
+  let canvasAlpha = map(numParticles, 0, 100, 0, 255); // Adjust the range based on your preference
+  fill(0, canvasAlpha);
+  rect(0, 0, width, height); // Draw a semi-transparent rectangle over the canvas
+
   // Draw particle system
   system.run();
 }
@@ -102,7 +107,7 @@ class Particle {
 update() {
   this.velocity.add(this.gravity);
   this.position.add(this.velocity);
-  this.lifespan -= 1.5; // Adjusted decay rate
+  this.lifespan -= 0.5; // Adjusted decay rate
   if (this.position.y > height) {
     this.position.y = height;
     this.velocity.y *= -0.8;
