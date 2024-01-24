@@ -67,7 +67,7 @@ function setup() {
   colorMode(HSB);
 
   // Initialize particle system
-  system = new ParticleSystem(createVector(width / 2, 150));
+  system = new ParticleSystem(createVector(width / 200, 50));
 }
 
 function draw() {
@@ -81,9 +81,9 @@ function draw() {
   }
 
   // Adjust overall transparency of the canvas
-  let canvasAlpha = map(numParticles, 0, 100, 0, 255); // Adjust the range based on your preference
-  fill(125, canvasAlpha);
-  rect(5, 5, width, height); // Draw a semi-transparent rectangle over the canvas
+  let canvasAlpha = map(numParticles, 0, 200, 0, 255); // Adjust the range based on your preference
+  fill(25, canvasAlpha);
+  rect(50, 50, width, height); // Draw a semi-transparent rectangle over the canvas
 
   // Draw particle system
   system.run();
