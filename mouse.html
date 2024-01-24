@@ -59,6 +59,7 @@
 
         // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 let system;
+let interval = 10; // Adjust the interval between particle creation
 
 function setup() {
   createCanvas(720, 400);
@@ -71,8 +72,12 @@ function setup() {
 function draw() {
   background(51);
 
+  // Draw particle system at regular intervals
+  if (frameCount % interval === 0) {
+    system.addParticle();
+  }
+
   // Draw particle system
-  system.addParticle();
   system.run();
 }
 
@@ -144,7 +149,6 @@ function generateRandomColor() {
     randColor.alpha() * 255
   );
 }
-
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     </script>
