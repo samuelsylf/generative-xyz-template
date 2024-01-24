@@ -69,24 +69,13 @@ color = applyColorChangeTrait(color);
 
 function generateRandomColor() {
   // Use Chroma.js to generate a random color with increased randomness
-  const randColor = chroma.random().alpha(Math.random()); // Include random alpha value
+  const randColor = chroma.random().alpha(0.5 + Math.random() * 0.5); // Adjust alpha value within the range 0.5 to 1.0
   return color(
     randColor.rgb()[0],
     randColor.rgb()[1],
     randColor.rgb()[2],
-    125  // Adjust the alpha value directly
+    randColor.alpha() * 255  // Convert alpha to the range 0 to 255
   );
-}
-
-function colorChangeTrait(color, rand) {
-  // Adjust the range based on your preference
-  let alphaChange = map(rand, 0, 1, -50, 50);
-  
-  // Ensure the alpha value stays within valid range (0 to 255)
-  let newAlpha = constrain(color.levels[3] + alphaChange, 0, 125);
-  
-  // Create a new color with the adjusted alpha value
-  return color.levels[3] = newAlpha;
 }
 
 function applyColorChangeTrait(color) {
@@ -98,6 +87,16 @@ function applyColorChangeTrait(color) {
 
   return color;
 }
+//function colorChangeTrait(color, rand) {
+  // Adjust the range based on your preference
+//  let alphaChange = map(rand, 0, 1, -50, 50);
+  
+  // Ensure the alpha value stays within valid range (0 to 255)
+//  let newAlpha = constrain(color.levels[3] + alphaChange, 0, 125);
+  
+  // Create a new color with the adjusted alpha value
+//  return color.levels[3] = newAlpha;
+// }
 
 class Particle {
   constructor(position, color) {
