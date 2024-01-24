@@ -31,32 +31,6 @@
         // ...
       // GRADIENT SCRIPT 
 // This class describes the properties of a single particle.
-let creativeSystem;
-let particleSystem;
-
-function setup() {
-  createCanvas(720, 400);
-  creativeSystem = new ParticleSystem(createVector(width / 4, height / 2));
-  particleSystem = new ParticleSystem(createVector((3 * width) / 4, height / 2));
-}
-
-function draw() {
-  background('#0f0f0f');
-
-  // Creative Particle System
-  creativeSystem.addParticle();
-  creativeSystem.run();
-
-  // Regular Particle System
-  for (let i = 0; i < particleSystem.particles.length; i++) {
-    particleSystem.particles[i].createParticle();
-    particleSystem.particles[i].moveParticle();
-    particleSystem.particles[i].addRandomEffect();
-    particleSystem.particles[i].joinParticles(particleSystem.particles.slice(i));
-  }
-  particleSystem.addParticle();
-  particleSystem.run();
-}
 // The rest of the CreativeParticle, Particle, and ParticleSystem classes remain unchanged.
 class Particle {
   constructor() {
