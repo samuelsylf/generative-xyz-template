@@ -131,9 +131,16 @@ class Particle {
 
   display() {
     noStroke();
+
+    // Original particle
     let alpha = map(this.lifespan, 0, 2200, 0, 255);
     fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
     ellipse(this.position.x, this.position.y, this.size, this.size);
+
+    // Reflection effect
+    let reflectionAlpha = map(this.lifespan, 0, 2200, 0, 100);
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], reflectionAlpha);
+    ellipse(this.position.x, height - this.position.y, this.size, this.size);
   }
 
   isDead() {
