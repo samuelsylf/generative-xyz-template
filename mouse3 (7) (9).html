@@ -85,9 +85,9 @@ let canvasAlpha = map(numParticles, 0, 100, 0, 125); // Adjust the range based o
 
 // Set ranges for random values
 let minX = 10; // Minimum X coordinate
-let maxX = width - 19; // Maximum X coordinate
+let maxX = width - 150; // Maximum X coordinate
 let minY = 10; // Minimum Y coordinate
-let maxY = height - 19; // Maximum Y coordinate
+let maxY = height - 150; // Maximum Y coordinate
 
 let rectX = random(minX, maxX);
 let rectY = random(minY, maxY);
@@ -168,6 +168,9 @@ function generateRandomColor() {
 
   // Introduce more variance in hue and saturation
   const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
+
+    // Convert HSL to RGB
+  let rgbColor = chroma.hsl(h, s, l).rgb();
 
   return color(
     modifiedColor.rgb()[0],
