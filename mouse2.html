@@ -66,19 +66,6 @@ function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
 
-  // Initialize particle system
-  system = new ParticleSystem(createVector(width / 2, 50));
-
-  // Create a certain number of particles
-  for (let i = 0; i < width / 10; i++) {
-    system.addParticle();
-  }
-}
-
-  // Initialize particle system
-  system = new ParticleSystem(createVector(width / 2, 50));
-}
-
 function draw() {
   background(51);
 
