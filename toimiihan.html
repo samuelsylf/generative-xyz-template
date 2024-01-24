@@ -168,7 +168,7 @@ let CreativeParticle = function(position, color) {
 
   // Additional creative elements
 // old  this.color = color(random(100, 255), random(10, 200), random(200, 255));
-  this.color = color || generateRandomColor(); // Use provided color or generate a random on
+  this.color = color;
   this.size = random(8, 50);
   this.gravity = createVector(0, 0.00000001); // Subtle gravitational effect
 };
