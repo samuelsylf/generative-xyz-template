@@ -84,17 +84,17 @@ function draw() {
 let canvasAlpha = map(numParticles, 0, 200, 0, 255); // Adjust the range based on your preference
 
 // Set ranges for random values
-let minX = 50; // Minimum X coordinate
-let maxX = width - 50; // Maximum X coordinate
-let minY = 50; // Minimum Y coordinate
-let maxY = height - 50; // Maximum Y coordinate
+let minX = 40; // Minimum X coordinate
+let maxX = width - 70; // Maximum X coordinate
+let minY = 30; // Minimum Y coordinate
+let maxY = height - 70; // Maximum Y coordinate
 
 let rectX = random(minX, maxX);
 let rectY = random(minY, maxY);
-let rectWidth = random(50, 200); // Adjust the range based on your preference
-let rectHeight = random(50, 200); // Adjust the range based on your preference
+let rectWidth = random(50, 220); // Adjust the range based on your preference
+let rectHeight = random(50, 220); // Adjust the range based on your preference
 
-fill(125, canvasAlpha);
+fill(155, canvasAlpha);
 rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
 
   // Draw particle system
@@ -119,7 +119,7 @@ class Particle {
   update() {
     this.velocity.add(this.gravity);
     this.position.add(this.velocity);
-    this.lifespan -= 0.2; // Adjusted decay rate for a slower fade-out
+    this.lifespan -= 0.5; // Adjusted decay rate for a slower fade-out
     if (this.position.y > height) {
       this.position.y = height;
       this.velocity.y *= -0.8;
