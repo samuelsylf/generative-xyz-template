@@ -171,14 +171,20 @@ class Particle {
   }
 }
 
-class ParticleSystem {
-  constructor(position) {
-    this.origin = position.copy();
-    this.particles = [];
-  }
+ addParticle() {
+    // Apply traits to determine particle properties
+    let trait1Result = T1(seed);
+    let trait2Result = T2(seed);
+    let trait3Result = T3(seed);
+    let trait4Result = T4(seed);
+    let trait5Result = T5(seed);
 
-  addParticle() {
-    this.particles.push(new Particle(this.origin, generateRandomColor()));
+    // Use trait results to customize particle properties
+    let particleColor = applyColorChangeTrait(generateRandomColor(), seed);
+    let particleSize = trait3Result === 2 ? 20 : 10; // Example: Size depends on trait3
+
+    // Create particle with customized properties
+    this.particles.push(new Particle(this.origin, particleColor, particleSize));
   }
 
   run() {
