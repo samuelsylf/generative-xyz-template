@@ -148,11 +148,17 @@ class ParticleSystem {
 }
 function generateRandomColor() {
   const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8); // Adjusted alpha value range
+  const h = randColor.hsl()[0]; // Get the hue value
+  const s = randColor.hsl()[1]; // Get the saturation value
+
+  // Introduce more variance in hue and saturation
+  const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
+
   return color(
-    randColor.rgb()[0],
-    randColor.rgb()[1],
-    randColor.rgb()[2],
-    randColor.alpha() * 255
+    modifiedColor.rgb()[0],
+    modifiedColor.rgb()[1],
+    modifiedColor.rgb()[2],
+    modifiedColor.alpha() * 255
   );
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
