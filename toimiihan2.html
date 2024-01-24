@@ -127,7 +127,7 @@ class Particle {
 
 display() {
   noStroke();
-  let newColor = color(this.color.levels[0], this.color.levels[1], this.color.levels[2], random(50, 200));
+  let newColor = color(this.color.levels[0], this.color.levels[1], this.color.levels[2], random(100, 200)); // Adjust the range based on your preference
   fill(newColor);
   ellipse(this.position.x, this.position.y, this.size, this.size);
 }
