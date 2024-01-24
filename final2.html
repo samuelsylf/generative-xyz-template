@@ -4,112 +4,66 @@
     <meta charset="UTF-8">
     <title>Chipi</title>
 
-    <!--
-    Generative supports the most popular creative coding libraries. Simply uncomment the library you want to use below.
-    Are we missing an important library? Let us know @generative_xyz.
-    -->
-
     <!-- p5js@1.5.0 -->
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
-
-    <!-- c2.min.js@1.0.0
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/c2/1.0.0/c2.min.js"></script>
-    -->
 
     <!-- chromajs@2.4.2 --> 
     <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
 
-    <!-- p5.grain.js@0.6.1
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/p5.grain/0.6.1/p5.grain.min.js"></script>
-    -->
-
-    <!-- threejs@r124
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
-    -->
-
-    <!-- tonejs@14.8.49
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    -->
-
-    <!-- web3js@1.2.7
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
-    -->
-
-    <!-- svgjs@3.1.2
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
-    -->
-
-    <!-- aframejs@1.2.0
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.min.js"></script>
-    -->
-
-    <!-- babylonjs@5.47.0
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/5.47.0/babylon.js"></script>
-    -->
-
-    <!-- paperjs@0.12.17
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.17/paper-full.min.js"></script>
-    -->
-
-    <!-- regljs@2.1.0
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/regl/2.1.0/regl.min.js"></script>
-    -->
-
+    <!-- Add other libraries as needed -->
+    <!-- Include other scripts here -->
     <script type="text/javascript">
+        let system;
+        let interval = 5; // Adjust the interval between particle creation
+        let numParticles = 15; // Adjust the number of particles created at each interval
+        let seed;
 
-        // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your script for lib here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        function setup() {
+            createCanvas(720, 400);
+            colorMode(HSB);
 
-let system;
-let interval = 5; // Adjust the interval between particle creation
-let numParticles = 15; // Adjust the number of particles created at each interval
-let seed;
+            // Set a random seed based on current time
+            seed = millis();
+            randomSeed(seed);
 
-function setup() {
-  createCanvas(720, 400);
-  colorMode(HSB);
+            // Initialize particle system
+            system = new ParticleSystem(createVector(width / 2, 50));
+        }
 
-  // Set a random seed based on current time
-  seed = millis();
-  randomSeed(seed);
+        function draw() {
+            background(51);
 
-  // Initialize particle system
-  system = new ParticleSystem(createVector(width / 2, 50));
-}
+            // Draw particle system at regular intervals
+            if (frameCount % interval === 0) {
+                system.addParticle(); // Corrected: Call addParticle on the system object
+            }
 
-function draw() {
-  background(51);
+            // Draw particle system
+            system.run(); // Corrected: Call run on the system object
 
-  // Draw particle system at regular intervals
-  if (frameCount % interval === 0) {
-    system.addParticle(); // Corrected: Call addParticle on the system object
-  }
+            // Set the seed for consistent random values
+            randomSeed(seed);
 
-  // Draw particle system
-  system.run(); // Corrected: Call run on the system object
+            // Adjust overall transparency of the canvas
+            let canvasAlpha = map(numParticles, 0, 100, 0, 125); // Adjust the range based on your preference
 
-  // Set the seed for consistent random values
-  randomSeed(seed);
+            // Set ranges for random values
+            let minX = 10; // Minimum X coordinate
+            let maxX = width - 150; // Maximum X coordinate
+            let minY = 10; // Minimum Y coordinate
+            let maxY = height - 150; // Maximum Y coordinate
 
-  // Adjust overall transparency of the canvas
-  let canvasAlpha = map(numParticles, 0, 100, 0, 125); // Adjust the range based on your preference
+            let rectX = random(minX, maxX);
+            let rectY = random(minY, maxY);
+            let rectWidth = random(2, 20); // Adjust the range based on your preference
+            let rectHeight = random(2, 20); // Adjust the range based on your preference
 
-  // Set ranges for random values
-  let minX = 10; // Minimum X coordinate
-  let maxX = width - 150; // Maximum X coordinate
-  let minY = 10; // Minimum Y coordinate
-  let maxY = height - 150; // Maximum Y coordinate
+            // Generate a random color with more variance in hue and saturation
+            let rectColor = generateRandomColor();
 
-  let rectX = random(minX, maxX);
-  let rectY = random(minY, maxY);
-  let rectWidth = random(2, 20); // Adjust the range based on your preference
-  let rectHeight = random(2, 20); // Adjust the range based on your preference
-
-  // Generate a random color with more variance in hue and saturation
-  let rectColor = generateRandomColor();
-
-  fill(rectColor.levels[0], rectColor.levels[1], rectColor.levels[2], canvasAlpha);
-  rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
-}
+            fill(rectColor.levels[0], rectColor.levels[1], rectColor.levels[2], canvasAlpha);
+            rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
+        }
 
 class Particle {
   constructor(position, color, size) {
@@ -255,13 +209,12 @@ function generateRandomColor() {
             }
         }
 
-
         // IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
         // This function generates a random number between 0 and 1 with on-chain seed.
 
         let mathRand = sfc32(...cyrb128(seed));
 
-    </script>
+</script>
     <style>
         body {
             margin: 0px;
@@ -334,22 +287,20 @@ window.$generativeTraits = {
     "T5": T5,
 };
 
-    console.log(window.$generativeTraits);
+        console.log(window.$generativeTraits);
 
-    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
+        // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your code here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
-    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your code here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        const container = document.createElement("div")
+        container.innerHTML = "<span>seed: " + seed + "</span><br>";
+        document.body.prepend(container)
 
-    const container = document.createElement("div")
-    container.innerHTML = "<span>seed: " + seed + "</span><br>";
-    document.body.prepend(container)
-
-    const canvas = document.getElementById("generativeCanvas");
+        const canvas = document.getElementById("generativeCanvas");
         const ctx = canvas.getContext("2d");
 
-    // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your code here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-</script>
+        // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your code here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    </script>
 </body>
 </html>
