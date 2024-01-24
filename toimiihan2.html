@@ -63,14 +63,15 @@ let system;
 let particles = [];
 let explosionCounter = 1;
 
-        function generateRandomColor() {
-// Use Chroma.js to generate a random color with increased randomness
-const randColor = chroma.random().alpha(Math.random()); // Include random alpha value
-return color(randColor.rgb()[0], randColor.rgb()[1], randColor.rgb()[2]);
-    // Use Chroma.js to generate a color scheme
-    //  old       colorScheme = chroma.scale(['#3498db', '#e74c3c']).mode('lch').colors(20);
-    colorScheme = chroma.scale(['#3498db', '#e74c3c']).mode('lch').colors(20).map(color => chroma(color).brighten(1.2).saturate(1.5));
-chroma.interpolate.color(colorScheme[Math.floor(colorIndex)], colorScheme[Math.ceil(colorIndex)], colorIndex % 1, 'rgb');
+function generateRandomColor() {
+  // Use Chroma.js to generate a random color with increased randomness
+  const randColor = chroma.random().alpha(Math.random()); // Include random alpha value
+  return color(randColor.rgb()[0], randColor.rgb()[1], randColor.rgb()[2]);
+}
+// Use Chroma.js to generate a color scheme
+//  old       colorScheme = chroma.scale(['#3498db', '#e74c3c']).mode('lch').colors(20);
+//    colorScheme = chroma.scale(['#3498db', '#e74c3c']).mode('lch').colors(20).map(color => chroma(color).brighten(1.2).saturate(1.5));
+//chroma.interpolate.color(colorScheme[Math.floor(colorIndex)], colorScheme[Math.ceil(colorIndex)], colorIndex % 1, 'rgb');
 }
                 class Particle {
             constructor() {
