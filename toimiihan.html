@@ -64,8 +64,45 @@ let particleSystem;
 function generateRandomColor() {
         // Use the seeded random number generator for color randomness
         const colorRand = seedRandom(seed + 1); // You can adjust the seed offset
-        return color(random(150), random(250), random(75));
-    }
+        function generateRandomColor() {
+
+                    // Access the canvas and 2D context
+        const canvas = document.getElementById("generativeCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function generateRandomColor() {
+            // Use the seeded random number generator for color randomness
+            const colorRand = seedRandom(seed + 1);
+            return `rgb(${Math.floor(colorRand() * 255)}, ${Math.floor(colorRand() * 255)}, ${Math.floor(colorRand() * 255)})`;
+        }
+
+        function drawRandomShapes() {
+            // Draw random shapes with changing colors
+            const numShapes = 5 + Math.floor(seedRandom(seed + 2)() * 10); // Vary the number of shapes
+            for (let i = 0; i < numShapes; i++) {
+                ctx.fillStyle = generateRandomColor();
+                const x = seedRandom(seed + i + 3)() * canvas.width;
+                const y = seedRandom(seed + i + 4)() * canvas.height;
+                const size = 20 + seedRandom(seed + i + 5)() * 30; // Vary the size
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function animate() {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw random shapes
+            drawRandomShapes();
+
+            // Request the next animation frame
+            requestAnimationFrame(animate);
+        }
+
+        // Start the animation
+        animate();
 
 let particles = [];
 let explosionCounter = 1;
