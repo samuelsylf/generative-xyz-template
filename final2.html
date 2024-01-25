@@ -2,43 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chipi</title>
+    <title>Particle System</title>
 
-    <!-- p5js@1.5.0 -->
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
-    <script>
-  window.onerror = function (message, source, lineno, colno, error) {
-    console.error('Error:', message, 'at', source, 'line', lineno, 'column', colno, error);
-  };
-</script>
-    <script>
-  // Define the mathRand function
-  function mathRand() {
-    // Add your implementation of mathRand here
-    // ...
-  }
+    <!-- p5.js library -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
 
-    <!-- chromajs@2.4.2 --> 
-    <script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+    <!-- chroma.js library -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
 
-    <!-- Add other libraries as needed -->
-    <!-- Include other scripts here -->
-    <script type="text/javascript">
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+
 let particles = [];
+let interval = 5; // Adjust the interval between particle creation
+let numParticles = 15; // Adjust the number of particles created at each interval
 
 function setup() {
   createCanvas(720, 400);
+  colorMode(HSB);
   for (let i = 0; i < 10; i++) {
     particles.push(new Particle());
   }
 }
 
 function draw() {
-  background('#0f0f0f');
+  let canvasAlpha = map(numParticles, 50, 70, 50, 35);
+  background(15, 15, 15, canvasAlpha);
+
   for (let i = 0; i < particles.length; i++) {
     particles[i].createParticle();
     particles[i].moveParticle();
+    particles[i].joinParticles(particles.slice(i));
   }
+
+  if (frameCount % interval === 0) {
+    generateRandomExplosion(particles);
+  }
+}
+
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(3, 100);
+  particles.splice(randIndex, 1);
+  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
 }
 
 class Particle {
@@ -63,6 +85,34 @@ class Particle {
 
     if (this.x < 0 || this.x > width) this.xSpeed *= -1;
     if (this.y < 0 || this.y > height) this.ySpeed *= -1;
+  }
+
+  joinParticles(particles) {
+    particles.forEach((element) => {
+      let dis = dist(this.x, this.y, element.x, element.y);
+      if (dis < 100) {
+        let alpha = map(dis, 0, 100, 255, 0);
+        stroke(255, alpha);
+        line(this.x, this.y, element.x, element.y);
+      }
+    });
+  }
+}
+
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.color = generateRandomColor();
+    this.life = 255;
+  }
+
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.x, this.y, this.r * 2);
+    this.life -= 5;
   }
 }
 
