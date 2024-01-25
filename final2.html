@@ -25,17 +25,9 @@
     <!-- Include other scripts here -->
     <script type="text/javascript">
 let particles = [];
-let system;
-let interval = 5;
-let seed;
 
 function setup() {
   createCanvas(720, 400);
-  colorMode(HSB);
-  seed = millis();
-  randomSeed(seed);
-
-  system = new ParticleSystem(createVector(width / 2, 50));
   for (let i = 0; i < 10; i++) {
     particles.push(new Particle());
   }
@@ -46,19 +38,7 @@ function draw() {
   for (let i = 0; i < particles.length; i++) {
     particles[i].createParticle();
     particles[i].moveParticle();
-    particles[i].joinParticles(particles.slice(i));
   }
-
-  // Draw particle system at regular intervals
-  if (frameCount % interval === 0) {
-    system.addParticle();
-  }
-
-  // Draw particle system
-  system.run();
-
-  // Set the seed for consistent random values
-  randomSeed(seed);
 }
 
 class Particle {
@@ -68,12 +48,7 @@ class Particle {
     this.r = random(4, 20);
     this.xSpeed = random(-1, 1);
     this.ySpeed = random(-1, 1);
-    this.colorTrait = T1(random());
-    this.positionTrait = T2(random());
-    this.movementTrait = T3(random());
     this.color = generateRandomColor();
-    this.noiseOffsetX = random(0, 1000);
-    this.noiseOffsetY = random(0, 1000);
   }
 
   createParticle() {
@@ -83,73 +58,17 @@ class Particle {
   }
 
   moveParticle() {
-    this.x += map(noise(this.noiseOffsetX), 0, 1, -1, 1) * this.movementTrait;
-    this.y += map(noise(this.noiseOffsetY), 0, 1, -1, 1) * this.movementTrait;
-
-    this.noiseOffsetX += 0.01;
-    this.noiseOffsetY += 0.01;
+    this.x += this.xSpeed;
+    this.y += this.ySpeed;
 
     if (this.x < 0 || this.x > width) this.xSpeed *= -1;
     if (this.y < 0 || this.y > height) this.ySpeed *= -1;
-
-    this.x += this.xSpeed;
-    this.y += this.ySpeed;
   }
-
-  joinParticles(particles) {
-    particles.forEach((element) => {
-      let dis = dist(this.x, this.y, element.x, element.y);
-      if (dis < 100 && this.colorTrait && element.colorTrait) {
-        if (dis < this.r + element.r) {
-          let newR = max(this.r, element.r) * 1.5;
-          let newX = (this.x + element.x) / 2;
-          let newY = (this.y + element.y) / 2;
-          particles.push(new Particle(newX, newY, newR));
-        }
-      }
-    });
-  }
-}
-
-class ParticleSystem {
-  constructor(position) {
-    this.origin = position.copy();
-    this.particles = [];
-  }
-
-  run() {
-    for (let i = this.particles.length - 1; i >= 0; i--) {
-      let p = this.particles[i];
-      p.createParticle();
-      p.moveParticle();
-      p.joinParticles(this.particles.slice(i));
-    }
-  }
-
-  addParticle() {
-    this.particles.push(new Particle());
-  }
-}
-
-function T1(rand) {
-  // calculate rarity by yourself
-  return rand > 0.1;
-}
-
-function T2(rand) {
-  // calculate rarity by yourself
-  return rand > 0.2;
-}
-
-function T3(rand) {
-  // calculate rarity by yourself
-  return rand > 0.3 ? 2 : 1; // This trait will control the movement speed
 }
 
 function generateRandomColor() {
   return color(random(205), random(205), random(205));
 }
-
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     </script>
