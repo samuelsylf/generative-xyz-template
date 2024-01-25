@@ -230,56 +230,56 @@ function generateRandomColor() {
 
 // Trait functions
 function T1(seed) {
-    const rand = randomSeed(seed);
-    // calculate rarity by yourself
-    return rand > 0.02;
+  const rand = randomSeed(seed);
+  // calculate rarity by yourself
+  return rand > 0.02;
 }
 
 function T2(seed) {
-    const rand = randomSeed(seed);
-    // calculate rarity by yourself
-    return rand > 0.04;
+  const rand = randomSeed(seed);
+  // calculate rarity by yourself
+  return rand > 0.04;
 }
 
 function T3(seed) {
-    const rand = randomSeed(seed);
-    // calculate rarity by yourself
-    return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
+  const rand = randomSeed(seed);
+  // calculate rarity by yourself
+  return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
 }
 
 function T4(seed) {
-    const rand = randomSeed(seed);
-    // Add more traits as needed
-    return rand > 0.5 ? 1 : -1; // Example trait influencing direction
+  const rand = randomSeed(seed);
+  // Add more traits as needed
+  return rand > 0.5 ? 1 : -1; // Example trait influencing direction
 }
 
 function T5(seed) {
-    const rand = randomSeed(seed);
-    // Add more traits as needed
-    return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
+  const rand = randomSeed(seed);
+  // Add more traits as needed
+  return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
 }
 
 function applyColorChangeTrait(color, seed) {
-    const rand = randomSeed(seed);
-    // Add logic for the color change trait here
-    // For example, you can randomly adjust hue, saturation, or brightness
-    if (rand > 0.8) {
-        color = color.darken(0.5); // Example: Darken the color
-    }
+  const rand = randomSeed(seed);
+  // Add logic for the color change trait here
+  // For example, you can randomly adjust hue, saturation, or brightness
+  if (rand > 0.8) {
+    color = color.darken(0.5); // Example: Darken the color
+  }
 
-    return color;
+  return color;
 }
 
 // Populate the $generativeTraits object in the window
 window.$generativeTraits = {
-    "T1": T1,
-    "T2": T2,
-    "T3": T3,
-    "T4": T4,
-    "T5": T5,
+  "T1": T1,
+  "T2": T2,
+  "T3": T3,
+  "T4": T4,
+  "T5": T5,
 };
 
-        console.log(window.$generativeTraits);
+console.log(window.$generativeTraits);
 
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
