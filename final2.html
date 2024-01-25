@@ -24,26 +24,18 @@
     <!-- Add other libraries as needed -->
     <!-- Include other scripts here -->
     <script type="text/javascript">
-        let system;
-        let interval = 5; // Adjust the interval between particle creation
-        let numParticles = 15; // Adjust the number of particles created at each interval
-        let seed;
+let particles = [];
+let explosionCounter = 0;
+let system; // Add this line to define the system variable
 
-        function setup() {
-            createCanvas(720, 400);
-            colorMode(HSB);
-            for (let i = 0; i < width / 10; i++) {
+function setup() {
+  createCanvas(720, 400);
+  system = new ParticleSystem(createVector(width / 2, 50)); // Initialize the particle system
+  colorMode(HSB);
+  for (let i = 0; i < width / 10; i++) {
     particles.push(new Particle());
   }
 }
-
-            // Set a random seed based on current time
-            seed = millis();
-            randomSeed(seed);
-
-            // Initialize particle system
-            system = new ParticleSystem(createVector(width / 2, 50));
-        }
 
 function draw() {
   // Adjust overall transparency of the canvas
@@ -77,7 +69,6 @@ function draw() {
   // Adjust overall transparency of the canvas
   background(15, 15, 15, canvasAlpha); // Adjust background color and alpha
 }
-
             // Set ranges for random values
             let minX = 10; // Minimum X coordinate
             let maxX = width - 150; // Maximum X coordinate
