@@ -268,6 +268,7 @@ class ParticleSystem {
 }
 
 function generateRandomColor() {
+  return color(random(205), random(205), random(205)); //added, maybe remove.
   const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8);
   const h = randColor.hsl()[0];
   const s = randColor.hsl()[1];
