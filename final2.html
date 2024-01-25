@@ -63,12 +63,6 @@ function draw() {
     explosionCounter++;
   }
 
-  if (frameCount % interval === 0) {
-    system.addParticle();
-  }
-
-  system.run();
-
   background(15, 15, 15, canvasAlpha);
 }
 
@@ -115,27 +109,10 @@ class Particle {
           let newR = max(this.r, element.r) * 1.5;
           let newX = (this.x + element.x) / 2;
           let newY = (this.y + element.y) / 2;
-          particles.push(new ParticleExplosion(newX, newY, newR));
+          particles.push(new Particle(newX, newY, newR));
         }
       }
     });
-  }
-}
-
-class ParticleExplosion {
-  constructor(x, y, r) {
-    this.x = x;
-    this.y = y;
-    this.r = r;
-    this.color = generateRandomColor();
-    this.life = 255;
-  }
-
-  createExplosion() {
-    noStroke();
-    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
-    ellipse(this.x, this.y, this.r * 2);
-    this.life -= 5;
   }
 }
 
@@ -145,7 +122,24 @@ class ParticleSystem {
     this.particles = [];
   }
 
+  addParticle() {
+    let trait1Result = T1(seed);
+    let trait2Result = T2(seed);
+    let trait3Result = T3(seed);
+    let trait4Result = T4(seed);
+    let trait5Result = T5(seed);
+
+    let particleColor = applyColorChangeTrait(generateRandomColor(), seed);
+    let minParticleSize = 5; // Adjust the minimum size based on your preference
+    let maxParticleSize = 35; // Adjust the maximum size based on your preference
+
+    let particleSize = map(random(), 5, 35, minParticleSize, maxParticleSize); // Map random value to size range
+
+    this.particles.push(new Particle(this.origin, particleColor, particleSize));
+  }
+
   run() {
+    // Update and display existing particles
     for (let i = this.particles.length - 1; i >= 0; i--) {
       let p = this.particles[i];
       p.createParticle();
@@ -153,43 +147,22 @@ class ParticleSystem {
       p.joinParticles(this.particles.slice(i));
     }
   }
-
-  addParticle() {
-    let trait1Result = T1(random());
-    let trait2Result = T2(random());
-    let trait3Result = T3(random());
-
-    let particleColor = generateRandomColor();
-    let minParticleSize = 5;
-    let maxParticleSize = 35;
-
-    let particleSize = map(random(), 0, 1, minParticleSize, maxParticleSize);
-    this.particles.push(new Particle(this.origin, particleColor, particleSize));
-  }
 }
 
 function generateRandomColor() {
-  return color(random(205), random(205), random(205));
-}
+  return color(random(205), random(205), random(205)); //added, maybe remove.
+  const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8);
+  const h = randColor.hsl()[0];
+  const s = randColor.hsl()[1];
 
-function generateRandomExplosion(particles) {
-  let randIndex = floor(random(particles.length));
-  let particle = particles[randIndex];
-  let explosionSize = random(3, 100);
-  particles.splice(randIndex, 1);
-  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
-}
+  const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
 
-function T1(rand) {
-  return rand > 0.1;
-}
-
-function T2(rand) {
-  return rand > 0.2;
-}
-
-function T3(rand) {
-  return rand > 0.3 ? 2 : 1;
+  return color(
+    modifiedColor.rgb()[0],
+    modifiedColor.rgb()[1],
+    modifiedColor.rgb()[2],
+    modifiedColor.alpha() * 255
+  );
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
