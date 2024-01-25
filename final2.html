@@ -27,11 +27,20 @@
 let particles = [];
 let explosionCounter = 0;
 let system;
+let interval = 5; // Adjust the interval between particle creation
+
+// Set a random seed based on current time
+let seed;
 
 function setup() {
   createCanvas(720, 400);
   system = new ParticleSystem(createVector(width / 2, 50));
   colorMode(HSB);
+
+  // Initialize random seed
+  seed = millis();
+  randomSeed(seed);
+
   for (let i = 0; i < width / 10; i++) {
     particles.push(new Particle());
   }
@@ -70,9 +79,9 @@ class Particle {
     this.r = random(4, 20);
     this.xSpeed = random(-1, 1);
     this.ySpeed = random(-1, 1);
-    this.colorTrait = T1(random());
-    this.positionTrait = T2(random());
-    this.movementTrait = T3(random());
+    this.colorTrait = T1(seed);
+    this.positionTrait = T2(seed);
+    this.movementTrait = T3(seed);
     this.color = generateRandomColor();
     this.noiseOffsetX = random(0, 1000);
     this.noiseOffsetY = random(0, 1000);
