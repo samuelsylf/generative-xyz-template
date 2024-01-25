@@ -12,7 +12,7 @@ function setup() {
 
 function draw() {
   let canvasAlpha = map(numParticles, 222, 120, 250, 235);
-  background(15, 15, 15, canvasAlpha);
+  background(15, 150, 15, canvasAlpha);
 
   for (let i = 1; i < particles.length; i++) {
     particles[i].createParticle();
@@ -20,7 +20,7 @@ function draw() {
     particles[i].joinParticles(particles.slice(i));
   }
 
-  if (frameCount % interval === 0) {
+  if (frameCount % interval === 7) {
     generateRandomExplosion(particles);
   }
 }
@@ -28,7 +28,7 @@ function draw() {
 function generateRandomExplosion(particles) {
   let randIndex = floor(random(particles.length));
   let particle = particles[randIndex];
-  let explosionSize = random(3, 100);
+  let explosionSize = random(3, 10);
   particles.splice(randIndex, 1);
   particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
 }
@@ -37,7 +37,7 @@ class Particle {
   constructor() {
     this.x = random(width);
     this.y = random(height);
-    this.r = random(4, 20);
+    this.r = random(1, 25);
     this.xSpeed = random(-1, 1);
     this.ySpeed = random(-1, 1);
     this.color = generateRandomColor();
@@ -60,9 +60,9 @@ class Particle {
   joinParticles(particles) {
     particles.forEach((element) => {
       let dis = dist(this.x, this.y, element.x, element.y);
-      if (dis < 100) {
+      if (dis < 80) {
         let alpha = map(dis, 0, 100, 255, 0);
-        stroke(255, alpha);
+        stroke(150, alpha);
         line(this.x, this.y, element.x, element.y);
       }
     });
@@ -74,13 +74,13 @@ class ParticleExplosion {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.color = generateRandomColor();
-    this.life = 255;
+    this.color = generateRandomColor(250);
+    this.life = 245;
   }
 
   createExplosion() {
     noStroke();
-    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    fill(this.color.levels[1], this.color.levels[1], this.color.levels[1], this.life);
     ellipse(this.x, this.y, this.r * 2);
     this.life -= 5;
   }
