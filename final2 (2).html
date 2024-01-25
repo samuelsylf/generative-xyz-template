@@ -130,7 +130,7 @@ class Particle {
   update() {
     this.velocity.add(this.gravity);
     this.position.add(this.velocity);
-    this.lifespan -= 0.1; // Adjusted decay rate for a slower fade-out
+    this.lifespan -= 1; // Adjusted decay rate for a slower fade-out
     if (this.position.y > height) {
       this.position.y = height;
       this.velocity.y *= -0.8;
