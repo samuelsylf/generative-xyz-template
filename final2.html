@@ -120,7 +120,10 @@ let explosionCounter = 0;
         }
 
 function draw() {
-  background('#0f0f0f');
+  // Adjust overall transparency of the canvas
+  let canvasAlpha = map(numParticles, 0, 100, 0, 125); // Adjust the range based on your preference
+  background('#0f0f0f'); // Adjust background color
+
   for (let i = 0; i < particles.length; i++) {
     particles[i].createParticle();
     particles[i].moveParticle();
@@ -133,28 +136,21 @@ function draw() {
   } else {
     explosionCounter++;
   }
+
+  // Draw particle system at regular intervals
+  if (frameCount % interval === 0) {
+    system.addParticle();
+  }
+
+  // Draw particle system
+  system.run();
+
+  // Set the seed for consistent random values
+  randomSeed(seed);
+
+  // Adjust overall transparency of the canvas
+  background(15, 15, 15, canvasAlpha); // Adjust background color and alpha
 }
-
-            // Draw particle system at regular intervals
-            if (frameCount % interval === 0) {
-                system.addParticle(); // Corrected: Call addParticle on the system object
-            }
-
-            // Draw particle system
-            system.run(); // Corrected: Call run on the system object
-
-            // Set the seed for consistent random values
-            randomSeed(seed);
-
-        function generateRandomExplosion(particles) {
-  let randIndex = floor(random(particles.length));
-  let particle = particles[randIndex];
-  let explosionSize = random(3, 100);
-  particles.splice(randIndex, 1); // Remove the particle that will explode
-  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
-
-            // Adjust overall transparency of the canvas
-            let canvasAlpha = map(numParticles, 0, 100, 0, 125); // Adjust the range based on your preference
 
             // Set ranges for random values
             let minX = 10; // Minimum X coordinate
