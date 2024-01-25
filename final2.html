@@ -26,11 +26,11 @@
     <script type="text/javascript">
 let particles = [];
 let explosionCounter = 0;
-let system; // Add this line to define the system variable
+let system;
 
 function setup() {
   createCanvas(720, 400);
-  system = new ParticleSystem(createVector(width / 2, 50)); // Initialize the particle system
+  system = new ParticleSystem(createVector(width / 2, 50));
   colorMode(HSB);
   for (let i = 0; i < width / 10; i++) {
     particles.push(new Particle());
@@ -38,9 +38,8 @@ function setup() {
 }
 
 function draw() {
-  // Adjust overall transparency of the canvas
-  let canvasAlpha = map(numParticles, 50, 70, 50, 35); // Adjust the range based on your preference
-  background('#0f0f0f'); // Adjust background color
+  let canvasAlpha = map(particles.length, 0, 100, 50, 35);
+  background('#0f0f0f');
 
   for (let i = 0; i < particles.length; i++) {
     particles[i].createParticle();
@@ -55,79 +54,79 @@ function draw() {
     explosionCounter++;
   }
 
-  // Draw particle system at regular intervals
   if (frameCount % interval === 0) {
     system.addParticle();
   }
 
-  // Draw particle system
   system.run();
 
-  // Set the seed for consistent random values
-  randomSeed(seed);
-
-  // Adjust overall transparency of the canvas
-  background(15, 15, 15, canvasAlpha); // Adjust background color and alpha
+  background(15, 15, 15, canvasAlpha);
 }
-            // Set ranges for random values
-            let minX = 10; // Minimum X coordinate
-            let maxX = width - 150; // Maximum X coordinate
-            let minY = 10; // Minimum Y coordinate
-            let maxY = height - 150; // Maximum Y coordinate
-
-            let rectX = random(minX, maxX);
-            let rectY = random(minY, maxY);
-            let rectWidth = random(2, 20); // Adjust the range based on your preference
-            let rectHeight = random(2, 20); // Adjust the range based on your preference
-
-            // Generate a random color with more variance in hue and saturation
-            let rectColor = generateRandomColor();
-
-            fill(rectColor.levels[0], rectColor.levels[1], rectColor.levels[2], canvasAlpha);
-            rect(rectX, rectY, rectWidth, rectHeight); // Draw a semi-transparent rectangle over the canvas
-        }
 
 class Particle {
-  constructor(position, color, size) {
-    this.position = position.copy();
-    this.velocity = createVector(random(-1, 3), random(-1, 3));
-    this.lifespan = random(90, 500);
-    this.color = color;
-    this.size = size;
-    this.gravity = createVector(0, 0.01); // Adjusted gravitational effect
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.r = random(4, 20);
+    this.xSpeed = random(-1, 1);
+    this.ySpeed = random(-1, 1);
+    this.colorTrait = T1(random());
+    this.positionTrait = T2(random());
+    this.movementTrait = T3(random());
+    this.color = generateRandomColor();
+    this.noiseOffsetX = random(0, 1000);
+    this.noiseOffsetY = random(0, 1000);
   }
 
-  run() {
-    this.update();
-    this.display();
-  }
-
-  update() {
-    this.velocity.add(this.gravity);
-    this.position.add(this.velocity);
-    this.lifespan -= 2; // Adjusted decay rate for a slower fade-out
-    if (this.position.y > height) {
-      this.position.y = height;
-      this.velocity.y *= -0.8;
-    }
-  }
-
-  display() {
+  createParticle() {
     noStroke();
-
-    // Original particle
-    let alpha = map(this.lifespan, 50, 2200, 50, 255);
-    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
-    ellipse(this.position.x, this.position.y, this.size, this.size);
-
-    // Reflection effect
-    let reflectionAlpha = map(this.lifespan, 0, 2200, 0, 100);
-    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], reflectionAlpha);
-    ellipse(this.position.x, height - this.position.y, this.size, this.size);
+    fill(this.color);
+    ellipse(this.x, this.y, this.r * 2);
   }
 
-  isDead() {
-    return this.lifespan < 2;
+  moveParticle() {
+    this.x += map(noise(this.noiseOffsetX), 0, 1, -1, 1) * this.movementTrait;
+    this.y += map(noise(this.noiseOffsetY), 0, 1, -1, 1) * this.movementTrait;
+
+    this.noiseOffsetX += 0.01;
+    this.noiseOffsetY += 0.01;
+
+    if (this.x < 0 || this.x > width) this.xSpeed *= -1;
+    if (this.y < 0 || this.y > height) this.ySpeed *= -1;
+
+    this.x += this.xSpeed;
+    this.y += this.ySpeed;
+  }
+
+  joinParticles(particles) {
+    particles.forEach((element) => {
+      let dis = dist(this.x, this.y, element.x, element.y);
+      if (dis < 100 && this.colorTrait && element.colorTrait) {
+        if (dis < this.r + element.r) {
+          let newR = max(this.r, element.r) * 1.5;
+          let newX = (this.x + element.x) / 2;
+          let newY = (this.y + element.y) / 2;
+          particles.push(new ParticleExplosion(newX, newY, newR));
+        }
+      }
+    });
+  }
+}
+
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.color = generateRandomColor();
+    this.life = 255;
+  }
+
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.x, this.y, this.r * 2);
+    this.life -= 5;
   }
 }
 
@@ -138,62 +137,50 @@ class ParticleSystem {
   }
 
   run() {
-    // Add particle at regular intervals
-    if (frameCount % interval === 0) {
-      this.addParticle();
-    }
-
-    // Update and display existing particles
     for (let i = this.particles.length - 1; i >= 0; i--) {
       let p = this.particles[i];
-      p.run();
-      if (p.isDead()) {
-        this.particles.splice(i, 1);
-      }
+      p.createParticle();
+      p.moveParticle();
+      p.joinParticles(this.particles.slice(i));
     }
-  }
-
-  applyColorChangeTrait(color, seed) {
-    // Add logic for the color change trait here
-    // For example, you can randomly adjust hue, saturation, or brightness
-    if (T1(seed)) {
-      color = color.darken(0.1); // Example: Darken the color
-    }
-
-    return color;
   }
 
   addParticle() {
-    let trait1Result = T1(seed);
-    let trait2Result = T2(seed);
-    let trait3Result = T3(seed);
-    let trait4Result = T4(seed);
-    let trait5Result = T5(seed);
+    let trait1Result = T1(random());
+    let trait2Result = T2(random());
+    let trait3Result = T3(random());
 
-    let particleColor = this.applyColorChangeTrait(generateRandomColor(), seed);
-    let minParticleSize = 5; // Adjust the minimum size based on your preference
-    let maxParticleSize = 35; // Adjust the maximum size based on your preference
+    let particleColor = generateRandomColor();
+    let minParticleSize = 5;
+    let maxParticleSize = 35;
 
-    let particleSize = map(random(), 5, 35, minParticleSize, maxParticleSize); // Map random value to size range
-
+    let particleSize = map(random(), 0, 1, minParticleSize, maxParticleSize);
     this.particles.push(new Particle(this.origin, particleColor, particleSize));
   }
 }
 
 function generateRandomColor() {
-  return color(random(205), random(205), random(205)); //added, maybe remove.
-  const randColor = chroma.random().alpha(0.2 + Math.random() * 0.8);
-  const h = randColor.hsl()[0];
-  const s = randColor.hsl()[1];
+  return color(random(205), random(205), random(205));
+}
 
-  const modifiedColor = chroma.hsl((h + Math.random() * 60) % 360, s + Math.random() * 0.2, 0.7 + Math.random() * 0.3);
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(3, 100);
+  particles.splice(randIndex, 1);
+  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
+}
 
-  return color(
-    modifiedColor.rgb()[0],
-    modifiedColor.rgb()[1],
-    modifiedColor.rgb()[2],
-    modifiedColor.alpha() * 255
-  );
+function T1(rand) {
+  return rand > 0.1;
+}
+
+function T2(rand) {
+  return rand > 0.2;
+}
+
+function T3(rand) {
+  return rand > 0.3 ? 2 : 1;
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
