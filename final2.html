@@ -35,22 +35,22 @@ let numParticles = 15; // Adjust the number of particles created at each interva
 function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 170; i++) {
     particles.push(new Particle());
   }
 }
 
 function draw() {
-  let canvasAlpha = map(numParticles, 50, 70, 50, 35);
-  background(15, 15, 15, canvasAlpha);
+  let canvasAlpha = map(numParticles, 22, 120, 250, 235);
+  background(15, 100, 10, canvasAlpha);
 
-  for (let i = 0; i < particles.length; i++) {
+  for (let i = 1; i < particles.length; i++) {
     particles[i].createParticle();
     particles[i].moveParticle();
     particles[i].joinParticles(particles.slice(i));
   }
 
-  if (frameCount % interval === 0) {
+  if (frameCount % interval === 6) {
     generateRandomExplosion(particles);
   }
 }
@@ -58,21 +58,44 @@ function draw() {
 function generateRandomExplosion(particles) {
   let randIndex = floor(random(particles.length));
   let particle = particles[randIndex];
-  let explosionSize = random(3, 100);
+  let explosionSize = random(3, 10);
   particles.splice(randIndex, 1);
   particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
+}
+
+// Define generateRandomColor function here
+function generateRandomColor(alpha) {
+  return color(random(500), random(137), random(205), alpha);
+}
+
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.color = generateRandomColor(250);
+    this.life = 245;
+  }
+
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.x, this.y, this.r * 2);
+    this.life -= 5;
+  }
 }
 
 class Particle {
   constructor() {
     this.x = random(width);
     this.y = random(height);
-    this.r = random(4, 20);
+    this.r = random(1, 25);
     this.xSpeed = random(-1, 1);
     this.ySpeed = random(-1, 1);
-    this.color = generateRandomColor();
+    this.color = generateRandomColor(255);
+    this.colorTrait = Math.random() > 0.5; // Set a boolean value based on a condition
   }
-
+  
   createParticle() {
     noStroke();
     fill(this.color);
@@ -89,35 +112,24 @@ class Particle {
 
   joinParticles(particles) {
     particles.forEach((element) => {
+      let disThreshold = random(5, 100); // Randomize the distance threshold for drawing lines
       let dis = dist(this.x, this.y, element.x, element.y);
-      if (dis < 100) {
-        let alpha = map(dis, 0, 100, 255, 0);
-        stroke(255, alpha);
+
+      if (dis < disThreshold && this.colorTrait && element.colorTrait) {
+        // Draw lines between particles
+        let alpha = map(dis, 10, disThreshold, 255, 10);
+        stroke(150, alpha);
         line(this.x, this.y, element.x, element.y);
+
+        if (dis < this.r + element.r) {
+          let newR = max(this.r, element.r) * 1.5;
+          let newX = (this.x + element.x) / 2;
+          let newY = (this.y + element.y) / 2;
+          particles.push(new ParticleExplosion(newX, newY, newR));
+        }
       }
     });
   }
-}
-
-class ParticleExplosion {
-  constructor(x, y, r) {
-    this.x = x;
-    this.y = y;
-    this.r = r;
-    this.color = generateRandomColor();
-    this.life = 255;
-  }
-
-  createExplosion() {
-    noStroke();
-    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
-    ellipse(this.x, this.y, this.r * 2);
-    this.life -= 5;
-  }
-}
-
-function generateRandomColor() {
-  return color(random(205), random(205), random(205));
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
@@ -186,6 +198,8 @@ function generateRandomColor() {
 // Trait functions
 function T1(seed) {
   const rand = mathRand();
+  const colorTrait = Math.random() > 0.5; // Example boolean trait
+  console.log('colorTrait in T1:', colorTrait); // Print the boolean value
   // calculate rarity by yourself
   return rand > 0.02;
 }
