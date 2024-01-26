@@ -65,19 +65,19 @@
     return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
   }
 
-  function applyColorChangeTrait(color, seed) {
-    const rand = mathRand();
-    // Add logic for the color change trait here
-    // For example, you can randomly adjust hue, saturation, or brightness
-    if (rand > 0.99) {
-color.levels[0] *= 0.5; // Darken the hue component
-color.levels[1] *= 0.7; // Darken the saturation component
-color.levels[3] *= 0.9; // Darken the brightness component
-color.levels[3] = map(rand, 0.99, 1, 50, 255); // Adjust alpha/transparency based on rand
-    }
+function applyColorChangeTrait(color, seed) {
+  const rand = mathRand();
+  const transparency = map(rand, 0.99, 1, 10, 255); // Adjust alpha/transparency based on rand
 
-    return color;
+  if (rand > 0.7) {
+    color.setAlpha(transparency); // Set alpha directly on the color object
+  } else {
+    color.setAlpha(255); // Set full alpha if the condition is not met
   }
+
+  return color;
+}
+
 
 // Populate the $generativeTraits object in the window
 window.$generativeTraits = {
@@ -115,10 +115,9 @@ function convertSeedToNumber(seedString) {
 }
 
 // Declare the seed variable at a higher scope
-let seed;
+let seed; 
 let particles = [];
-let interval = 5; // Adjust the interval between particle creation
-
+let interval = 4; // Adjust the interval between particle creation
 // Inside your setup function
 function setup() {
   createCanvas(720, 400);
@@ -164,7 +163,7 @@ function generateRandomExplosion(particles) {
 // Define generateRandomColor function here
 function generateRandomColor(alpha) {
   // Ensure that RGB values are close to their maximum when alpha is high
-  let maxRGB = random(50, 255);
+  let maxRGB = random(20, 235);
   return color(maxRGB, maxRGB, 255, 240);
 }
 
@@ -178,7 +177,7 @@ class ParticleExplosion {
   }
 
   createExplosion() {
-    noStroke(0);
+    noStroke();
     fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
     ellipse(this.x, this.y, this.r * 2);
     this.life -= 5;
@@ -189,7 +188,7 @@ class Particle {
   constructor() {
     this.x = random(width);
     this.y = random(height);
-    this.r = random(1, 26);
+    this.r = random(1, 15);
     this.xSpeed = random(-1, 1);
     this.ySpeed = random(-1, 1);
     this.color = generateRandomColor();
@@ -215,12 +214,12 @@ class Particle {
     const adjustedColor = applyColorChangeTrait(this.color, seed);
     const adjustedAlpha = map(adjustedSize, 10, 25, 10, 255);
 
-    fill(
-      adjustedColor.levels[2],
-      adjustedColor.levels[1],
-      adjustedColor.levels[2],
-      adjustedAlpha
-    );
+fill(
+  adjustedColor.levels[0],
+  adjustedColor.levels[1],
+  adjustedColor.levels[2],
+  adjustedColor.levels[3] // Use the alpha value directly from the color object
+);
 
     ellipse(this.x, this.y, adjustedSize * 2);
   }
@@ -241,7 +240,7 @@ moveParticle() {
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
         let alpha = map(dis, 10, disThreshold, 255, 50);
-        stroke(80, 25, alpha);
+        stroke(50, 55, alpha);
         line(this.x, this.y, element.x, element.y);
 
         if (dis < this.r + element.r) {
