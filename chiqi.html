@@ -120,17 +120,19 @@ function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
 
-  // Assuming you have a seed value
-  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
-  const seed = convertSeedToNumber(seedString);
-
   // Create a particle without traits
-  const particle = new Particle(seed);
+  const particle = new Particle();
+  
+  // Use seed value from the environment
+  const seedString = seed; // Assuming 'seed' is a variable from the environment
+  const seed = convertSeedToNumber(seedString);
+  
+  // Pass T1 function explicitly
   particle.createParticle(seed, T1, T2, T3, T4, T5);
 
   let numParticles = floor(random(20, 170)); // Vary the number of particles
   for (let i = 0; i < numParticles; i++) {
-    particles.push(new Particle(seed));
+    particles.push(new Particle());
   }
 }
 
