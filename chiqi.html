@@ -28,7 +28,7 @@
 <body>
 <script type="text/javascript">
 
-   // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
      // Trait functions
   function T1(seed, colorTrait) {
@@ -101,6 +101,9 @@ function sfc32(a, b, c, d) {
     return (t >>> 0) / 4294967296;
   }
 }
+
+let mathRand = sfc32(0, 0, 0, 1);
+
 let particles = [];
 let interval = 5; // Adjust the interval between particle creation
 
@@ -214,6 +217,8 @@ moveParticle() {
     if (this.y < 0 || this.y > height) this.ySpeed *= -1;
   }
 
+// ... Your previous code ...
+
 joinParticles(particles) {
   particles.forEach((element) => {
     let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
@@ -237,7 +242,6 @@ joinParticles(particles) {
 
 // IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
 // This function generates a random number between 0 and 1 with on-chain seed.
-    
 let mathRand = sfc32(0, 0, 0, 1);
     
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
