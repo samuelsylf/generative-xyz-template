@@ -28,6 +28,64 @@
 <body>
 <script type="text/javascript">
 
+   // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+     // Trait functions
+  function T1(seed, colorTrait) {
+    const rand = mathRand();
+    // Additional logic based on colorTrait
+    if (colorTrait) {
+      // Adjust rarity calculation for colorTrait
+      return rand > 0.01;
+    } else {
+      // Original rarity calculation without colorTrait
+      return rand > 0.02;
+    }
+  }
+
+  function T2(seed) {
+    const rand = mathRand();
+    // calculate rarity by yourself
+    return rand > 0.04;
+  }
+
+  function T3(seed) {
+    const rand = mathRand();
+    // calculate rarity by yourself
+    return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
+  }
+
+  function T4(seed) {
+    const rand = mathRand();
+    // Add more traits as needed
+    return rand > 0.5 ? 1 : -1; // Example trait influencing direction
+  }
+
+  function T5(seed) {
+    const rand = mathRand();
+    // Add more traits as needed
+    return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
+  }
+
+  function applyColorChangeTrait(color, seed) {
+    const rand = mathRand();
+    // Add logic for the color change trait here
+    // For example, you can randomly adjust hue, saturation, or brightness
+    if (rand > 0.8) {
+      color = color.darken(0.5); // Example: Darken the color
+    }
+
+    return color;
+  }
+
+// Populate the $generativeTraits object in the window
+window.$generativeTraits = {
+  "T1": T1,
+  "T2": T2,
+  "T3": T3,
+  "T4": T4,
+  "T5": T5,
+};
 
 // Define the sfc32 function
 function sfc32(a, b, c, d) {
@@ -46,10 +104,17 @@ function sfc32(a, b, c, d) {
 let particles = [];
 let interval = 5; // Adjust the interval between particle creation
 
+// Inside your setup function
 function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
-  
+
+  // Create a particle without traits
+  const particle = new Particle();
+
+  // In your draw loop, call createParticle with the appropriate seed and trait functions
+  particle.createParticle(seed, T1, T2, T3, T4, T5);
+
   let numParticles = floor(random(20, 170)); // Vary the number of particles
   for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
@@ -111,23 +176,18 @@ class Particle {
     this.xSpeed = random(-1, 1);
     this.ySpeed = random(-1, 1);
     this.color = generateRandomColor();
-    this.colorTrait = Math.random() > 0.5; // Set a boolean value based on a condition
-    this.T1 = T1;
-    this.T2 = T2;
-    this.T3 = T3;
-    this.T4 = T4;
-    this.T5 = T5;
+    this.colorTrait = Math.random() > 0.5;
   }
-  
- createParticle(seed) {
+
+  createParticle(seed, T1, T2, T3, T4, T5) {
     noStroke();
 
     // Apply traits to determine particle characteristics
-    const rarityWithColorTrait = this.T1(seed, this.colorTrait);
-    const sizeTrait = this.T2(seed);
-    const additionalTrait = this.T3(seed);
-    const directionTrait = this.T4(seed);
-    const lifespanTrait = this.T5(seed);
+    const rarityWithColorTrait = T1(seed, this.colorTrait);
+    const sizeTrait = T2(seed);
+    const additionalTrait = T3(seed);
+    const directionTrait = T4(seed);
+    const lifespanTrait = T5(seed);
 
     // Adjust particle characteristics based on traits
     const adjustedSize = this.r * sizeTrait;
@@ -145,6 +205,7 @@ class Particle {
 
     ellipse(this.x, this.y, adjustedSize * 2);
   }
+}
 
   moveParticle() {
     this.x += this.xSpeed;
@@ -242,66 +303,7 @@ let mathRand = sfc32(0, 0, 0, 1);
 <body>
 <script type="text/javascript">
     const rand = mathRand();
-
-    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-     // Trait functions
-  function T1(seed, colorTrait) {
-    const rand = mathRand();
-    // Additional logic based on colorTrait
-    if (colorTrait) {
-      // Adjust rarity calculation for colorTrait
-      return rand > 0.01;
-    } else {
-      // Original rarity calculation without colorTrait
-      return rand > 0.02;
-    }
-  }
-
-  function T2(seed) {
-    const rand = mathRand();
-    // calculate rarity by yourself
-    return rand > 0.04;
-  }
-
-  function T3(seed) {
-    const rand = mathRand();
-    // calculate rarity by yourself
-    return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
-  }
-
-  function T4(seed) {
-    const rand = mathRand();
-    // Add more traits as needed
-    return rand > 0.5 ? 1 : -1; // Example trait influencing direction
-  }
-
-  function T5(seed) {
-    const rand = mathRand();
-    // Add more traits as needed
-    return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
-  }
-
-  function applyColorChangeTrait(color, seed) {
-    const rand = mathRand();
-    // Add logic for the color change trait here
-    // For example, you can randomly adjust hue, saturation, or brightness
-    if (rand > 0.8) {
-      color = color.darken(0.5); // Example: Darken the color
-    }
-
-    return color;
-  }
-
-// Populate the $generativeTraits object in the window
-window.$generativeTraits = {
-  "T1": T1,
-  "T2": T2,
-  "T3": T3,
-  "T4": T4,
-  "T5": T5,
-};
-
+//old place for trait functions
 </script>
   
 <script>
