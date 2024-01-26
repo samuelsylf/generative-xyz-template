@@ -29,8 +29,6 @@
 <script type="text/javascript">
 
    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-   // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
      // Trait functions
   function T1(seed, colorTrait) {
     const rand = mathRand();
@@ -104,6 +102,15 @@ function sfc32(a, b, c, d) {
 }
 
 let mathRand = sfc32(0, 0, 0, 1);
+
+// Convert seed string to a numerical value
+function convertSeedToNumber(seedString) {
+  let seedNumber = 0;
+  for (let i = 0; i < seedString.length; i++) {
+    seedNumber = (seedNumber * 31 + seedString.charCodeAt(i)) & 0xffffffff;
+  }
+  return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
+}
 
 let particles = [];
 let interval = 5; // Adjust the interval between particle creation
