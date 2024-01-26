@@ -1,0 +1,112 @@
+let particles = [];
+let interval = 5; // Adjust the interval between particle creation
+
+function setup() {
+  createCanvas(720, 400);
+  colorMode(HSB);
+  
+  let numParticles = floor(random(20, 170)); // Vary the number of particles
+  for (let i = 0; i < numParticles; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function draw() {
+  let canvasAlpha = map(particles.length, 22, 120, 250, 235);
+  background(15, 150, 15, canvasAlpha);
+
+  for (let i = 1; i < particles.length; i++) {
+    particles[i].createParticle();
+    particles[i].moveParticle();
+    particles[i].joinParticles(particles.slice(i));
+  }
+
+  if (frameCount % interval === 7) {
+    generateRandomExplosion(particles);
+  }
+}
+
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(3, 10);
+  particles.splice(randIndex, 1);
+  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
+}
+
+// Define generateRandomColor function here
+function generateRandomColor(alpha) {
+  // Ensure that RGB values are close to their maximum when alpha is high
+  let maxRGB = random(10, 500, 700, 455);
+  return color(maxRGB, maxRGB, maxRGB, alpha);
+}
+
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.color = generateRandomColor(250);
+    this.life = 245;
+  }
+
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.x, this.y, this.r * 2);
+    this.life -= 5;
+  }
+}
+
+class Particle {
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.r = random(1, 25);
+    this.xSpeed = random(-1, 1);
+    this.ySpeed = random(-1, 1);
+    this.color = generateRandomColor();
+    this.colorTrait = Math.random() > 0.5; // Set a boolean value based on a condition
+  }
+  
+createParticle() {
+  noStroke();
+  fill(this.color.levels[1], this.color.levels[2], this.color.levels[2], this.color.levels[3]);
+  ellipse(this.x, this.y, this.r * 2);
+}
+
+
+  moveParticle() {
+    this.x += this.xSpeed;
+    this.y += this.ySpeed;
+
+    if (this.x < 0 || this.x > width) this.xSpeed *= -1;
+    if (this.y < 0 || this.y > height) this.ySpeed *= -1;
+  }
+
+  joinParticles(particles) {
+    particles.forEach((element) => {
+      let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
+      let dis = dist(this.x, this.y, element.x, element.y);
+
+      if (dis < disThreshold && this.colorTrait && element.colorTrait) {
+        // Draw lines between particles
+        let alpha = map(dis, 10, disThreshold, 255, 50);
+        stroke(80, alpha);
+        line(this.x, this.y, element.x, element.y);
+
+        if (dis < this.r + element.r) {
+          let newR = max(this.r, element.r) * 1.5;
+          let newX = (this.x + element.x) / 2;
+          let newY = (this.y + element.y) / 2;
+          particles.push(new ParticleExplosion(newX, newY, newR));
+        }
+      }
+    });
+  }
+}
+
+// IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
+// This function generates a random number between 0 and 1 with on-chain seed.
+
+let mathRand = sfc32(0, 0, 0, 1);
