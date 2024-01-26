@@ -114,14 +114,25 @@ function setup() {
 
   // Create a particle without traits
   const particle = new Particle();
-
-  // In your draw loop, call createParticle with the appropriate seed and trait functions
+  
+  // Assuming you have a seed value
+  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
+  const seed = convertSeedToNumber(seedString);
   particle.createParticle(seed, T1, T2, T3, T4, T5);
 
   let numParticles = floor(random(20, 170)); // Vary the number of particles
   for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
   }
+}
+
+// Convert seed string to a numerical value
+function convertSeedToNumber(seedString) {
+  let seedNumber = 0;
+  for (let i = 0; i < seedString.length; i++) {
+    seedNumber = (seedNumber * 31 + seedString.charCodeAt(i)) & 0xffffffff;
+  }
+  return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
 }
 
 function draw() {
