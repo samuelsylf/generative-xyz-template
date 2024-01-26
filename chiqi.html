@@ -28,6 +28,7 @@
 <body>
 <script type="text/javascript">
 
+
 // Define the sfc32 function
 function sfc32(a, b, c, d) {
   return function () {
@@ -65,7 +66,7 @@ function draw() {
     particles[i].joinParticles(particles.slice(i));
   }
 
-  if (frameCount % interval === 7) {
+  if (frameCount % interval === 70) {
     generateRandomExplosion(particles);
   }
 }
