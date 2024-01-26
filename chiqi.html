@@ -27,9 +27,6 @@
 </head>
 <body>
 <script type="text/javascript">
-// Define the sfc32 function
-
-// Define the sfc32 function
 
 // Define the sfc32 function
 function sfc32(a, b, c, d) {
@@ -114,29 +111,39 @@ class Particle {
     this.ySpeed = random(-1, 1);
     this.color = generateRandomColor();
     this.colorTrait = Math.random() > 0.5; // Set a boolean value based on a condition
+    this.T1 = T1;
+    this.T2 = T2;
+    this.T3 = T3;
+    this.T4 = T4;
+    this.T5 = T5;
   }
   
-  createParticle() {
+ createParticle(seed) {
     noStroke();
-        // Apply traits to determine particle characteristics
-    const rarityWithColorTrait = T1(seed, this.colorTrait);
-    const sizeTrait = T2(seed);
-    const additionalTrait = T3(seed);
-    const directionTrait = T4(seed);
-    const lifespanTrait = T5(seed);
+
+    // Apply traits to determine particle characteristics
+    const rarityWithColorTrait = this.T1(seed, this.colorTrait);
+    const sizeTrait = this.T2(seed);
+    const additionalTrait = this.T3(seed);
+    const directionTrait = this.T4(seed);
+    const lifespanTrait = this.T5(seed);
 
     // Adjust particle characteristics based on traits
     const adjustedSize = this.r * sizeTrait;
-    
+
+    // Use adjusted values to draw the particle
     const adjustedColor = applyColorChangeTrait(this.color, seed);
-    const adjustedAlpha = map(this.r, 10, 25, 10, 255); // Adjust the range for alpha
-// old    fill(this.color.levels[1], this.color.levels[2], this.color.levels[2], adjustedAlpha);
-// old    ellipse(this.x, this.y, this.r * 2);
-      // Use adjusted values to draw the particle
-    fill(adjustedColor.levels[1], adjustedColor.levels[2], adjustedColor.levels[2], adjustedColor.levels[3]);
+    const adjustedAlpha = map(adjustedSize, 10, 25, 10, 255);
+
+    fill(
+      adjustedColor.levels[0],
+      adjustedColor.levels[1],
+      adjustedColor.levels[2],
+      adjustedAlpha
+    );
+
     ellipse(this.x, this.y, adjustedSize * 2);
   }
-
 
   moveParticle() {
     this.x += this.xSpeed;
