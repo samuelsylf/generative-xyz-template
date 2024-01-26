@@ -28,6 +28,8 @@
 <body>
 <script type="text/javascript">
 // Define the sfc32 function
+
+// Define the sfc32 function
 function sfc32(a, b, c, d) {
   return function () {
     a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
@@ -80,7 +82,7 @@ function generateRandomExplosion(particles) {
 // Define generateRandomColor function here
 function generateRandomColor(alpha) {
   // Ensure that RGB values are close to their maximum when alpha is high
-  let maxRGB = random(10, 500);
+  let maxRGB = random(50, 255);
   return color(maxRGB, maxRGB, maxRGB, 240);
 }
 
@@ -112,11 +114,23 @@ class Particle {
     this.colorTrait = Math.random() > 0.5; // Set a boolean value based on a condition
   }
   
-createParticle() {
-  noStroke();
-  fill(this.color.levels[1], this.color.levels[2], this.color.levels[2], this.color.levels[3]);
-  ellipse(this.x, this.y, this.r * 2);
-}
+  createParticle() {
+    noStroke();
+        // Apply traits to determine particle characteristics
+    const rarityWithColorTrait = T1(seed, this.colorTrait);
+    const sizeTrait = T2(seed);
+    const additionalTrait = T3(seed);
+    const directionTrait = T4(seed);
+    const lifespanTrait = T5(seed);
+
+    // Adjust particle characteristics based on traits
+    const adjustedSize = this.r * sizeTrait;
+    
+    const adjustedColor = applyColorChangeTrait(this.color, seed);
+    const adjustedAlpha = map(this.r, 10, 25, 10, 255); // Adjust the range for alpha
+    fill(this.color.levels[1], this.color.levels[2], this.color.levels[2], adjustedAlpha);
+    ellipse(this.x, this.y, this.r * 2);
+  }
 
 
   moveParticle() {
@@ -135,7 +149,7 @@ createParticle() {
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
         let alpha = map(dis, 10, disThreshold, 255, 50);
-        stroke(80, alpha);
+        stroke(80, 25, alpha);
         line(this.x, this.y, element.x, element.y);
 
         if (dis < this.r + element.r) {
