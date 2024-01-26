@@ -115,8 +115,8 @@ function setup() {
   // Create a particle without traits
   const particle = new Particle();
   
-  // Assuming you have a seed value
-  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
+  // Use seed value from the environment
+  const seedString = seed; // Assuming 'seed' is a variable from the environment
   const seed = convertSeedToNumber(seedString);
   particle.createParticle(seed, T1, T2, T3, T4, T5);
 
