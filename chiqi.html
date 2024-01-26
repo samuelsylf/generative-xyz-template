@@ -112,6 +112,8 @@ function convertSeedToNumber(seedString) {
   return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
 }
 
+    // Declare the seed variable at a higher scope
+let seed;
 let particles = [];
 let interval = 5; // Adjust the interval between particle creation
 
