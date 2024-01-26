@@ -34,23 +34,23 @@
     // Additional logic based on colorTrait
     if (colorTrait) {
       // Adjust rarity calculation for colorTrait
-      return rand > 0.01;
+      return rand > 0.1;
     } else {
       // Original rarity calculation without colorTrait
-      return rand > 0.02;
+      return rand > 0.2;
     }
   }
 
   function T2(seed) {
     const rand = mathRand();
     // calculate rarity by yourself
-    return rand > 0.04;
+    return rand > 0.06;
   }
 
   function T3(seed) {
     const rand = mathRand();
     // calculate rarity by yourself
-    return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
+    return rand > 0.09 ? 2 : 1; // Updated to return a value instead of boolean
   }
 
   function T4(seed) {
@@ -70,9 +70,10 @@
     // Add logic for the color change trait here
     // For example, you can randomly adjust hue, saturation, or brightness
     if (rand > 0.99) {
-color.levels[0] *= 0.8; // Darken the hue component
-color.levels[1] *= 0.8; // Darken the saturation component
-color.levels[2] *= 0.8; // Darken the brightness component
+color.levels[0] *= 0.5; // Darken the hue component
+color.levels[1] *= 0.7; // Darken the saturation component
+color.levels[3] *= 0.9; // Darken the brightness component
+color.levels[3] = map(rand, 0.99, 1, 50, 255); // Adjust alpha/transparency based on rand
     }
 
     return color;
@@ -147,7 +148,7 @@ function draw() {
     particles[i].joinParticles(particles.slice(i));
   }
 
-  if (frameCount % interval === 70) {
+  if (frameCount % interval === 5) {
     generateRandomExplosion(particles);
   }
 }
@@ -164,7 +165,7 @@ function generateRandomExplosion(particles) {
 function generateRandomColor(alpha) {
   // Ensure that RGB values are close to their maximum when alpha is high
   let maxRGB = random(50, 255);
-  return color(maxRGB, maxRGB, maxRGB, 240);
+  return color(maxRGB, maxRGB, 255, 240);
 }
 
 class ParticleExplosion {
@@ -172,12 +173,12 @@ class ParticleExplosion {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.color = generateRandomColor(250);
+    this.color = generateRandomColor(249);
     this.life = 245;
   }
 
   createExplosion() {
-    noStroke();
+    noStroke(0);
     fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
     ellipse(this.x, this.y, this.r * 2);
     this.life -= 5;
@@ -188,7 +189,7 @@ class Particle {
   constructor() {
     this.x = random(width);
     this.y = random(height);
-    this.r = random(1, 25);
+    this.r = random(1, 26);
     this.xSpeed = random(-1, 1);
     this.ySpeed = random(-1, 1);
     this.color = generateRandomColor();
@@ -215,7 +216,7 @@ class Particle {
     const adjustedAlpha = map(adjustedSize, 10, 25, 10, 255);
 
     fill(
-      adjustedColor.levels[0],
+      adjustedColor.levels[2],
       adjustedColor.levels[1],
       adjustedColor.levels[2],
       adjustedAlpha
@@ -234,7 +235,7 @@ moveParticle() {
 
   joinParticles(particles) {
     particles.forEach((element) => {
-      let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
+      let disThreshold = random(97, 100); // Randomize the distance threshold for drawing lines
       let dis = dist(this.x, this.y, element.x, element.y);
 
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
