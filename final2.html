@@ -35,7 +35,7 @@ let numParticles = 15; // Adjust the number of particles created at each interva
 function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
-  for (let i = 0; i < 170; i++) {
+  for (let i = 0; i < 220; i++) {
     particles.push(new Particle());
   }
 }
@@ -99,9 +99,12 @@ class Particle {
 createParticle() {
   noStroke();
 
+  // Extract color components
+  let { levels } = this.color;
+
   // Adjust the alpha value for transparency
-  let alpha = map(this.r, 1, 25, 10, 100);
-  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
+  let alpha = map(this.r, 10, 25, 10, 255); // Adjust the range for alpha
+  fill(`rgba(${levels[0]}, ${levels[1]}, ${levels[2]}, ${alpha / 255})`);
 
   ellipse(this.x, this.y, this.r * 2);
 }
@@ -116,13 +119,15 @@ createParticle() {
 
   joinParticles(particles) {
     particles.forEach((element) => {
-      let disThreshold = random(5, 100); // Randomize the distance threshold for drawing lines
+      let disThreshold = random(95, 100); // Randomize the distance threshold for drawing lines
       let dis = dist(this.x, this.y, element.x, element.y);
 
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
-        let alpha = map(dis, 10, disThreshold, 255, 10);
-        stroke(150, alpha);
+let alpha = map(dis, 10, disThreshold, 255, 10);
+let sizeAlpha = map(this.r, 1, 25, 50, 255);
+alpha = min(alpha, sizeAlpha); // Take the minimum of the two alpha values
+stroke(90, alpha);
         line(this.x, this.y, element.x, element.y);
 
         if (dis < this.r + element.r) {
@@ -139,7 +144,8 @@ display() {
   noStroke();
 
   // Original particle
-  let alpha = map(this.r, 1, 25, 50, 255);
+let alpha = map(dis, 10, disThreshold, 255, 10);
+let sizeAlpha = map(this.r, 1, 25, 50, 255);
   fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
   ellipse(this.x, this.y, this.r * 2);
 
@@ -150,7 +156,7 @@ display() {
   ellipse(this.x, reflectionY, this.r * 2);
 
   // Draw a connecting line between the original and reflected particles
-  stroke(150, alpha);
+  stroke(90, alpha);
   line(this.x, this.y, this.x, reflectionY);
 }
 }
