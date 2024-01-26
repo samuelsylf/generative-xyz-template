@@ -123,8 +123,8 @@ function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
 
-  // Assuming you have a seed value assigned from the sandbox environment
-  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
+  // Assuming you have a seed value in the sandbox environment
+  const seedString = $sandbox.seed;
   const seed = convertSeedToNumber(seedString);
 
   // Create a particle without traits
