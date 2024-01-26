@@ -30,6 +30,8 @@
 // Define the sfc32 function
 
 // Define the sfc32 function
+
+// Define the sfc32 function
 function sfc32(a, b, c, d) {
   return function () {
     a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
@@ -128,8 +130,11 @@ class Particle {
     
     const adjustedColor = applyColorChangeTrait(this.color, seed);
     const adjustedAlpha = map(this.r, 10, 25, 10, 255); // Adjust the range for alpha
-    fill(this.color.levels[1], this.color.levels[2], this.color.levels[2], adjustedAlpha);
-    ellipse(this.x, this.y, this.r * 2);
+// old    fill(this.color.levels[1], this.color.levels[2], this.color.levels[2], adjustedAlpha);
+// old    ellipse(this.x, this.y, this.r * 2);
+      // Use adjusted values to draw the particle
+    fill(adjustedColor.levels[1], adjustedColor.levels[2], adjustedColor.levels[2], adjustedColor.levels[3]);
+    ellipse(this.x, this.y, adjustedSize * 2);
   }
 
 
@@ -232,62 +237,53 @@ let mathRand = sfc32(0, 0, 0, 1);
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
-// Trait functions
-function T1(seed, colorTrait) {
-  const rand = mathRand();
-  
-  // Additional logic based on colorTrait
-  if (colorTrait) {
-    // Adjust rarity calculation for colorTrait
-    return rand > 0.01;
-  } else {
-    // Original rarity calculation without colorTrait
-    return rand > 0.02;
-  }
-}
-
-// Similarly, modify other trait functions if needed
-
-// Example usage
-const colorTrait = Math.random() > 0.5; // Set colorTrait based on a condition
-const rarityWithColorTrait = T1(seed, colorTrait);
-
-    // trait2 below _
-
-function T2(seed) {
-  const rand = mathRand();
-  // calculate rarity by yourself
-  return rand > 0.04;
-}
-
-function T3(seed) {
-  const rand = mathRand();
-  // calculate rarity by yourself
-  return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
-}
-
-function T4(seed) {
-  const rand = mathRand();
-  // Add more traits as needed
-  return rand > 0.5 ? 1 : -1; // Example trait influencing direction
-}
-
-function T5(seed) {
-  const rand = mathRand();
-  // Add more traits as needed
-  return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
-}
-
-function applyColorChangeTrait(color, seed) {
-  const rand = mathRand();
-  // Add logic for the color change trait here
-  // For example, you can randomly adjust hue, saturation, or brightness
-  if (rand > 0.8) {
-    color = color.darken(0.5); // Example: Darken the color
+     // Trait functions
+  function T1(seed, colorTrait) {
+    const rand = mathRand();
+    // Additional logic based on colorTrait
+    if (colorTrait) {
+      // Adjust rarity calculation for colorTrait
+      return rand > 0.01;
+    } else {
+      // Original rarity calculation without colorTrait
+      return rand > 0.02;
+    }
   }
 
-  return color;
-}
+  function T2(seed) {
+    const rand = mathRand();
+    // calculate rarity by yourself
+    return rand > 0.04;
+  }
+
+  function T3(seed) {
+    const rand = mathRand();
+    // calculate rarity by yourself
+    return rand > 0.06 ? 2 : 1; // Updated to return a value instead of boolean
+  }
+
+  function T4(seed) {
+    const rand = mathRand();
+    // Add more traits as needed
+    return rand > 0.5 ? 1 : -1; // Example trait influencing direction
+  }
+
+  function T5(seed) {
+    const rand = mathRand();
+    // Add more traits as needed
+    return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
+  }
+
+  function applyColorChangeTrait(color, seed) {
+    const rand = mathRand();
+    // Add logic for the color change trait here
+    // For example, you can randomly adjust hue, saturation, or brightness
+    if (rand > 0.8) {
+      color = color.darken(0.5); // Example: Darken the color
+    }
+
+    return color;
+  }
 
 // Populate the $generativeTraits object in the window
 window.$generativeTraits = {
@@ -298,13 +294,9 @@ window.$generativeTraits = {
   "T5": T5,
 };
 
-console.log(window.$generativeTraits);
 </script>
-
-        // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add traits here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-        // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add your code here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
+  
+<script>
         const container = document.createElement("div")
         container.innerHTML = "<span>seed: " + seed + "</span><br>";
         document.body.prepend(container)
