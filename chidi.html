@@ -113,18 +113,6 @@ stroke(90, alpha);
 display() {
   noStroke();
 
-  // Original particle
-let alpha = map(dis, 10, disThreshold, 255, 10);
-let sizeAlpha = map(this.r, 1, 25, 50, 255);
-  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
-  ellipse(this.x, this.y, this.r * 2);
-
-  // Reflection effect
-  let reflectionY = constrain(height - this.y, 0, height);
-  let reflectionAlpha = map(reflectionY, 0, height, 30, 80);
-  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], reflectionAlpha);
-  ellipse(this.x, reflectionY, this.r * 2);
-
   // Draw a connecting line between the original and reflected particles
   stroke(90, alpha);
   line(this.x, this.y, this.x, reflectionY);
