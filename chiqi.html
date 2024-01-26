@@ -30,20 +30,19 @@
 
 let particles = [];
 let interval = 5; // Adjust the interval between particle creation
+let numParticles = 15; // Adjust the number of particles created at each interval
 
 function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
-  
-  let numParticles = floor(random(20, 170)); // Vary the number of particles
-  for (let i = 0; i < numParticles; i++) {
+  for (let i = 0; i < 220; i++) {
     particles.push(new Particle());
   }
 }
 
 function draw() {
-  let canvasAlpha = map(particles.length, 22, 120, 250, 235);
-  background(15, 150, 15, canvasAlpha);
+  let canvasAlpha = map(numParticles, 22, 120, 250, 235);
+  background(15, 100, 10, canvasAlpha);
 
   for (let i = 1; i < particles.length; i++) {
     particles[i].createParticle();
@@ -51,7 +50,7 @@ function draw() {
     particles[i].joinParticles(particles.slice(i));
   }
 
-  if (frameCount % interval === 7) {
+  if (frameCount % interval === 6) {
     generateRandomExplosion(particles);
   }
 }
@@ -66,9 +65,7 @@ function generateRandomExplosion(particles) {
 
 // Define generateRandomColor function here
 function generateRandomColor(alpha) {
-  // Ensure that RGB values are close to their maximum when alpha is high
-  let maxRGB = random(10, 500, 700, 455);
-  return color(maxRGB, maxRGB, maxRGB, alpha);
+  return color(random(500), random(137), random(205), alpha);
 }
 
 class ParticleExplosion {
@@ -89,22 +86,28 @@ class ParticleExplosion {
 }
 
 class Particle {
-  constructor() {
+  constructor(position, color, size) {
     this.x = random(width);
     this.y = random(height);
     this.r = random(1, 25);
     this.xSpeed = random(-1, 1);
     this.ySpeed = random(-1, 1);
-    this.color = generateRandomColor();
+    this.color = generateRandomColor(255);
     this.colorTrait = Math.random() > 0.5; // Set a boolean value based on a condition
   }
   
 createParticle() {
   noStroke();
-  fill(this.color.levels[1], this.color.levels[2], this.color.levels[2], this.color.levels[3]);
+
+  // Extract color components
+  let { levels } = this.color;
+
+  // Adjust the alpha value for transparency
+  let alpha = map(this.r, 10, 25, 10, 255); // Adjust the range for alpha
+  fill(`rgba(${levels[0]}, ${levels[1]}, ${levels[2]}, ${alpha / 255})`);
+
   ellipse(this.x, this.y, this.r * 2);
 }
-
 
   moveParticle() {
     this.x += this.xSpeed;
@@ -116,13 +119,15 @@ createParticle() {
 
   joinParticles(particles) {
     particles.forEach((element) => {
-      let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
+      let disThreshold = random(95, 100); // Randomize the distance threshold for drawing lines
       let dis = dist(this.x, this.y, element.x, element.y);
 
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
-        let alpha = map(dis, 10, disThreshold, 255, 50);
-        stroke(80, alpha);
+let alpha = map(dis, 10, disThreshold, 255, 10);
+let sizeAlpha = map(this.r, 1, 25, 50, 255);
+alpha = min(alpha, sizeAlpha); // Take the minimum of the two alpha values
+stroke(90, alpha);
         line(this.x, this.y, element.x, element.y);
 
         if (dis < this.r + element.r) {
@@ -134,12 +139,25 @@ createParticle() {
       }
     });
   }
+
+display(reflectionY) {
+  noStroke();
+
+  // Extract color components
+  let { levels } = this.color;
+
+  // Adjust the alpha value for transparency based on size
+  let alpha = map(this.r, 1, 25, 50, 255);
+  
+  // Draw the original particle
+  fill(`rgba(${levels[0]}, ${levels[1]}, ${levels[2]}, ${alpha / 255})`);
+  ellipse(this.x, this.y, this.r * 2);
+
+  // Draw a connecting line between the original and reflected particles
+  stroke(90, alpha);
+  line(this.x, this.y, this.x, reflectionY);
 }
-
-// IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
-// This function generates a random number between 0 and 1 with on-chain seed.
-
-let mathRand = sfc32(0, 0, 0, 1);
+    let mathRand = sfc32(0, 0, 0, 1);
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     </script>
