@@ -196,13 +196,26 @@ class Particle {
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 // Trait functions
-function T1(seed) {
+function T1(seed, colorTrait) {
   const rand = mathRand();
-  const colorTrait = Math.random() > 0.5; // Example boolean trait
-  console.log('colorTrait in T1:', colorTrait); // Print the boolean value
-  // calculate rarity by yourself
-  return rand > 0.02;
+  
+  // Additional logic based on colorTrait
+  if (colorTrait) {
+    // Adjust rarity calculation for colorTrait
+    return rand > 0.01;
+  } else {
+    // Original rarity calculation without colorTrait
+    return rand > 0.02;
+  }
 }
+
+// Similarly, modify other trait functions if needed
+
+// Example usage
+const colorTrait = Math.random() > 0.5; // Set colorTrait based on a condition
+const rarityWithColorTrait = T1(seed, colorTrait);
+
+    // trait2 below _
 
 function T2(seed) {
   const rand = mathRand();
