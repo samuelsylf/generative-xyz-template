@@ -179,35 +179,34 @@ class Particle {
     this.colorTrait = Math.random() > 0.5;
   }
 
-  createParticle(seed, T1, T2, T3, T4, T5) {
-    noStroke();
+createParticle(seed, T1, T2, T3, T4, T5) {
+  noStroke();
 
-    // Apply traits to determine particle characteristics
-    const rarityWithColorTrait = T1(seed, this.colorTrait);
-    const sizeTrait = T2(seed);
-    const additionalTrait = T3(seed);
-    const directionTrait = T4(seed);
-    const lifespanTrait = T5(seed);
+  // Apply traits to determine particle characteristics
+  const rarityWithColorTrait = T1(seed, this.colorTrait);
+  const sizeTrait = T2(seed);
+  const additionalTrait = T3(seed);
+  const directionTrait = T4(seed);
+  const lifespanTrait = T5(seed);
 
-    // Adjust particle characteristics based on traits
-    const adjustedSize = this.r * sizeTrait;
+  // Adjust particle characteristics based on traits
+  const adjustedSize = this.r * sizeTrait;
 
-    // Use adjusted values to draw the particle
-    const adjustedColor = applyColorChangeTrait(this.color, seed);
-    const adjustedAlpha = map(adjustedSize, 10, 25, 10, 255);
+  // Use adjusted values to draw the particle
+  const adjustedColor = applyColorChangeTrait(this.color, seed);
+  const adjustedAlpha = map(adjustedSize, 10, 25, 10, 255);
 
-    fill(
-      adjustedColor.levels[0],
-      adjustedColor.levels[1],
-      adjustedColor.levels[2],
-      adjustedAlpha
-    );
+  fill(
+    adjustedColor.levels[0],
+    adjustedColor.levels[1],
+    adjustedColor.levels[2],
+    adjustedAlpha
+  );
 
-    ellipse(this.x, this.y, adjustedSize * 2);
-  }
+  ellipse(this.x, this.y, adjustedSize * 2);
 }
 
-  moveParticle() {
+moveParticle() {
     this.x += this.xSpeed;
     this.y += this.ySpeed;
 
@@ -215,11 +214,10 @@ class Particle {
     if (this.y < 0 || this.y > height) this.ySpeed *= -1;
   }
 
-  joinParticles(particles) {
+joinParticles(particles) {
     particles.forEach((element) => {
       let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
       let dis = dist(this.x, this.y, element.x, element.y);
-
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
         let alpha = map(dis, 10, disThreshold, 255, 50);
@@ -231,11 +229,7 @@ class Particle {
           let newX = (this.x + element.x) / 2;
           let newY = (this.y + element.y) / 2;
           particles.push(new ParticleExplosion(newX, newY, newR));
-        }
-      }
-    });
   }
-}
 
 // IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
 // This function generates a random number between 0 and 1 with on-chain seed.
