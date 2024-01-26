@@ -124,7 +124,7 @@ function setup() {
   colorMode(HSB);
 
   // Assuming you have a seed value in the sandbox environment
-  const seedString = $sandbox.seed;
+  const seedString = getSeed();
   const seed = convertSeedToNumber(seedString);
 
   // Create a particle without traits
@@ -134,6 +134,18 @@ function setup() {
   let numParticles = floor(random(20, 170)); // Vary the number of particles
   for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
+  }
+}
+
+// Function to get the seed from the sandbox environment
+function getSeed() {
+  // Check if the seed is available in the sandbox environment
+  if ($sandbox && $sandbox.seed) {
+    return $sandbox.seed;
+  } else {
+    // If not available, generate a default seed
+    console.warn("Seed not found in the sandbox environment. Using a default seed.");
+    return "defaultSeed";
   }
 }
 
