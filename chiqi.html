@@ -113,19 +113,17 @@ function setup() {
   createCanvas(720, 400);
   colorMode(HSB);
 
-  // Create a particle without traits
-  const particle = new Particle();
-  
-  // Use seed value from the environment
-  const seedString = seed; // Assuming 'seed' is a variable from the environment
+  // Assuming you have a seed value
+  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
   const seed = convertSeedToNumber(seedString);
-  
-  // Pass T1 function explicitly
+
+  // Create a particle without traits
+  const particle = new Particle(seed);
   particle.createParticle(seed, T1, T2, T3, T4, T5);
 
   let numParticles = floor(random(20, 170)); // Vary the number of particles
   for (let i = 0; i < numParticles; i++) {
-    particles.push(new Particle());
+    particles.push(new Particle(seed));
   }
 }
 
@@ -189,15 +187,15 @@ class Particle {
   
   // ... Your previous code ...
 
-  createParticle(seed, T1, T2, T3, T4, T5) {
-    noStroke();
+  createParticle() {
+  noStroke();
 
-    // Apply traits to determine particle characteristics
-    const rarityWithColorTrait = T1(seed, this.colorTrait);
-    const sizeTrait = T2(seed);
-    const additionalTrait = T3(seed);
-    const directionTrait = T4(seed);
-    const lifespanTrait = T5(seed);
+     // Apply traits to determine particle characteristics
+    const rarityWithColorTrait = T1(this.seed, this.colorTrait);
+    const sizeTrait = T2(this.seed);
+    const additionalTrait = T3(this.seed);
+    const directionTrait = T4(this.seed);
+    const lifespanTrait = T5(this.seed);
 
     // Adjust particle characteristics based on traits
     const adjustedSize = this.r * sizeTrait;
