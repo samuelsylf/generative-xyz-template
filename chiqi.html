@@ -215,25 +215,29 @@ moveParticle() {
   }
 
 joinParticles(particles) {
-    particles.forEach((element) => {
-      let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
-      let dis = dist(this.x, this.y, element.x, element.y);
-      if (dis < disThreshold && this.colorTrait && element.colorTrait) {
-        // Draw lines between particles
-        let alpha = map(dis, 10, disThreshold, 255, 50);
-        stroke(80, 25, alpha);
-        line(this.x, this.y, element.x, element.y);
+  particles.forEach((element) => {
+    let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
+    let dis = dist(this.x, this.y, element.x, element.y);
 
-        if (dis < this.r + element.r) {
-          let newR = max(this.r, element.r) * 1.5;
-          let newX = (this.x + element.x) / 2;
-          let newY = (this.y + element.y) / 2;
-          particles.push(new ParticleExplosion(newX, newY, newR));
-  }
+    if (dis < disThreshold && this.colorTrait && element.colorTrait) {
+      // Draw lines between particles
+      let alpha = map(dis, 10, disThreshold, 255, 50);
+      stroke(80, 25, alpha);
+      line(this.x, this.y, element.x, element.y);
+
+      if (dis < this.r + element.r) {
+        let newR = max(this.r, element.r) * 1.5;
+        let newX = (this.x + element.x) / 2;
+        let newY = (this.y + element.y) / 2;
+        particles.push(new ParticleExplosion(newX, newY, newR));
+      }
+    }
+  });
+}
 
 // IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
 // This function generates a random number between 0 and 1 with on-chain seed.
-
+    
 let mathRand = sfc32(0, 0, 0, 1);
     
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
