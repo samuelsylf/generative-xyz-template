@@ -28,7 +28,7 @@
 <body>
 <script type="text/javascript">
 
-  // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+   // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Add traits here ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
      // Trait functions
   function T1(seed, colorTrait) {
@@ -181,6 +181,8 @@ class Particle {
     this.color = generateRandomColor();
     this.colorTrait = Math.random() > 0.5;
   }
+  
+  // ... Your previous code ...
 
 createParticle(seed, T1, T2, T3, T4, T5) {
   noStroke();
@@ -217,28 +219,27 @@ moveParticle() {
     if (this.y < 0 || this.y > height) this.ySpeed *= -1;
   }
 
-// ... Your previous code ...
+  joinParticles(particles) {
+    particles.forEach((element) => {
+      let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
+      let dis = dist(this.x, this.y, element.x, element.y);
 
-joinParticles(particles) {
-  particles.forEach((element) => {
-    let disThreshold = random(96, 100); // Randomize the distance threshold for drawing lines
-    let dis = dist(this.x, this.y, element.x, element.y);
+      if (dis < disThreshold && this.colorTrait && element.colorTrait) {
+        // Draw lines between particles
+        let alpha = map(dis, 10, disThreshold, 255, 50);
+        stroke(80, 25, alpha);
+        line(this.x, this.y, element.x, element.y);
 
-    if (dis < disThreshold && this.colorTrait && element.colorTrait) {
-      // Draw lines between particles
-      let alpha = map(dis, 10, disThreshold, 255, 50);
-      stroke(80, 25, alpha);
-      line(this.x, this.y, element.x, element.y);
-
-      if (dis < this.r + element.r) {
-        let newR = max(this.r, element.r) * 1.5;
-        let newX = (this.x + element.x) / 2;
-        let newY = (this.y + element.y) / 2;
-        particles.push(new ParticleExplosion(newX, newY, newR));
+        if (dis < this.r + element.r) {
+          let newR = max(this.r, element.r) * 1.5;
+          let newX = (this.x + element.x) / 2;
+          let newY = (this.y + element.y) / 2;
+          particles.push(new ParticleExplosion(newX, newY, newR));
+        }
       }
-    }
-  });
-}
+    });
+  } // Add this closing brace to match the opening brace at the beginning of the method
+} // Add this closing brace to match the opening brace of the class
 
 // IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
 // This function generates a random number between 0 and 1 with on-chain seed.
