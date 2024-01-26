@@ -70,8 +70,10 @@
     const rand = mathRand();
     // Add logic for the color change trait here
     // For example, you can randomly adjust hue, saturation, or brightness
-    if (rand > 0.8) {
-      color = color.darken(0.5); // Example: Darken the color
+    if (rand > 0.99) {
+color.levels[0] *= 0.8; // Darken the hue component
+color.levels[1] *= 0.8; // Darken the saturation component
+color.levels[2] *= 0.8; // Darken the brightness component
     }
 
     return color;
