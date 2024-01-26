@@ -1,0 +1,132 @@
+let particles = [];
+let interval = 5; // Adjust the interval between particle creation
+let numParticles = 15; // Adjust the number of particles created at each interval
+
+function setup() {
+  createCanvas(720, 400);
+  colorMode(HSB);
+  for (let i = 0; i < 220; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function draw() {
+  let canvasAlpha = map(numParticles, 22, 120, 250, 235);
+  background(15, 100, 10, canvasAlpha);
+
+  for (let i = 1; i < particles.length; i++) {
+    particles[i].createParticle();
+    particles[i].moveParticle();
+    particles[i].joinParticles(particles.slice(i));
+  }
+
+  if (frameCount % interval === 6) {
+    generateRandomExplosion(particles);
+  }
+}
+
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(3, 10);
+  particles.splice(randIndex, 1);
+  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
+}
+
+// Define generateRandomColor function here
+function generateRandomColor(alpha) {
+  return color(random(500), random(137), random(205), alpha);
+}
+
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.color = generateRandomColor(250);
+    this.life = 245;
+  }
+
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.x, this.y, this.r * 2);
+    this.life -= 5;
+  }
+}
+
+class Particle {
+  constructor(position, color, size) {
+    this.x = random(width);
+    this.y = random(height);
+    this.r = random(1, 25);
+    this.xSpeed = random(-1, 1);
+    this.ySpeed = random(-1, 1);
+    this.color = generateRandomColor(255);
+    this.colorTrait = Math.random() > 0.5; // Set a boolean value based on a condition
+  }
+  
+createParticle() {
+  noStroke();
+
+  // Extract color components
+  let { levels } = this.color;
+
+  // Adjust the alpha value for transparency
+  let alpha = map(this.r, 10, 25, 10, 255); // Adjust the range for alpha
+  fill(`rgba(${levels[0]}, ${levels[1]}, ${levels[2]}, ${alpha / 255})`);
+
+  ellipse(this.x, this.y, this.r * 2);
+}
+
+  moveParticle() {
+    this.x += this.xSpeed;
+    this.y += this.ySpeed;
+
+    if (this.x < 0 || this.x > width) this.xSpeed *= -1;
+    if (this.y < 0 || this.y > height) this.ySpeed *= -1;
+  }
+
+  joinParticles(particles) {
+    particles.forEach((element) => {
+      let disThreshold = random(95, 100); // Randomize the distance threshold for drawing lines
+      let dis = dist(this.x, this.y, element.x, element.y);
+
+      if (dis < disThreshold && this.colorTrait && element.colorTrait) {
+        // Draw lines between particles
+let alpha = map(dis, 10, disThreshold, 255, 10);
+let sizeAlpha = map(this.r, 1, 25, 50, 255);
+alpha = min(alpha, sizeAlpha); // Take the minimum of the two alpha values
+stroke(150, alpha);
+        line(this.x, this.y, element.x, element.y);
+
+        if (dis < this.r + element.r) {
+          let newR = max(this.r, element.r) * 1.5;
+          let newX = (this.x + element.x) / 2;
+          let newY = (this.y + element.y) / 2;
+          particles.push(new ParticleExplosion(newX, newY, newR));
+        }
+      }
+    });
+  }
+
+display() {
+  noStroke();
+
+  // Original particle
+let alpha = map(dis, 10, disThreshold, 255, 10);
+let sizeAlpha = map(this.r, 1, 25, 50, 255);
+  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
+  ellipse(this.x, this.y, this.r * 2);
+
+  // Reflection effect
+  let reflectionY = constrain(height - this.y, 0, height);
+  let reflectionAlpha = map(reflectionY, 0, height, 30, 80);
+  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], reflectionAlpha);
+  ellipse(this.x, reflectionY, this.r * 2);
+
+  // Draw a connecting line between the original and reflected particles
+  stroke(150, alpha);
+  line(this.x, this.y, this.x, reflectionY);
+}
+}
