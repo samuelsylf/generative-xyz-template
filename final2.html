@@ -86,7 +86,7 @@ class ParticleExplosion {
 }
 
 class Particle {
-  constructor() {
+  constructor(position, color, size) {
     this.x = random(width);
     this.y = random(height);
     this.r = random(1, 25);
@@ -96,11 +96,15 @@ class Particle {
     this.colorTrait = Math.random() > 0.5; // Set a boolean value based on a condition
   }
   
-  createParticle() {
-    noStroke();
-    fill(this.color);
-    ellipse(this.x, this.y, this.r * 2);
-  }
+createParticle() {
+  noStroke();
+
+  // Adjust the alpha value for transparency
+  let alpha = map(this.r, 1, 25, 10, 100);
+  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
+
+  ellipse(this.x, this.y, this.r * 2);
+}
 
   moveParticle() {
     this.x += this.xSpeed;
@@ -130,6 +134,25 @@ class Particle {
       }
     });
   }
+
+display() {
+  noStroke();
+
+  // Original particle
+  let alpha = map(this.r, 1, 25, 50, 255);
+  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
+  ellipse(this.x, this.y, this.r * 2);
+
+  // Reflection effect
+  let reflectionY = constrain(height - this.y, 0, height);
+  let reflectionAlpha = map(reflectionY, 0, height, 30, 80);
+  fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], reflectionAlpha);
+  ellipse(this.x, reflectionY, this.r * 2);
+
+  // Draw a connecting line between the original and reflected particles
+  stroke(150, alpha);
+  line(this.x, this.y, this.x, reflectionY);
+}
 }
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
