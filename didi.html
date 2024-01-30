@@ -107,7 +107,7 @@ function sfc32(a, b, c, d) {
 let mathRand = sfc32(0, 0, 0, 1);
 
 // Use seeded random number generator for consistent randomness
-let randomSeed = 100; // Example seed value
+let randomSeed = convertSeedToNumber("21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6"); // Example seed value
 function getRandom(min, max) {
   randomSeed = (randomSeed * 9301 + 49297) % 233280;
   let rnd = randomSeed / 233280;
