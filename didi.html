@@ -142,7 +142,7 @@ function draw() {
   let canvasAlpha = map(particles.length, 22, 120, 250, 235);
   background(15, 150, 15, canvasAlpha);
 // Inside your draw function, after rendering the particles
-const BLUR_AMOUNT = 1;
+const BLUR_AMOUNT = 0.1;
 filter(BLUR, BLUR_AMOUNT);
   //glow 
   for (let i = particles.length - 1; i >= 0; i--) {
@@ -166,6 +166,7 @@ for (let i = 0; i < particles.length; i++) {
 // Inside draw() function:
 for (let particle of particles) {
   particle.reactToParticles(particles); // Check for particle interactions
+  particle.update(); // Update particle properties
 }
 
   if (frameCount % interval === 5) {
@@ -231,10 +232,12 @@ class Particle {
     this.size = 5; // Initial size of the particle
         // Initialize particle properties
     this.trail = [0]; // Array to store trail points
-    this.hasGlow = random() > 0.999; // Adjust the probability as needed
+    this.hasGlow = random() > 0.9999; // Adjust the probability as needed
     //reaction 
-    this.reactionRadius = 50; // Adjust the reaction radius as needed
-    this.reactionColor = color(255, 0, 0); // Adjust the reaction color as needed
+this.originalColor = color(random(255), random(255), random(255)); // Assign a random original color
+    this.reactionColor = color(25, 25, 25); // Adjust the reaction color as needed
+    this.reactionDuration = 60; // Adjust the duration of the reaction effect (frames)
+    this.reactionTimer = 0; // Timer to control the duration of the reaction effect
   }
   updateTrail() {
     // Add current position to the trail
@@ -257,8 +260,8 @@ class Particle {
    drawGlow() {
     if (this.hasGlow) {
       // Draw a minimal blurred outline or glow around the particle
-      const glowSize = 1; // Minimal glow size
-      const blurAmount = 1; // Minimal blur amount
+      const glowSize = 0.01; // Minimal glow size
+      const blurAmount = 0.01; // Minimal blur amount
 
       loadPixels();
       for (let x = -glowSize; x <= glowSize; x++) {
@@ -292,12 +295,25 @@ class Particle {
 
   applyReaction() {
     // Example reaction: Change color
+    if (this.reactionTimer === 0) {
+      this.originalColor = this.color; // Preserve the current color as the original color
+    }
     this.color = this.reactionColor;
+    this.reactionTimer = this.reactionDuration; // Start the reaction timer
+  }
+  update() {
+    // If the reaction timer is active, gradually revert the color back to the original color
+    if (this.reactionTimer > 0) {
+      const t = map(this.reactionTimer, this.reactionDuration, 0, 0, 1); // Interpolation factor
+      this.color = lerpColor(this.reactionColor, this.originalColor, t); // Interpolate between colors
+      this.reactionTimer--; // Decrement the reaction timer
+    }
   }
     grow(factor) {
     // Increase the size of the particle by a certain factor
     this.size *= factor;
   }
+  
   // ... Your previous code ...
 
   createParticle() {
@@ -338,7 +354,7 @@ moveParticle() {
   
   joinParticles(particles) {
     particles.forEach((element) => {
-      let disThreshold = random(41, 191); // Randomize the distance threshold for drawing lines
+      let disThreshold = random(41, 121); // Randomize the distance threshold for drawing lines
       let dis = dist(this.x, this.y, element.x, element.y);
 
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
