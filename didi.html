@@ -155,10 +155,10 @@ function draw() {
 // Inside your draw function, after rendering the particles
 const BLUR_AMOUNT = 0;
 filter(BLUR, 0);
-  //GROW -effect
-  for (let i = particles.length - 1; i >= 1; i--) {
-  particles[i].grow(1); // Increase particle size by 1% each frame
-}
+  //GROW -effect – CPU-intensive?
+  // for (let i = particles.length - 1; i >= 1; i--) {
+  // particles[i].grow(1); // Increase particle size by 1% each frame
+// }
 
   for (let i = 1; i < particles.length; i++) {
     particles[i].createParticle();
