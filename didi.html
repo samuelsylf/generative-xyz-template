@@ -154,7 +154,7 @@ function draw() {
   background(15, 150, 15, canvasAlpha);
 // Inside your draw function, after rendering the particles
 const BLUR_AMOUNT = 0;
-filter(BLUR, 4);
+filter(BLUR, 0);
   //GROW -effect
   for (let i = particles.length - 1; i >= 1; i--) {
   particles[i].grow(1); // Increase particle size by 1% each frame
@@ -287,8 +287,8 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
    drawGlow() {
     if (this.hasGlow) {
       // Draw a minimal blurred outline or glow around the particle
-      const glowSize = 1; // Minimal glow size
-      const blurAmount = 0.1; // Minimal blur amount
+      const glowSize = 0; // Minimal glow size
+      const blurAmount = 0; // Minimal blur amount
 
       loadPixels();
       for (let x = -glowSize; x <= glowSize; x++) {
@@ -304,7 +304,7 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
         }
       }
       updatePixels();
-  filter(BLUR, 0.1); // Adjust the blur radius as needed
+  filter(BLUR, 0); // Adjust the blur radius as needed
     }
   }
   //react to
