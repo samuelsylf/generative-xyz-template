@@ -66,6 +66,7 @@
   }
 
 function applyColorChangeTrait(color, seed) {
+  
   const rand = mathRand();
   const transparency = map(rand, 0.99, 1, 10, 255); // Adjust alpha/transparency based on rand
 
@@ -212,16 +213,20 @@ class Particle {
 
     // Use adjusted values to draw the particle
     const adjustedColor = applyColorChangeTrait(this.color, seed);
-    const adjustedAlpha = map(adjustedSize, 10, 25, 10, 255);
-
-fill(
+    const adjustedAlpha = constrain(map(adjustedSize, 10, 25, 10, 255), 0, 255);
+const adjustedColorWithAlpha = color(
   adjustedColor.levels[0],
   adjustedColor.levels[1],
   adjustedColor.levels[2],
-  adjustedColor.levels[3] // Use the alpha value directly from the color object
+  adjustedAlpha
 );
+fill(adjustedColorWithAlpha);
+  adjustedColor.levels[0],
+  adjustedColor.levels[1],
+  adjustedColor.levels[2],
+  adjustedColor.alpha // Use the alpha value directly from the color object
 
-    ellipse(this.x, this.y, adjustedSize * 2);
+    ellipse(this.x, this.y, adjustedSize * 2.1);
   }
 
 moveParticle() {
@@ -240,7 +245,7 @@ moveParticle() {
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
         let alpha = map(dis, 10, disThreshold, 255, 50);
-        stroke(50, 55, alpha);
+        stroke(190, 55, alpha);
         line(this.x, this.y, element.x, element.y);
 
         if (dis < this.r + element.r) {
