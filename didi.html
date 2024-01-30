@@ -237,6 +237,7 @@ moveParticle() {
     if (this.y < 0 || this.y > height) this.ySpeed *= -1;
   }
 
+  
   joinParticles(particles) {
     particles.forEach((element) => {
       let disThreshold = random(97, 100); // Randomize the distance threshold for drawing lines
@@ -244,8 +245,16 @@ moveParticle() {
 
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
-        let alpha = map(dis, 10, disThreshold, 255, 50);
-        stroke(190, 55, alpha);
+// Define a range for alpha values
+const minAlpha = 70;
+const maxAlpha = 195;
+
+// Generate a random alpha value within the defined range
+        let redValue = random(0, 255);
+let greenValue = random(0, 255);
+let blueValue = random(0, 255);
+let alpha = random(minAlpha, maxAlpha);
+        stroke(redValue, greenValue, blueValue, alpha);
         line(this.x, this.y, element.x, element.y);
 
         if (dis < this.r + element.r) {
