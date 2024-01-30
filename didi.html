@@ -156,7 +156,7 @@ function draw() {
 const BLUR_AMOUNT = 0;
 filter(BLUR, BLUR_AMOUNT);
   //glow 
-  for (let i = particles.length - 1; i >= 0; i--) {
+  for (let i = particles.length - 1; i >= 1; i--) {
   particles[i].grow(1); // Increase particle size by 1% each frame
 }
 
@@ -247,15 +247,18 @@ class Particle {
     this.x = random(width);
     this.y = random(height);
     this.r = random(1, 15);
-    this.xSpeed = random(-0.7, 0.8);
-    this.ySpeed = random(-0.8, 0.8);
+    this.xSpeed = random(-0.9, 0.9);
+    this.ySpeed = random(-0.8, 0.9);
     this.color = generateRandomColor();
     this.colorTrait = Math.random() > 0.5;
+    this.numPoints = 5; // Number of points in the star
+    this.innerRadius = 5; // Inner radius of the star
+    this.outerRadius = 12; // Outer radius of the star
         // Initialize particle properties
     this.size = 5; // Initial size of the particle
         // Initialize particle properties
     this.trail = [0]; // Array to store trail points
-    this.hasGlow = random() > 0.9999; // Adjust the probability as needed
+    this.hasGlow = random() > 0.999; // Adjust the probability as needed
     //reaction 
 this.originalColor = color(random(250), random(250), random(250)); // Assign a random original color
     this.reactionColor = color(25, 25, 25); // Adjust the reaction color as needed
@@ -273,7 +276,7 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
   drawTrail() {
     // Draw the particle's trail
     noFill();
-    strokeWeight(0.25);
+    strokeWeight(0.35);
     beginShape(0);
     for (let i = 3; i < this.trail.length; i++) {
       vertex(this.trail[i].x, this.trail[i].y);
@@ -284,7 +287,7 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
     if (this.hasGlow) {
       // Draw a minimal blurred outline or glow around the particle
       const glowSize = 0; // Minimal glow size
-      const blurAmount = 0; // Minimal blur amount
+      const blurAmount = 0.1; // Minimal blur amount
 
       loadPixels();
       for (let x = -glowSize; x <= glowSize; x++) {
@@ -292,15 +295,15 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
           const d = dist(x, y, 0, 0);
           if (d <= glowSize) {
             const index = (this.x + x + (this.y + y) * width) * 2;
-            pixels[index] += 5; // Minimal intensity adjustment
-            pixels[index + 1] += 5; // Minimal intensity adjustment
-            pixels[index + 2] += 5; // Minimal intensity adjustment
-            pixels[index + 3] = max(pixels[index + 3], 50); // Minimal transparency adjustment
+            pixels[index] += 1; // Minimal intensity adjustment
+            pixels[index + 1] += 1; // Minimal intensity adjustment
+            pixels[index + 2] += 1; // Minimal intensity adjustment
+            pixels[index + 3] = max(pixels[index + 3], 70); // Minimal transparency adjustment
           }
         }
       }
       updatePixels();
-      filter(BLUR, blurAmount);
+  filter(BLUR, 0.1); // Adjust the blur radius as needed
     }
   }
   //react to
@@ -340,7 +343,20 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
   // ... Your previous code ...
 
   createParticle() {
-  noStroke();
+    noStroke();
+
+    const angleIncrement = TWO_PI / this.numPoints;
+    beginShape();
+    for (let i = 0; i < TWO_PI; i += angleIncrement) {
+      let x = this.x + cos(i) * this.outerRadius;
+      let y = this.y + sin(i) * this.outerRadius;
+      vertex(x, y);
+
+      x = this.x + cos(i + angleIncrement / 2) * this.innerRadius;
+      y = this.y + sin(i + angleIncrement / 2) * this.innerRadius;
+      vertex(x, y);
+    }
+    endShape(CLOSE);
 
   // Apply traits to determine particle characteristics
   const rarityWithColorTrait = T1(this.seed, this.colorTrait);
@@ -377,19 +393,19 @@ moveParticle() {
   
   joinParticles(particles) {
     particles.forEach((element) => {
-      let disThreshold = random(41, 121); // Randomize the distance threshold for drawing lines
+      let disThreshold = random(121, 121); // Randomize the distance threshold for drawing lines
       let dis = dist(this.x, this.y, element.x, element.y);
 
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
 // Define a range for alpha values
-const minAlpha = 5;
+const minAlpha = 255;
 const maxAlpha = 255;
 
 // Generate a random alpha value within the defined range
-        let redValue = random(5, 255);
-let greenValue = random(20, 255);
-let blueValue = random(20, 255);
+        let redValue = random(40, 255);
+let greenValue = random(50, 255);
+let blueValue = random(50, 255);
 let alpha = random(minAlpha, maxAlpha);
         stroke(redValue, greenValue, blueValue, alpha);
         line(this.x, this.y, element.x, element.y);
