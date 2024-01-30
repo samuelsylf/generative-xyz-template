@@ -144,12 +144,21 @@ function draw() {
 // Inside your draw function, after rendering the particles
 const BLUR_AMOUNT = 20;
 filter(BLUR, BLUR_AMOUNT);
+  //glow 
+  for (let i = particles.length - 1; i >= 0; i--) {
+  particles[i].grow(1.01); // Increase particle size by 1% each frame
+}
 
   for (let i = 1; i < particles.length; i++) {
     particles[i].createParticle();
     particles[i].moveParticle();
     particles[i].joinParticles(particles.slice(i));
   }
+  // Inside draw() function:
+for (let i = 0; i < particles.length; i++) {
+  particles[i].updateTrail(); // Update trail for each particle
+  particles[i].drawTrail(); // Draw trail for each particle
+}
 
   if (frameCount % interval === 5) {
     generateRandomExplosion(particles);
@@ -210,8 +219,34 @@ class Particle {
     this.ySpeed = random(-1, 1);
     this.color = generateRandomColor();
     this.colorTrait = Math.random() > 0.5;
+        // Initialize particle properties
+    this.size = 5; // Initial size of the particle
+        // Initialize particle properties
+    this.trail = [0]; // Array to store trail points
   }
-  
+    grow(factor) {
+    // Increase the size of the particle by a certain factor
+    this.size *= factor;
+  }
+  updateTrail() {
+    // Add current position to the trail
+    this.trail.push(createVector(this.x, this.y));
+    // Keep trail length limited (adjust as needed)
+    if (this.trail.length > 30) {
+      this.trail.shift(); // Remove oldest point
+    }
+  }
+
+  drawTrail() {
+    // Draw the particle's trail
+    noFill();
+    strokeWeight(0.7);
+    beginShape(0);
+    for (let i = 3; i < this.trail.length; i++) {
+      vertex(this.trail[i].x, this.trail[i].y);
+    }
+    endShape();
+  }
   // ... Your previous code ...
 
   createParticle() {
