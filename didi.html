@@ -28,45 +28,44 @@
 <body>
 <script type="text/javascript">
 
-     // Trait functions
-  function T1(seed, colorTrait) {
-    const rand = mathRand();
-    // Additional logic based on colorTrait
-    if (colorTrait) {
-      // Adjust rarity calculation for colorTrait
-      return rand > 0.1;
-    } else {
-      // Original rarity calculation without colorTrait
-      return rand > 0.2;
-    }
+// Trait functions
+function T1(seed, colorTrait) {
+  const rand = mathRand();
+  // Additional logic based on colorTrait
+  if (colorTrait) {
+    // Adjust rarity calculation for colorTrait
+    return rand > 0.1;
+  } else {
+    // Original rarity calculation without colorTrait
+    return rand > 0.2;
   }
+}
 
-  function T2(seed) {
-    const rand = mathRand();
-    // calculate rarity by yourself
-    return rand > 0.06;
-  }
+function T2(seed) {
+  const rand = mathRand();
+  // calculate rarity by yourself
+  return rand > 0.06;
+}
 
-  function T3(seed) {
-    const rand = mathRand();
-    // calculate rarity by yourself
-    return rand > 0.09 ? 2 : 1; // Updated to return a value instead of boolean
-  }
+function T3(seed) {
+  const rand = mathRand();
+  // calculate rarity by yourself
+  return rand > 0.09 ? 2 : 1; // Updated to return a value instead of boolean
+}
 
-  function T4(seed) {
-    const rand = mathRand();
-    // Add more traits as needed
-    return rand > 0.5 ? 1 : -1; // Example trait influencing direction
-  }
+function T4(seed) {
+  const rand = mathRand();
+  // Add more traits as needed
+  return rand > 0.5 ? 1 : -1; // Example trait influencing direction
+}
 
-  function T5(seed) {
-    const rand = mathRand();
-    // Add more traits as needed
-    return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
-  }
+function T5(seed) {
+  const rand = mathRand();
+  // Add more traits as needed
+  return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
+}
 
 function applyColorChangeTrait(color, seed) {
-  
   const rand = mathRand();
   const transparency = map(rand, 0.99, 1, 10, 255); // Adjust alpha/transparency based on rand
 
@@ -78,7 +77,6 @@ function applyColorChangeTrait(color, seed) {
 
   return color;
 }
-
 
 // Populate the $generativeTraits object in the window
 window.$generativeTraits = {
@@ -106,13 +104,6 @@ function sfc32(a, b, c, d) {
 
 let mathRand = sfc32(0, 0, 0, 1);
 
-// Use seeded random number generator for consistent randomness
-let randomSeed = convertSeedToNumber("21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6"); // Example seed value
-function getRandom(min, max) {
-  randomSeed = (randomSeed * 9301 + 49297) % 233280;
-  let rnd = randomSeed / 233280;
-  return min + rnd * (max - min);
-}
 // Convert seed string to a numerical value
 function convertSeedToNumber(seedString) {
   let seedNumber = 0;
@@ -122,86 +113,64 @@ function convertSeedToNumber(seedString) {
   return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
 }
 
-let lastColorChangeTime = 0;
-const cooldownDuration = 1000; // Cooldown duration in milliseconds (adjust as needed)
-// Declare the seed variable at a higher scope
-let seed; 
 let particles = [];
-let interval = 2; // Adjust the interval between particle creation
-// Inside your setup function
+let seed; // Declare the seed variable at a higher scope
+let interval = 4; // Define the interval for triggering explosions
+
 function setup() {
-  createCanvas(720, 400);
-  colorMode(HSB);
+  createCanvas(800, 600, WEBGL); // Use WEBGL renderer for 3D graphics
+  colorMode(HSB, 360, 100, 100);
 
   // Assuming you have a seed value assigned from the sandbox environment
   const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
-  const seed = convertSeedToNumber(seedString);
+  seed = convertSeedToNumber(seedString);
 
-  // Create a particle without traits
-  const particle = new Particle();
-  particle.createParticle(seed, T1, T2, T3, T4, T5);
-
-  let numParticles = floor(random(5, 170)); // Vary the number of particles
-  for (let i = 0; i < numParticles; i++) {
+  for (let i = 0; i < 100; i++) {
     particles.push(new Particle());
   }
+
+  ambientLight(200); // Add ambient light to illuminate the scene
+  pointLight(255, 255, 255, 0, 0, 300); // Add a point light to highlight the particles
 }
 
 function draw() {
-    // Clear canvas
   background(0);
-  let canvasAlpha = map(particles.length, 22, 120, 250, 235);
-  background(15, 150, 15, canvasAlpha);
-// Inside your draw function, after rendering the particles
-const BLUR_AMOUNT = 0;
-filter(BLUR, 0);
-  //GROW -effect – CPU-intensive?
-  // for (let i = particles.length - 1; i >= 1; i--) {
-  // particles[i].grow(1); // Increase particle size by 1% each frame
-// }
 
-  for (let i = 1; i < particles.length; i++) {
-    particles[i].createParticle();
-    particles[i].moveParticle();
-    particles[i].joinParticles(particles.slice(i));
-  }
-  // Inside draw() function:
-for (let i = 0; i < particles.length; i++) {
-  particles[i].updateTrail(); // Update trail for each particle
-  particles[i].drawTrail(); // Draw trail for each particle
-}
-//  for (let i = 0; i < particles.length; i++) {
-//  particles[i].drawGlow(); // Draw glow effect for each particle
-//}
-  //reactions: 
-// Inside draw() function:
-for (let particle of particles) {
-  particle.reactToParticles(particles); // Check for particle interactions
-  particle.update(); // Update particle properties
-}
-    const currentMillis = millis();
-  const elapsedTime = currentMillis - lastColorChangeTime;
+  rotateX(frameCount * 0.01); // Rotate the scene along the x-axis
+  rotateY(frameCount * 0.01); // Rotate the scene along the y-axis
 
-  // Check if enough time has passed for the cooldown period
-  if (elapsedTime >= cooldownDuration) {
-    // Allow color changes
-    // Example code for particle color change goes here
-
-    // Update the last color change time
-    lastColorChangeTime = currentMillis;
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].display(); // Ensure that the display function is called for each particle
   }
 
-  if (frameCount % interval === 25) {
+  // Trigger explosion at a specific interval
+  if (frameCount % interval === 4) {
     generateRandomExplosion(particles);
+  }
+}
+
+class Particle {
+  constructor() {
+    this.position = createVector(random(-200, 200), random(-200, 200), random(-200, 200)); // Randomize particle position in 3D space
+    this.radius = random(5, 15);
+    this.color = color(random(360), 80, 80); // Randomize color in HSB color mode
+  }
+
+  display() {
+    push();
+    translate(this.position.x, this.position.y, this.position.z); // Translate to particle's position
+    fill(this.color);
+    sphere(this.radius); // Draw a sphere representing the particle
+    pop();
   }
 }
 
 function generateRandomExplosion(particles) {
   let randIndex = floor(random(particles.length));
   let particle = particles[randIndex];
-  let explosionSize = random(1, 5);
+  let explosionSize = random(3, 10);
   particles.splice(randIndex, 1);
-  particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
+  particles.push(new ParticleExplosion(particle.position.x, particle.position.y, explosionSize));
 }
 
 // Define generateRandomColor function here
@@ -209,7 +178,7 @@ function generateRandomColor(alpha) {
   let hue = random(5, 360); // Random hue value between 5 and 360
   let saturation = random(5, 250); // Random saturation value between 5 and 200
   let brightness = random(5, 250); // Random brightness value between 5 and 200
-  
+
   // Check if alpha is a valid number, otherwise default to a value of 255 (fully opaque)
   if (typeof alpha !== 'number' || isNaN(alpha)) {
     alpha = 255;
@@ -225,126 +194,32 @@ function generateRandomColor(alpha) {
 }
 
 class ParticleExplosion {
-  constructor(x, y, r, lifespan) {
-    this.x = x;
-    this.y = y;
+  constructor(x, y, r) {
+    this.position = createVector(x, y);
     this.r = r;
-    this.lifespan = 50; // Adjust lifespan as needed
     this.color = generateRandomColor(255);
-    this.life = 50;
+    this.life = 245;
   }
 
   createExplosion() {
     noStroke();
     fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
-    ellipse(this.x, this.y, this.r * 2);
+    ellipse(this.position.x, this.position.y, this.r * 2);
     this.life -= 5;
   }
 }
 
-class Particle {
-  constructor() {
-    this.x = random(width);
-    this.y = random(height);
-    this.r = random(1, 15);
-    this.xSpeed = random(-0.9, 1.9);
-    this.ySpeed = random(-0.8, 1.9);
-    this.color = generateRandomColor();
-    this.colorTrait = Math.random() > 0.5;
-    this.numPoints = 5; // Number of points in the star
-    this.innerRadius = 5; // Inner radius of the star
-    this.outerRadius = 12; // Outer radius of the star
-        // Initialize particle properties
-    this.size = 5; // Initial size of the particle
-        // Initialize particle properties
-    this.trail = [0]; // Array to store trail points
-    this.hasGlow = random() > 0.9999; // Adjust the probability as needed
-    //reaction 
-this.originalColor = color(random(250), random(250), random(250)); // Assign a random original color
-    this.reactionColor = color(25, 25, 25); // Adjust the reaction color as needed
-    this.reactionDuration = 60; // Adjust the duration of the reaction effect (frames)
-    this.reactionTimer = 35; // Timer to control the duration of the reaction effect
-  }
-  updateTrail() {
-    // Add current position to the trail
-    this.trail.push(createVector(this.x, this.y));
-    // Keep trail length limited (adjust as needed)
-    if (this.trail.length > 30) {
-      this.trail.shift(); // Remove oldest point
-    }
-  }
-  drawTrail() {
-    // Draw the particle's trail
-    noFill();
-    strokeWeight(0.35);
-    beginShape(0);
-    for (let i = 3; i < this.trail.length; i++) {
-      vertex(this.trail[i].x, this.trail[i].y);
-    }
-    endShape();
-//  filter(BLUR, 0); // Adjust the blur radius as needed
-  }
-  //react to
-    reactToParticles(particles) {
-    for (let other of particles) {
-      if (other !== this) {
-        const distance = dist(this.x, this.y, other.x, other.y);
-        if (distance < this.reactionRadius) {
-          // Apply reaction effect
-          this.applyReaction();
-        }
-      }
-    }
-  }
-
-  applyReaction() {
-    // Example reaction: Change color
-    if (this.reactionTimer === 40) {
-      this.originalColor = this.color; // Preserve the current color as the original color
-    }
-    this.color = this.reactionColor;
-    this.reactionTimer = this.reactionDuration; // Start the reaction timer
-  }
-  update() {
-    // If the reaction timer is active, gradually revert the color back to the original color
-    if (this.reactionTimer > 0) {
-      const t = map(this.reactionTimer, this.reactionDuration, 0, 0, 1); // Interpolation factor
-      this.color = lerpColor(this.reactionColor, this.originalColor, t); // Interpolate between colors
-      this.reactionTimer--; // Decrement the reaction timer
-    }
-  }
-//    grow(factor) {
-    // Increase the size of the particle by a certain factor
-//    this.size *= factor;
-//  }
-  
-  // ... Your previous code ...
-
-  createParticle() {
-    noStroke();
-
-    const angleIncrement = TWO_PI / this.numPoints;
-    beginShape();
-    for (let i = 0; i < TWO_PI; i += angleIncrement) {
-      let x = this.x + cos(i) * this.outerRadius;
-      let y = this.y + sin(i) * this.outerRadius;
-      vertex(x, y);
-
-      x = this.x + cos(i + angleIncrement / 1) * this.innerRadius;
-      y = this.y + sin(i + angleIncrement / 1) * this.innerRadius;
-      vertex(x, y);
-    }
-    endShape(CLOSE);
-
+// Add the missing methods to the Particle class
+Particle.prototype.createParticle = function(seed, T1, T2, T3, T4, T5) {
   // Apply traits to determine particle characteristics
-  const rarityWithColorTrait = T1(this.seed, this.colorTrait);
-  const sizeTrait = T2(this.seed);
-  const additionalTrait = T3(this.seed);
-  const directionTrait = T4(this.seed);
-  const lifespanTrait = T5(this.seed);
+  const rarityWithColorTrait = T1(seed, this.colorTrait);
+  const sizeTrait = T2(seed);
+  const additionalTrait = T3(seed);
+  const directionTrait = T4(seed);
+  const lifespanTrait = T5(seed);
 
   // Adjust particle characteristics based on traits
-  const adjustedSize = this.r * sizeTrait;
+  const adjustedSize = this.radius * sizeTrait;
 
   // Use adjusted values to draw the particle
   const adjustedColorWithAlpha = applyColorChangeTrait(this.color, seed);
@@ -357,47 +232,42 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
     adjustedAlpha // Use the alpha value directly from the color object
   );
 
-  ellipse(this.x, this.y, adjustedSize * 7.1);
-}
+  ellipse(this.position.x, this.position.y, adjustedSize * 7.1);
+};
 
-moveParticle() {
-    this.x += this.xSpeed;
-    this.y += this.ySpeed;
+Particle.prototype.moveParticle = function() {
+  this.position.x += this.xSpeed;
+  this.position.y += this.ySpeed;
 
-    if (this.x < 0 || this.x > width) this.xSpeed *= -1;
-    if (this.y < 0 || this.y > height) this.ySpeed *= -1;
-  }
+  if (this.position.x < 0 || this.position.x > width) this.xSpeed *= -1;
+  if (this.position.y < 0 || this.position.y > height) this.ySpeed *= -1;
+};
 
-  
-  joinParticles(particles) {
-    particles.forEach((element) => {
-      let disThreshold = random(121, 121); // Randomize the distance threshold for drawing lines
-      let dis = dist(this.x, this.y, element.x, element.y);
+Particle.prototype.joinParticles = function(particles) {
+  particles.forEach((element) => {
+    let disThreshold = random(100, 100); // Randomize the distance threshold for drawing lines
+    let dis = dist(this.position.x, this.position.y, element.position.x, element.position.y);
 
-      if (dis < disThreshold && this.colorTrait && element.colorTrait) {
-        // Draw lines between particles
-// Define a range for alpha values
-//const minAlpha = 255;
-//const maxAlpha = 255;
+    if (dis < disThreshold && this.colorTrait && element.colorTrait) {
+      // Draw lines between particles
+      const minAlpha = 55;
+      const maxAlpha = 255;
+      let redValue = random(5, 255);
+      let greenValue = random(20, 255);
+      let blueValue = random(20, 255);
+      let alpha = random(minAlpha, maxAlpha);
+      stroke(redValue, greenValue, blueValue, alpha);
+      line(this.position.x, this.position.y, element.position.x, element.position.y);
 
-// Generate a random alpha value within the defined range
-//        let redValue = random(20, 255);
-//let greenValue = random(20, 255);
-//let blueValue = random(20, 255);
-//let alpha = random(minAlpha, maxAlpha);
-//        stroke(redValue, greenValue, blueValue, alpha);
-//        line(this.x, this.y, element.x, element.y);
-
-        if (dis < this.r + element.r) {
-          let newR = max(this.r, element.r) * 1.5;
-          let newX = (this.x + element.x) / 2;
-          let newY = (this.y + element.y) / 2;
-          particles.push(new ParticleExplosion(newX, newY, newR));
-        }
+      if (dis < this.radius + element.radius) {
+        let newR = max(this.radius, element.radius) * 1.5;
+        let newX = (this.position.x + element.position.x) / 2;
+        let newY = (this.position.y + element.position.y) / 2;
+        particles.push(new ParticleExplosion(newX, newY, newR));
       }
-    });
-  } // Add this closing brace to match the opening brace at the beginning of the method
-} // Add this closing brace to match the opening brace of the class
+    }
+  });
+};
     
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
