@@ -123,11 +123,11 @@ function convertSeedToNumber(seedString) {
 }
 
 let lastColorChangeTime = 0;
-const cooldownDuration = 5000; // Cooldown duration in milliseconds (adjust as needed)
+const cooldownDuration = 1000; // Cooldown duration in milliseconds (adjust as needed)
 // Declare the seed variable at a higher scope
 let seed; 
 let particles = [];
-let interval = 4; // Adjust the interval between particle creation
+let interval = 2; // Adjust the interval between particle creation
 // Inside your setup function
 function setup() {
   createCanvas(720, 400);
@@ -141,7 +141,7 @@ function setup() {
   const particle = new Particle();
   particle.createParticle(seed, T1, T2, T3, T4, T5);
 
-  let numParticles = floor(random(20, 190)); // Vary the number of particles
+  let numParticles = floor(random(5, 170)); // Vary the number of particles
   for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
   }
@@ -191,7 +191,7 @@ for (let particle of particles) {
     lastColorChangeTime = currentMillis;
   }
 
-  if (frameCount % interval === 5) {
+  if (frameCount % interval === 4) {
     generateRandomExplosion(particles);
   }
 }
@@ -353,8 +353,8 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
       let y = this.y + sin(i) * this.outerRadius;
       vertex(x, y);
 
-      x = this.x + cos(i + angleIncrement / 2) * this.innerRadius;
-      y = this.y + sin(i + angleIncrement / 2) * this.innerRadius;
+      x = this.x + cos(i + angleIncrement / 1) * this.innerRadius;
+      y = this.y + sin(i + angleIncrement / 1) * this.innerRadius;
       vertex(x, y);
     }
     endShape(CLOSE);
@@ -404,9 +404,9 @@ const minAlpha = 255;
 const maxAlpha = 255;
 
 // Generate a random alpha value within the defined range
-        let redValue = random(40, 255);
-let greenValue = random(50, 255);
-let blueValue = random(50, 255);
+        let redValue = random(20, 255);
+let greenValue = random(20, 255);
+let blueValue = random(20, 255);
 let alpha = random(minAlpha, maxAlpha);
         stroke(redValue, greenValue, blueValue, alpha);
         line(this.x, this.y, element.x, element.y);
