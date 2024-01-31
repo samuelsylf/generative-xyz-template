@@ -170,9 +170,9 @@ for (let i = 0; i < particles.length; i++) {
   particles[i].updateTrail(); // Update trail for each particle
   particles[i].drawTrail(); // Draw trail for each particle
 }
-  for (let i = 0; i < particles.length; i++) {
-  particles[i].drawGlow(); // Draw glow effect for each particle
-}
+//  for (let i = 0; i < particles.length; i++) {
+//  particles[i].drawGlow(); // Draw glow effect for each particle
+//}
   //reactions: 
 // Inside draw() function:
 for (let particle of particles) {
@@ -282,30 +282,7 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
       vertex(this.trail[i].x, this.trail[i].y);
     }
     endShape();
-  }
-  // CPU-intensive Glow
-   drawGlow() {
-    if (this.hasGlow) {
-      // Draw a minimal blurred outline or glow around the particle
-      const glowSize = 0; // Minimal glow size
-      const blurAmount = 0; // Minimal blur amount
-
-      loadPixels();
-      for (let x = -glowSize; x <= glowSize; x++) {
-        for (let y = -glowSize; y <= glowSize; y++) {
-          const d = dist(x, y, 0, 0);
-          if (d <= glowSize) {
-            const index = (this.x + x + (this.y + y) * width) * 2;
-            pixels[index] += 1; // Minimal intensity adjustment
-            pixels[index + 1] += 1; // Minimal intensity adjustment
-            pixels[index + 2] += 1; // Minimal intensity adjustment
-            pixels[index + 3] = max(pixels[index + 3], 70); // Minimal transparency adjustment
-          }
-        }
-      }
-      updatePixels();
-  filter(BLUR, 0); // Adjust the blur radius as needed
-    }
+//  filter(BLUR, 0); // Adjust the blur radius as needed
   }
   //react to
     reactToParticles(particles) {
@@ -400,8 +377,8 @@ moveParticle() {
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
         // Draw lines between particles
 // Define a range for alpha values
-const minAlpha = 255;
-const maxAlpha = 255;
+//const minAlpha = 255;
+//const maxAlpha = 255;
 
 // Generate a random alpha value within the defined range
 //        let redValue = random(20, 255);
