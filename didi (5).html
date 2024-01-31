@@ -144,7 +144,7 @@ function draw() {
   }
 
   // Trigger explosion at a specific interval
-  if (frameCount % interval === 0) {
+  if (frameCount % interval === 5) {
     generateRandomExplosion(particles);
   }
 }
@@ -157,10 +157,19 @@ class Particle {
   }
 
   display() {
+    // Render the particle with depth information
     push();
     translate(this.position.x, this.position.y, this.position.z); // Translate to particle's position
     fill(this.color);
     sphere(this.radius); // Draw a sphere representing the particle
+
+    // Draw translucent spheres around the particle to create the trail effect
+    for (let i = 0; i < 5; i++) {
+      let alpha = map(i, 0, 4, 0, 100); // Adjust alpha value for the trail effect
+      fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
+      sphere(this.radius * 2 + i * 2); // Draw a translucent sphere around the particle
+    }
+    
     pop();
   }
 }
@@ -268,7 +277,6 @@ Particle.prototype.joinParticles = function(particles) {
     }
   });
 };
-    
         // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     </script>
