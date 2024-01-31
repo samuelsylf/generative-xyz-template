@@ -121,7 +121,7 @@ let particles = [];
 let interval = 4; // Adjust the interval between particle creation
 // Inside your setup function
 function setup() {
-  createCanvas(720, 400);
+  createCanvas(720, 400, WEBGL); // Use WEBGL renderer for 3D graphics
   colorMode(HSB);
 
   // Assuming you have a seed value assigned from the sandbox environment
@@ -207,11 +207,25 @@ class Particle {
     this.ySpeed = random(-1, 1);
     this.color = generateRandomColor();
     this.colorTrait = Math.random() > 0.5;
-    this.numPoints = 5; // Number of points in the star
-    this.innerRadius = 5; // Inner radius of the star
-    this.outerRadius = 12; // Outer radius of the star
+//    this.numPoints = 5; // Number of points in the star
+//    this.innerRadius = 5; // Inner radius of the star
+//    this.outerRadius = 12; // Outer radius of the star
+    this.position = createVector(random(width), random(height), random(-100, 100)); // Randomize z-coordinate for 3D effect
+    this.position.x = constrain(this.position.x, 0, width); // Ensure x-coordinate is within canvas width
+    this.position.y = constrain(this.position.y, 0, height); // Ensure y-coordinate is within canvas height
+    this.radius = random(5, 15);
+    this.color = color(random(255), random(255), random(255)); // Randomize color
   }
-  
+
+  display() {
+    fill(this.color);
+    noStroke();
+    push();
+    translate(this.position.x, this.position.y, this.position.z); // Translate to particle's position
+    sphere(this.radius); // Draw a sphere
+    pop();
+  }
+
   // ... Your previous code ...
 
   createParticle() {
