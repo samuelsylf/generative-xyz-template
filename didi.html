@@ -191,7 +191,7 @@ for (let particle of particles) {
     lastColorChangeTime = currentMillis;
   }
 
-  if (frameCount % interval === 4) {
+  if (frameCount % interval === 25) {
     generateRandomExplosion(particles);
   }
 }
@@ -199,7 +199,7 @@ for (let particle of particles) {
 function generateRandomExplosion(particles) {
   let randIndex = floor(random(particles.length));
   let particle = particles[randIndex];
-  let explosionSize = random(3, 10);
+  let explosionSize = random(1, 5);
   particles.splice(randIndex, 1);
   particles.push(new ParticleExplosion(particle.x, particle.y, explosionSize));
 }
@@ -229,9 +229,9 @@ class ParticleExplosion {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.lifespan = 5000; // Adjust lifespan as needed
+    this.lifespan = 50; // Adjust lifespan as needed
     this.color = generateRandomColor(255);
-    this.life = 5000;
+    this.life = 50;
   }
 
   createExplosion() {
@@ -247,8 +247,8 @@ class Particle {
     this.x = random(width);
     this.y = random(height);
     this.r = random(1, 15);
-    this.xSpeed = random(-0.9, 0.9);
-    this.ySpeed = random(-0.8, 0.9);
+    this.xSpeed = random(-0.9, 1.9);
+    this.ySpeed = random(-0.8, 1.9);
     this.color = generateRandomColor();
     this.colorTrait = Math.random() > 0.5;
     this.numPoints = 5; // Number of points in the star
@@ -322,7 +322,7 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
 
   applyReaction() {
     // Example reaction: Change color
-    if (this.reactionTimer === 60) {
+    if (this.reactionTimer === 40) {
       this.originalColor = this.color; // Preserve the current color as the original color
     }
     this.color = this.reactionColor;
@@ -336,10 +336,10 @@ this.originalColor = color(random(250), random(250), random(250)); // Assign a r
       this.reactionTimer--; // Decrement the reaction timer
     }
   }
-    grow(factor) {
+//    grow(factor) {
     // Increase the size of the particle by a certain factor
-    this.size *= factor;
-  }
+//    this.size *= factor;
+//  }
   
   // ... Your previous code ...
 
