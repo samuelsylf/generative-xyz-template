@@ -113,6 +113,7 @@ function convertSeedToNumber(seedString) {
   return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
 }
 
+let blendModes = [];
 let particles = [];
 let seed; // Declare the seed variable at a higher scope
 let interval = 4; // Define the interval for triggering explosions
@@ -135,12 +136,16 @@ function setup() {
 
 function draw() {
   background(0);
+  
+    // Apply trail effect
+  blendMode(DIFFERENCE);
 
-  rotateX(frameCount * 0.01); // Rotate the scene along the x-axis
-  rotateY(frameCount * 0.01); // Rotate the scene along the y-axis
+  rotateX(frameCount * 0.005); // Rotate the scene along the x-axis
+  rotateY(frameCount * 0.005); // Rotate the scene along the y-axis
 
   for (let i = 0; i < particles.length; i++) {
     particles[i].display(); // Ensure that the display function is called for each particle
+    particles[i].applyTrailEffect(); // Apply the trail effect to each particle
   }
 
   // Trigger explosion at a specific interval
@@ -155,14 +160,36 @@ class Particle {
     this.radius = random(5, 15);
     this.color = color(random(360), 80, 80); // Randomize color in HSB color mode
   }
+applyTrailEffect() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], 5); // Adjust the alpha value for the trail effect
+    push();
+    translate(this.position.x, this.position.y, this.position.z - 2); // Offset the transparent sphere slightly behind the particle
+    sphere(this.radius * 1); // Draw a larger transparent sphere behind the particle
+  //
+  this.blendMode = randomBlendMode();
+    blendModes.push(this.blendMode);
+    pop();
+  }
 
   display() {
     push();
     translate(this.position.x, this.position.y, this.position.z); // Translate to particle's position
+    
+    // Set the blend mode for this particle
+    blendMode(this.blendMode);
+    
+    // Draw the particle
     fill(this.color);
     sphere(this.radius); // Draw a sphere representing the particle
+    
     pop();
   }
+}
+// Helper function to get a random blend mode
+function randomBlendMode() {
+  const blendModesList = ['BLEND', 'ADD', 'DARKEST', 'LIGHTEST', 'DIFFERENCE', 'EXCLUSION', 'MULTIPLY', 'SCREEN', 'REPLACE', 'OVERLAY', 'HARD_LIGHT', 'SOFT_LIGHT'];
+  return random(blendModesList);
 }
 
 function generateRandomExplosion(particles) {
@@ -245,7 +272,7 @@ Particle.prototype.moveParticle = function() {
 
 Particle.prototype.joinParticles = function(particles) {
   particles.forEach((element) => {
-    let disThreshold = random(100, 100); // Randomize the distance threshold for drawing lines
+    let disThreshold = random(10, 100); // Randomize the distance threshold for drawing lines
     let dis = dist(this.position.x, this.position.y, element.position.x, element.position.y);
 
     if (dis < disThreshold && this.colorTrait && element.colorTrait) {
