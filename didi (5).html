@@ -136,41 +136,67 @@ function setup() {
 function draw() {
   background(0);
 
-  rotateX(frameCount * 0.01); // Rotate the scene along the x-axis
-  rotateY(frameCount * 0.01); // Rotate the scene along the y-axis
-
   for (let i = 0; i < particles.length; i++) {
-    particles[i].display();
+    particles[i].update(); // Update particle position
+    particles[i].display(); // Display particle
+    interact(particles[i], particles); // Interact with other particles
   }
 
-  // Trigger explosion at a specific interval
-  if (frameCount % interval === 5) {
+  if (frameCount % interval === 4) {
     generateRandomExplosion(particles);
+  }
+}
+
+function interact(particle, others) {
+  for (let other of others) {
+    if (other !== particle) {
+      let distance = particle.position.dist(other.position);
+      if (distance < 50) {
+        // Example interaction: attract particles if they are close
+        let force = p5.Vector.sub(other.position, particle.position).normalize().mult(0.1);
+        particle.velocity.add(force);
+      }
+    }
   }
 }
 
 class Particle {
   constructor() {
-    this.position = createVector(random(-200, 200), random(-200, 200), random(-200, 200)); // Randomize particle position in 3D space
-    this.radius = random(5, 15);
-    this.color = color(random(360), 80, 80); // Randomize color in HSB color mode
+    this.position = createVector(random(-200, 200), random(-200, 200), random(-200, 200));
+    this.radius = random(2, 17);
+    this.color = color(random(360), 80, 80, 200); // Random color with alpha value for transparency
+    this.velocity = p5.Vector.random3D().mult(random(1, 7));
   }
 
   display() {
-    // Render the particle with depth information
     push();
-    translate(this.position.x, this.position.y, this.position.z); // Translate to particle's position
-    fill(this.color);
-    sphere(this.radius); // Draw a sphere representing the particle
+    translate(this.position.x, this.position.y, this.position.z);
 
-    // Draw translucent spheres around the particle to create the trail effect
+    // Assign color based on HSB color mode
+    fill(this.color);
+    sphere(this.radius);
+
     for (let i = 0; i < 5; i++) {
-      let alpha = map(i, 0, 4, 0, 100); // Adjust alpha value for the trail effect
-      fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], alpha);
-      sphere(this.radius * 2 + i * 2); // Draw a translucent sphere around the particle
+      let alpha = map(i, 0, 4, 0, 100);
+      fill(hue(this.color), saturation(this.color), brightness(this.color), alpha);
+      sphere(this.radius * 2 + i * 2);
     }
     
     pop();
+  }
+
+  update() {
+    this.position.add(this.velocity);
+
+    if (this.position.x < -width / 2 || this.position.x > width / 2) {
+      this.velocity.x *= -1;
+    }
+    if (this.position.y < -height / 2 || this.position.y > height / 2) {
+      this.velocity.y *= -1;
+    }
+    if (this.position.z < -width / 2 || this.position.z > width / 2) {
+      this.velocity.z *= -1;
+    }
   }
 }
 
