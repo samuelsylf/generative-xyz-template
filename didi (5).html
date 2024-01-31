@@ -132,7 +132,7 @@ function setup() {
   const particle = new Particle();
   particle.createParticle(seed, T1, T2, T3, T4, T5);
 
-  let numParticles = floor(random(20, 190)); // Vary the number of particles
+  let numParticles = floor(random(15, 175)); // Vary the number of particles
   for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
   }
@@ -148,7 +148,7 @@ function draw() {
     particles[i].joinParticles(particles.slice(i));
   }
 
-  if (frameCount % interval === 5) {
+  if (frameCount % interval === 4) {
     generateRandomExplosion(particles);
   }
 }
@@ -207,12 +207,28 @@ class Particle {
     this.ySpeed = random(-1, 1);
     this.color = generateRandomColor();
     this.colorTrait = Math.random() > 0.5;
+    this.numPoints = 5; // Number of points in the star
+    this.innerRadius = 5; // Inner radius of the star
+    this.outerRadius = 12; // Outer radius of the star
   }
   
   // ... Your previous code ...
 
   createParticle() {
-  noStroke();
+    noStroke();
+
+    const angleIncrement = TWO_PI / this.numPoints;
+    beginShape();
+    for (let i = 0; i < TWO_PI; i += angleIncrement) {
+      let x = this.x + cos(i) * this.outerRadius;
+      let y = this.y + sin(i) * this.outerRadius;
+      vertex(x, y);
+
+      x = this.x + cos(i + angleIncrement / 1) * this.innerRadius;
+      y = this.y + sin(i + angleIncrement / 1) * this.innerRadius;
+      vertex(x, y);
+    }
+    endShape(CLOSE);
 
   // Apply traits to determine particle characteristics
   const rarityWithColorTrait = T1(this.seed, this.colorTrait);
@@ -245,11 +261,10 @@ moveParticle() {
     if (this.x < 0 || this.x > width) this.xSpeed *= -1;
     if (this.y < 0 || this.y > height) this.ySpeed *= -1;
   }
-
   
   joinParticles(particles) {
     particles.forEach((element) => {
-      let disThreshold = random(97, 100); // Randomize the distance threshold for drawing lines
+      let disThreshold = random(100, 100); // Randomize the distance threshold for drawing lines
       let dis = dist(this.x, this.y, element.x, element.y);
 
       if (dis < disThreshold && this.colorTrait && element.colorTrait) {
