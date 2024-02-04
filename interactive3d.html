@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Particle System</title>
+
+    <!-- p5.js library -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+
+    <!-- chroma.js library -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+
+// Trait functions
+function T1(seed, colorTrait) {
+  const rand = mathRand();
+  // Additional logic based on colorTrait
+  if (colorTrait) {
+    // Adjust rarity calculation for colorTrait
+    return rand > 0.1;
+  } else {
+    // Original rarity calculation without colorTrait
+    return rand > 0.2;
+  }
+}
+
+function T2(seed) {
+  const rand = mathRand();
+  // calculate rarity by yourself
+  return rand > 0.06;
+}
+
+function T3(seed) {
+  const rand = mathRand();
+  // calculate rarity by yourself
+  return rand > 0.09 ? 2 : 1; // Updated to return a value instead of boolean
+}
+
+function T4(seed) {
+  const rand = mathRand();
+  // Add more traits as needed
+  return rand > 0.5 ? 1 : -1; // Example trait influencing direction
+}
+
+function T5(seed) {
+  const rand = mathRand();
+  // Add more traits as needed
+  return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
+}
+
+function applyColorChangeTrait(color, seed) {
+  const rand = mathRand();
+  const transparency = map(rand, 0.99, 1, 10, 255); // Adjust alpha/transparency based on rand
+
+  if (rand > 0.7) {
+    color.setAlpha(transparency); // Set alpha directly on the color object
+  } else {
+    color.setAlpha(255); // Set full alpha if the condition is not met
+  }
+
+  return color;
+}
+
+// Populate the $generativeTraits object in the window
+window.$generativeTraits = {
+  "T1": T1,
+  "T2": T2,
+  "T3": T3,
+  "T4": T4,
+  "T5": T5,
+};
+
+// Define the sfc32 function
+function sfc32(a, b, c, d) {
+  return function () {
+    a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
+    let t = (a + b) | 0;
+    a = b ^ b >>> 9;
+    b = c + (c << 3) | 0;
+    c = (c << 21 | c >>> 11);
+    d = d + 1 | 0;
+    t = t + d | 0;
+    c = c + t | 0;
+    return (t >>> 0) / 4294967296;
+  }
+}
+
+let mathRand = sfc32(0, 0, 0, 1);
+
+// Convert seed string to a numerical value
+function convertSeedToNumber(seedString) {
+  let seedNumber = 0;
+  for (let i = 0; i < seedString.length; i++) {
+    seedNumber = (seedNumber * 31 + seedString.charCodeAt(i)) & 0xffffffff;
+  }
+  return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
+}
+
+let particles = [];
+let seed; // Declare the seed variable at a higher scope
+let interval = 6; // Define the interval for triggering explosions
+let walletInput;
+let addButton;
+
+function setup() {
+  createCanvas(800, 600, WEBGL);
+  colorMode(HSB, 360, 100, 100);
+
+  walletInput = createInput();
+  walletInput.position(20, height + 20);
+
+  addButton = createButton('Add Wallet');
+  addButton.position(walletInput.x + walletInput.width + 10, height + 20);
+  addButton.mousePressed(addWallet);
+}
+
+function addWallet() {
+  let walletAddress = walletInput.value();
+  particles.push(new Particle(walletAddress));
+
+  // Assuming you have a seed value assigned from the sandbox environment
+  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
+  seed = convertSeedToNumber(seedString);
+
+  for (let i = 0; i < 100; i++) {
+    particles.push(new Particle());
+  }
+
+  ambientLight(200); // Add ambient light to illuminate the scene
+  pointLight(255, 255, 255, 0, 0, 300); // Add a point light to highlight the particles
+}
+
+function draw() {
+  background(0);
+
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].update(); // Update particle position
+    particles[i].display(); // Display particle
+    interact(particles[i], particles); // Interact with other particles
+  }
+
+  if (frameCount % interval === 4) {
+    generateRandomExplosion(particles);
+  }
+}
+
+function interact(particle, others) {
+  for (let other of others) {
+    if (other !== particle) {
+      let distance = particle.position.dist(other.position);
+      if (distance < 50) {
+        // Example interaction: attract particles if they are close
+        let force = p5.Vector.sub(other.position, particle.position).normalize().mult(0.1);
+        particle.velocity.add(force);
+      }
+    }
+  }
+}
+
+class Transaction {
+  constructor(sender, receiver, amount) {
+    this.sender = sender;
+    this.receiver = receiver;
+    this.amount = amount;
+  }
+}
+
+class Particle {
+  constructor(walletAddress) {
+    this.position = createVector(random(-200, 200), random(-200, 200), random(-200, 200));
+    this.radius = random(5, 15);
+    this.color = color(random(360), 80, 80, 200);
+    this.velocity = p5.Vector.random3D().mult(random(1, 3));
+    this.transactions = [];
+    this.walletAddress = walletAddress;
+  }
+
+  display() {
+    push();
+    translate(this.position.x, this.position.y, this.position.z);
+    fill(this.color);
+    sphere(this.radius);
+    for (let i = 0; i < this.transactions.length; i++) {
+      let transaction = this.transactions[i];
+      let receiverPosition = transaction.receiver.position;
+      strokeWeight(transaction.amount / 10);
+      stroke(255, 100);
+      line(0, 0, 0, receiverPosition.x, receiverPosition.y, receiverPosition.z);
+    }
+    pop();
+  }
+
+  update() {
+    this.position.add(this.velocity);
+
+    if (this.position.x < -width / 2 || this.position.x > width / 2) {
+      this.velocity.x *= -1;
+    }
+    if (this.position.y < -height / 2 || this.position.y > height / 2) {
+      this.velocity.y *= -1;
+    }
+    if (this.position.z < -width / 2 || this.position.z > width / 2) {
+      this.velocity.z *= -1;
+    }
+  }
+
+  addTransaction(receiver, amount) {
+    this.transactions.push(new Transaction(this, receiver, amount));
+  }
+}
+
+function setup() {
+  createCanvas(800, 600, WEBGL);
+  colorMode(HSB, 360, 100, 100);
+  for (let i = 0; i < 10; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function draw() {
+  background(0);
+  rotateX(frameCount * 0.01);
+  rotateY(frameCount * 0.01);
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].display();
+    particles[i].update();
+  }
+  if (frameCount % interval === 4) {
+    let sender = particles[floor(random(particles.length))];
+    let receiver = particles[floor(random(particles.length))];
+    let amount = random(1, 10);
+    sender.addTransaction(receiver, amount);
+  }
+}
+
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(3, 10);
+  particles.splice(randIndex, 1);
+  particles.push(new ParticleExplosion(particle.position.x, particle.position.y, explosionSize));
+}
+
+// Define generateRandomColor function here
+function generateRandomColor(alpha) {
+  let hue = random(5, 360); // Random hue value between 5 and 360
+  let saturation = random(50, 250); // Random saturation value between 5 and 200
+  let brightness = random(50, 250); // Random brightness value between 5 and 200
+
+  // Check if alpha is a valid number, otherwise default to a value of 255 (fully opaque)
+  if (typeof alpha !== 'number' || isNaN(alpha)) {
+    alpha = 155;
+  }
+
+  // Ensure that RGB values are close to their maximum when alpha is high
+  let maxRGB = random(2, 255);
+  if (alpha > 200) {
+    brightness = maxRGB;
+  }
+
+  return color(hue, saturation, brightness, alpha);
+}
+
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.position = createVector(x, y);
+    this.r = r;
+    this.color = generateRandomColor(255);
+    this.life = 245;
+  }
+
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.position.x, this.position.y, this.r * 2);
+    this.life -= 5;
+  }
+}
+
+// Add the missing methods to the Particle class
+Particle.prototype.createParticle = function(seed, T1, T2, T3, T4, T5) {
+  // Apply traits to determine particle characteristics
+  const rarityWithColorTrait = T1(seed, this.colorTrait);
+  const sizeTrait = T2(seed);
+  const additionalTrait = T3(seed);
+  const directionTrait = T4(seed);
+  const lifespanTrait = T5(seed);
+
+  // Adjust particle characteristics based on traits
+  const adjustedSize = this.radius * sizeTrait;
+
+  // Use adjusted values to draw the particle
+  const adjustedColorWithAlpha = applyColorChangeTrait(this.color, seed);
+  const adjustedAlpha = map(adjustedSize, 1, 10, 1, 0.2);
+
+  fill(
+    adjustedColorWithAlpha.levels[0],
+    adjustedColorWithAlpha.levels[1],
+    adjustedColorWithAlpha.levels[2],
+    adjustedAlpha // Use the alpha value directly from the color object
+  );
+
+  ellipse(this.position.x, this.position.y, adjustedSize * 7.1);
+};
+
+Particle.prototype.moveParticle = function() {
+  this.position.x += this.xSpeed;
+  this.position.y += this.ySpeed;
+
+  if (this.position.x < 0 || this.position.x > width) this.xSpeed *= -1;
+  if (this.position.y < 0 || this.position.y > height) this.ySpeed *= -1;
+};
+
+Particle.prototype.joinParticles = function(particles) {
+  particles.forEach((element) => {
+    let disThreshold = random(50, 100); // Randomize the distance threshold for drawing lines
+    let dis = dist(this.position.x, this.position.y, element.position.x, element.position.y);
+
+    if (dis < disThreshold && this.colorTrait && element.colorTrait) {
+      // Draw lines between particles
+      const minAlpha = 55;
+      const maxAlpha = 255;
+      let redValue = random(50, 255);
+      let greenValue = random(20, 255);
+      let blueValue = random(20, 255);
+      let alpha = random(minAlpha, maxAlpha);
+      stroke(redValue, greenValue, blueValue, alpha);
+      line(this.position.x, this.position.y, element.position.x, element.position.y);
+
+      if (dis < this.radius + element.radius) {
+        let newR = max(this.radius, element.radius) * 1.5;
+        let newX = (this.position.x + element.position.x) / 2;
+        let newY = (this.position.y + element.position.y) / 2;
+        particles.push(new ParticleExplosion(newX, newY, newR));
+      }
+    }
+  });
+};
+        // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your script for lib here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+    </script>
+
+    <script id="snippet-random-code" type="text/javascript">
+
+        // DO NOT EDIT THIS SECTION
+
+        let seed = window.location.href.split('/').find(t => t.includes('i0'));
+
+        if (seed == null) {
+            const alphabet = "0123456789abcdefghijklmnopqrstuvwsyz";
+            seed = new URLSearchParams(window.location.search).get("seed") || Array(64).fill(0).map(_ => alphabet[(Math.random() * alphabet.length) | 0]).join('') + "i0";
+        } else {
+            let pattern = "seed=";
+            for (let i = 0; i < seed.length - pattern.length; ++i) {
+                if (seed.substring(i, i + pattern.length) == pattern) {
+                    seed = seed.substring(i + pattern.length);
+                    break;
+                }
+            }
+        }
+
+        function cyrb128($) {
+            let _ = 1779033703, u = 3144134277, i = 1013904242, l = 2773480762;
+            for (let n = 0, r; n < $.length; n++) _ = u ^ Math.imul(_ ^ (r = $.charCodeAt(n)), 597399067), u = i ^ Math.imul(u ^ r, 2869860233), i = l ^ Math.imul(i ^ r, 951274213), l = _ ^ Math.imul(l ^ r, 2716044179);
+            return _ = Math.imul(i ^ _ >>> 18, 597399067), u = Math.imul(l ^ u >>> 22, 2869860233), i = Math.imul(_ ^ i >>> 17, 951274213), l = Math.imul(u ^ l >>> 19, 2716044179), [(_ ^ u ^ i ^ l) >>> 0, (u ^ _) >>> 0, (i ^ _) >>> 0, (l ^ _) >>> 0]
+        }
+
+        function sfc32($, _, u, i) {
+            return function () {
+                u >>>= 0, i >>>= 0;
+                var l = ($ >>>= 0) + (_ >>>= 0) | 0;
+                return $ = _ ^ _ >>> 9, _ = u + (u << 3) | 0, u = (u = u << 21 | u >>> 11) + (l = l + (i = i + 1 | 0) | 0) | 0, (l >>> 0) / 4294967296
+            }
+        }
+
+        // IMPORTANT: Instead of Math.random(), use this function mathRand() for random number generation.
+        // This function generates a random number between 0 and 1 with on-chain seed.
+
+        let mathRand = sfc32(...cyrb128(seed));
+
+</script>
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+    const rand = mathRand();
+//old place for trait functions
+</script>
+  
+<script>
+        const container = document.createElement("div")
+        container.innerHTML = "<span>seed: " + seed + "</span><br>";
+        document.body.prepend(container)
+
+        const canvas = document.getElementById("generativeCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ Add your code here ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    </script>
+</body>
+</html>
