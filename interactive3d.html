@@ -242,9 +242,9 @@ class Transaction {
       return; // Animation finished
     }
     let lerpedPos = p5.Vector.lerp(this.sender.position, this.receiver.position, progress);
-    let offset = sin(progress * TWO_PI) * 10; // Adjust the amplitude of the wave here
+    let offset = sin(progress * TWO_PI) * 100; // Adjust the amplitude of the wave here
     let lerpedOffsetPos = p5.Vector.lerp(this.sender.position, this.receiver.position, progress + offset);
-    strokeWeight(this.amount / 10);
+    strokeWeight(this.amount / 40);
     stroke(255, 100);
     line(this.sender.position.x, this.sender.position.y, this.sender.position.z, lerpedOffsetPos.x, lerpedOffsetPos.y, lerpedOffsetPos.z);
     line(lerpedOffsetPos.x, lerpedOffsetPos.y, lerpedOffsetPos.z, lerpedPos.x, lerpedPos.y, lerpedPos.z);
