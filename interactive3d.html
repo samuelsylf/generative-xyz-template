@@ -113,98 +113,78 @@ function convertSeedToNumber(seedString) {
   return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
 }
 
-let particles = [];
 let seed; // Declare the seed variable at a higher scope
-let interval = 6; // Define the interval for triggering explosions
+let particles = [];
 let walletInput;
 let addButton;
+let interval = 6; // Define the interval for triggering explosions
 
 function setup() {
   createCanvas(800, 600, WEBGL);
   colorMode(HSB, 360, 100, 100);
-
+  
   walletInput = createInput();
   walletInput.position(20, height + 20);
 
   addButton = createButton('Add Wallet');
   addButton.position(walletInput.x + walletInput.width + 10, height + 20);
   addButton.mousePressed(addWallet);
+
+  for (let i = 0; i < 10; i++) {
+    particles.push(new Particle());
+  }
 }
 
 function addWallet() {
-  let walletAddress = walletInput.value();
-  particles.push(new Particle(walletAddress));
-
-  // Assuming you have a seed value assigned from the sandbox environment
-  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
-  seed = convertSeedToNumber(seedString);
-
-  for (let i = 0; i < 100; i++) {
-    particles.push(new Particle());
+  let walletAddress = walletInput.value().trim(); // Get the input value and remove leading/trailing whitespace
+  // Check if the input looks like a Bech32 Bitcoin address
+  if (isValidBech32Address(walletAddress)) {
+    particles.push(new Particle(walletAddress));
+  } else {
+    console.log("Invalid Bitcoin address format!"); // Log an error if the input format is incorrect
   }
+}
 
-  ambientLight(200); // Add ambient light to illuminate the scene
-  pointLight(255, 255, 255, 0, 0, 300); // Add a point light to highlight the particles
+// Function to check if a string is a valid Bech32 Bitcoin address
+function isValidBech32Address(address) {
+  // Implement your logic to validate Bech32 Bitcoin addresses here
+  // This could involve parsing and verifying the address format according to the Bech32 standard
+  // You may need to use a library or API to perform this validation
+  // For simplicity, you can use a basic regex pattern matching
+  return address.match(/^bc1[a-zA-HJ-NP-Z0-9]{8,87}$/) !== null;
 }
 
 function draw() {
   background(0);
-
+  rotateX(frameCount * 0.01);
+  rotateY(frameCount * 0.01);
   for (let i = 0; i < particles.length; i++) {
-    particles[i].update(); // Update particle position
-    particles[i].display(); // Display particle
-    interact(particles[i], particles); // Interact with other particles
+    particles[i].display();
+    particles[i].update();
+    particles[i].joinParticles(particles); // Update particle interactions
   }
-
   if (frameCount % interval === 4) {
-    generateRandomExplosion(particles);
-  }
+    let sender = particles[floor(random(particles.length))];
+    let receiver = particles[floor(random(particles.length))];
+    let amount = random(1, 10);
+    sender.addTransaction(receiver, amount);
+    // Inside draw() function:
+for (let i = 0; i < particles.length; i++) {
+  particles[i].display(); // Display particle
+  particles[i].update(); // Update particle position
+  interact(particles[i], particles); // Interact with other particles
 }
-
-function interact(particle, others) {
-  for (let other of others) {
-    if (other !== particle) {
-      let distance = particle.position.dist(other.position);
-      if (distance < 50) {
-        // Example interaction: attract particles if they are close
-        let force = p5.Vector.sub(other.position, particle.position).normalize().mult(0.1);
-        particle.velocity.add(force);
-      }
-    }
-  }
-}
-
-class Transaction {
-  constructor(sender, receiver, amount) {
-    this.sender = sender;
-    this.receiver = receiver;
-    this.amount = amount;
   }
 }
 
 class Particle {
-  constructor(walletAddress) {
-    this.position = createVector(random(-200, 200), random(-200, 200), random(-200, 200));
+  constructor(walletAddress = null) {
+    this.position = createVector(random(-width / 2, width / 2), random(-height / 2, height / 2), random(-width / 2, width / 2));
+    this.velocity = createVector(random(-1, 1), random(-1, 1), random(-1, 1));
     this.radius = random(5, 15);
-    this.color = color(random(360), 80, 80, 200);
-    this.velocity = p5.Vector.random3D().mult(random(1, 3));
+    this.color = generateRandomColor(255);
     this.transactions = [];
     this.walletAddress = walletAddress;
-  }
-
-  display() {
-    push();
-    translate(this.position.x, this.position.y, this.position.z);
-    fill(this.color);
-    sphere(this.radius);
-    for (let i = 0; i < this.transactions.length; i++) {
-      let transaction = this.transactions[i];
-      let receiverPosition = transaction.receiver.position;
-      strokeWeight(transaction.amount / 10);
-      stroke(255, 100);
-      line(0, 0, 0, receiverPosition.x, receiverPosition.y, receiverPosition.z);
-    }
-    pop();
   }
 
   update() {
@@ -221,32 +201,68 @@ class Particle {
     }
   }
 
+  display() {
+    push();
+    translate(this.position.x, this.position.y, this.position.z);
+    fill(this.color);
+    sphere(this.radius);
+    pop();
+  }
+
+  joinParticles(particles) {
+    for (let element of particles) {
+      if (element !== this) {
+        let distance = this.position.dist(element.position);
+        if (distance < 50) {
+          // Example interaction: attract particles if they are close
+          let force = p5.Vector.sub(element.position, this.position).normalize().mult(0.1);
+          this.velocity.add(force);
+        }
+      }
+    }
+  }
+
   addTransaction(receiver, amount) {
     this.transactions.push(new Transaction(this, receiver, amount));
   }
 }
 
-function setup() {
-  createCanvas(800, 600, WEBGL);
-  colorMode(HSB, 360, 100, 100);
-  for (let i = 0; i < 10; i++) {
-    particles.push(new Particle());
+class Transaction {
+  constructor(sender, receiver, amount) {
+    this.sender = sender;
+    this.receiver = receiver;
+    this.amount = amount;
+    this.startTime = millis();
+    this.duration = 1000; // Duration of the wave animation in milliseconds
+  }
+
+  display() {
+    let progress = (millis() - this.startTime) / this.duration;
+    if (progress > 1) {
+      return; // Animation finished
+    }
+    let lerpedPos = p5.Vector.lerp(this.sender.position, this.receiver.position, progress);
+    let offset = sin(progress * TWO_PI) * 10; // Adjust the amplitude of the wave here
+    let lerpedOffsetPos = p5.Vector.lerp(this.sender.position, this.receiver.position, progress + offset);
+    strokeWeight(this.amount / 10);
+    stroke(255, 100);
+    line(this.sender.position.x, this.sender.position.y, this.sender.position.z, lerpedOffsetPos.x, lerpedOffsetPos.y, lerpedOffsetPos.z);
+    line(lerpedOffsetPos.x, lerpedOffsetPos.y, lerpedOffsetPos.z, lerpedPos.x, lerpedPos.y, lerpedPos.z);
   }
 }
 
-function draw() {
-  background(0);
-  rotateX(frameCount * 0.01);
-  rotateY(frameCount * 0.01);
-  for (let i = 0; i < particles.length; i++) {
-    particles[i].display();
-    particles[i].update();
-  }
-  if (frameCount % interval === 4) {
-    let sender = particles[floor(random(particles.length))];
-    let receiver = particles[floor(random(particles.length))];
-    let amount = random(1, 10);
-    sender.addTransaction(receiver, amount);
+// Particle class...
+
+function interact(particle, others) {
+  for (let other of others) {
+    if (other !== particle) {
+      let distance = particle.position.dist(other.position);
+      if (distance < 50) {
+        // Example interaction: attract particles if they are close
+        let force = p5.Vector.sub(other.position, particle.position).normalize().mult(0.1);
+        particle.velocity.add(force);
+      }
+    }
   }
 }
 
@@ -290,7 +306,7 @@ class ParticleExplosion {
     noStroke();
     fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
     ellipse(this.position.x, this.position.y, this.r * 2);
-    this.life -= 5;
+    this.life -= 6;
   }
 }
 
@@ -330,7 +346,7 @@ Particle.prototype.moveParticle = function() {
 
 Particle.prototype.joinParticles = function(particles) {
   particles.forEach((element) => {
-    let disThreshold = random(50, 100); // Randomize the distance threshold for drawing lines
+    let disThreshold = random(10, 200); // Randomize the distance threshold for drawing lines
     let dis = dist(this.position.x, this.position.y, element.position.x, element.position.y);
 
     if (dis < disThreshold && this.colorTrait && element.colorTrait) {
