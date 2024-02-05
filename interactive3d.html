@@ -113,6 +113,73 @@ function convertSeedToNumber(seedString) {
   return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
 }
 
+// Initialize WebGL context
+const canvas = document.getElementById('canvas');
+const gl = canvas.getContext('webgl');
+
+// Define vertex and fragment shader source code
+const vertexShaderSource = `
+    attribute vec4 position;
+    void main() {
+        gl_Position = position;
+    }
+`;
+
+const fragmentShaderSource = `
+    precision mediump float;
+    void main() {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0); // Black color for now
+    }
+`;
+
+// Create and compile shaders
+const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+gl.shaderSource(vertexShader, vertexShaderSource);
+gl.compileShader(vertexShader);
+
+const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+gl.shaderSource(fragmentShader, fragmentShaderSource);
+gl.compileShader(fragmentShader);
+
+// Create and link shader program
+const shaderProgram = gl.createProgram();
+gl.attachShader(shaderProgram, vertexShader);
+gl.attachShader(shaderProgram, fragmentShader);
+gl.linkProgram(shaderProgram);
+gl.useProgram(shaderProgram);
+
+// Set up vertex data
+const vertices = new Float32Array([
+    -1.0, -1.0,
+    1.0, -1.0,
+    -1.0, 1.0,
+    1.0, 1.0
+]);
+
+const vertexBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+const positionAttributeLocation = gl.getAttribLocation(shaderProgram, "position");
+gl.enableVertexAttribArray(positionAttributeLocation);
+gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+// Render loop
+function render() {
+    // Clear canvas
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // Draw sky effect (to be implemented)
+    // ...
+
+    // Request next frame
+    requestAnimationFrame(render);
+}
+
+// Start render loop
+render();
+
 let seed; // Declare the seed variable at a higher scope
 let particles = [];
 let walletInput;
