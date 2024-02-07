@@ -254,6 +254,7 @@ class Particle {
     this.position = createVector(random(-width / 2, width / 2), random(-height / 2, height / 2), random(-width / 2, width / 2));
     this.velocity = createVector(random(-1, 1), random(-1, 1), random(-1, 1));
     this.radius = random(3, 19);
+    // Generate color with seed
     this.color = generateRandomColor(255);
     this.transactions = [];
     this.walletAddress = walletAddress;
@@ -280,16 +281,21 @@ class Particle {
     if (this.history.length > this.historyLength) {
       this.history.splice(0, 1); // Remove oldest position
     // Draw particle trails
-    if (this.history.length > 1) {
+    if (this.sender.history.length > 1) {
       noFill();
-      strokeWeight(1);
       beginShape();
-      for (let i = 0; i < this.history.length; i++) {
-        let pos = this.history[i];
+      for (let i = 0; i < this.sender.history.length; i++) {
+        let pos = this.sender.history[i];
+        let trailColor = lerpColor(this.trailColors[i % this.trailColors.length], this.trailColors[(i + 1) % this.trailColors.length], progress);
+        stroke(trailColor);
         vertex(pos.x, pos.y, pos.z);
       }
       endShape();
     }
+          strokeWeight(this.amount / 40);
+    stroke(255, 100);
+    line(this.sender.position.x, this.sender.position.y, this.sender.position.z, lerpedOffsetPos.x, lerpedOffsetPos.y, lerpedOffsetPos.z);
+    line(lerpedOffsetPos.x, lerpedOffsetPos.y, lerpedOffsetPos.z, lerpedPos.x, lerpedPos.y, lerpedPos.z);
   }
 }
 
@@ -341,9 +347,9 @@ class Transaction {
       return; // Animation finished
     }
     let lerpedPos = p5.Vector.lerp(this.sender.position, this.receiver.position, progress);
-    let offset = sin(progress * TWO_PI) * 100; // Adjust the amplitude of the wave here
+    let offset = sin(progress * TWO_PI) * 200; // Adjust the amplitude of the wave here
     let lerpedOffsetPos = p5.Vector.lerp(this.sender.position, this.receiver.position, progress + offset);
-    strokeWeight(this.amount / 40);
+    strokeWeight(this.amount / 60);
     stroke(255, 100);
     line(this.sender.position.x, this.sender.position.y, this.sender.position.z, lerpedOffsetPos.x, lerpedOffsetPos.y, lerpedOffsetPos.z);
     line(lerpedOffsetPos.x, lerpedOffsetPos.y, lerpedOffsetPos.z, lerpedPos.x, lerpedPos.y, lerpedPos.z);
