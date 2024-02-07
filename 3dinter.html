@@ -225,6 +225,8 @@ function isValidBech32Address(address) {
   // For simplicity, you can use a basic regex pattern matching
   return address.match(/^bc1[a-zA-HJ-NP-Z0-9]{8,87}$/) !== null;
 }
+let respawnInterval = 600; // Time interval for respawning particles (in frames)
+let lastRespawnFrame = 0;
 
 function draw() {
   background(0);
@@ -246,6 +248,23 @@ for (let i = 0; i < particles.length; i++) {
   particles[i].update(); // Update particle position
   interact(particles[i], particles); // Interact with other particles
 }
+      // Respawn particles if the number falls below a certain threshold
+  if (frameCount - lastRespawnFrame > respawnInterval && particles.length < 100) {
+    respawnParticles();
+    lastRespawnFrame = frameCount;
+  }
+  
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].display();
+    particles[i].update();
+    particles[i].joinParticles(particles); // Update particle interactions
+  }
+  }
+}
+function respawnParticles() {
+  // Add new particles to the array
+  for (let i = 0; i < 10; i++) {
+    particles.push(new Particle());
   }
 }
 
@@ -413,7 +432,7 @@ class ParticleExplosion {
     noStroke();
     fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
     ellipse(this.position.x, this.position.y, this.r * 2);
-    this.life -= 6;
+    this.life -= 1;
   }
 }
 
