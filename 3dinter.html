@@ -198,8 +198,12 @@ function setup() {
   addButton.position(walletInput.x + walletInput.width + 10, height + 20);
   addButton.mousePressed(addWallet);
 
-  for (let i = 0; i < 10; i++) {
-    particles.push(new Particle());
+  // Use seed-based generation for particles
+  let numParticles = floor(map(mathRand(), 0, 1, 10, 100)); // Adjust the range as needed
+
+  // Create particles
+  for (let i = 0; i < numParticles; i++) {
+    particles.push(new Particle(seed)); // Pass seed to each particle
   }
 }
 
@@ -249,13 +253,13 @@ class Particle {
   constructor(walletAddress = null) {
     this.position = createVector(random(-width / 2, width / 2), random(-height / 2, height / 2), random(-width / 2, width / 2));
     this.velocity = createVector(random(-1, 1), random(-1, 1), random(-1, 1));
-    this.radius = random(5, 15);
+    this.radius = random(3, 19);
     this.color = generateRandomColor(255);
     this.transactions = [];
     this.walletAddress = walletAddress;
     // Initialize particle history for trails
     this.history = [];
-    this.historyLength = 200; // Adjust the length of the history array as needed
+    this.historyLength = 100; // Adjust the length of the history array as needed
   }
 
   update() {
@@ -352,7 +356,7 @@ function interact(particle, others) {
   for (let other of others) {
     if (other !== particle) {
       let distance = particle.position.dist(other.position);
-      if (distance < 50) {
+      if (distance < 30) {
         // Example interaction: attract particles if they are close
         let force = p5.Vector.sub(other.position, particle.position).normalize().mult(0.1);
         particle.velocity.add(force);
@@ -370,7 +374,9 @@ function generateRandomExplosion(particles) {
 }
 
 // Define generateRandomColor function here
-function generateRandomColor(alpha) {
+function generateRandomColor(alpha, seed) {
+  // Use seed for color variation
+  mathRand = sfc32(seed, seed, seed, seed);
   let hue = random(5, 360); // Random hue value between 5 and 360
   let saturation = random(50, 250); // Random saturation value between 5 and 200
   let brightness = random(50, 250); // Random brightness value between 5 and 200
