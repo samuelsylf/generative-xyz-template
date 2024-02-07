@@ -255,7 +255,7 @@ class Particle {
     this.walletAddress = walletAddress;
     // Initialize particle history for trails
     this.history = [];
-    this.historyLength = 20; // Adjust the length of the history array as needed
+    this.historyLength = 200; // Adjust the length of the history array as needed
   }
 
   update() {
@@ -301,9 +301,16 @@ class Particle {
     for (let element of particles) {
       if (element !== this) {
         let distance = this.position.dist(element.position);
+        
+        // Calculate color difference
+        let colorDifference = p5.Vector.dist(this.color.levels, element.color.levels);
+
+        // Adjust interaction force based on color difference
+        let forceMagnitude = map(colorDifference, 0, 441.67, 1, 0); // Map color difference to force magnitude
+
         if (distance < 50) {
           // Example interaction: attract particles if they are close
-          let force = p5.Vector.sub(element.position, this.position).normalize().mult(0.1);
+          let force = p5.Vector.sub(element.position, this.position).normalize().mult(0.1 * forceMagnitude);
           this.velocity.add(force);
         }
       }
@@ -434,7 +441,7 @@ Particle.prototype.moveParticle = function() {
 
 Particle.prototype.joinParticles = function(particles) {
   particles.forEach((element) => {
-    let disThreshold = random(10, 200); // Randomize the distance threshold for drawing lines
+    let disThreshold = random(10, 170); // Randomize the distance threshold for drawing lines
     let dis = dist(this.position.x, this.position.y, element.position.x, element.position.y);
 
     if (dis < disThreshold && this.colorTrait && element.colorTrait) {
