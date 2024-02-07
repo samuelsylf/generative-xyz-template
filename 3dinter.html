@@ -261,12 +261,6 @@ for (let i = 0; i < particles.length; i++) {
   }
   }
 }
-function respawnParticles() {
-  // Add new particles to the array
-  for (let i = 0; i < 10; i++) {
-    particles.push(new Particle());
-  }
-}
 
 class Particle {
   constructor(walletAddress = null) {
@@ -432,7 +426,7 @@ class ParticleExplosion {
     noStroke();
     fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
     ellipse(this.position.x, this.position.y, this.r * 2);
-    this.life -= 100;
+    this.life -= 1;
   }
 }
 
