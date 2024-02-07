@@ -253,6 +253,9 @@ class Particle {
     this.color = generateRandomColor(255);
     this.transactions = [];
     this.walletAddress = walletAddress;
+    // Initialize particle history for trails
+    this.history = [];
+    this.historyLength = 20; // Adjust the length of the history array as needed
   }
 
   update() {
@@ -266,8 +269,25 @@ class Particle {
     }
     if (this.position.z < -width / 2 || this.position.z > width / 2) {
       this.velocity.z *= -1;
+          }
+      // Store current position in history
+    this.history.push(createVector(this.position.x, this.position.y, this.position.z));
+    // Limit the length of the history array
+    if (this.history.length > this.historyLength) {
+      this.history.splice(0, 1); // Remove oldest position
+    // Draw particle trails
+    if (this.history.length > 1) {
+      noFill();
+      strokeWeight(1);
+      beginShape();
+      for (let i = 0; i < this.history.length; i++) {
+        let pos = this.history[i];
+        vertex(pos.x, pos.y, pos.z);
+      }
+      endShape();
     }
   }
+}
 
   display() {
     push();
