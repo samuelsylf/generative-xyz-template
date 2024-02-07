@@ -182,6 +182,7 @@ function render() {
 render();
 
 let seed; // Declare the seed variable at a higher scope
+let particles = [];
 let walletInput;
 let addButton;
 let interval = 6; // Define the interval for triggering explosions
@@ -200,10 +201,9 @@ function setup() {
   // Use seed-based generation for particles
   let numParticles = floor(map(mathRand(), 0, 1, 10, 100)); // Adjust the range as needed
 
-  // Initialize other elements and variables
-  particles = [];
-  for (let i = 0; i < 50; i++) {
-    particles.push(new Particle());
+  // Create particles
+  for (let i = 25; i < numParticles; i++) {
+    particles.push(new Particle(seed)); // Pass seed to each particle
   }
 }
 
