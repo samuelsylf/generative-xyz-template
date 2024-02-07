@@ -185,27 +185,20 @@ let seed; // Declare the seed variable at a higher scope
 let walletInput;
 let addButton;
 let interval = 6; // Define the interval for triggering explosions
-// Initialize WebGL context
-let canvas;
-let gl;
 
 function setup() {
-  // Check if canvas and gl are already initialized
-  if (!canvas) {
-    // Create canvas and WebGL context
-    canvas = createCanvas(800, 600, WEBGL); // Create canvas with WebGL support
-    gl = canvas.getContext('webgl');
-  }
+  createCanvas(800, 600, WEBGL);
+  colorMode(HSB, 360, 100, 100);
+  
+  walletInput = createInput();
+  walletInput.position(20, height + 20);
 
-  // Initialize wallet input and button after canvas is created
-  if (!walletInput) {
-    walletInput = createInput();
-    walletInput.position(20, height + 20);
+  addButton = createButton('Add Wallet');
+  addButton.position(walletInput.x + walletInput.width + 10, height + 20);
+  addButton.mousePressed(addWallet);
 
-    addButton = createButton('Add Wallet');
-    addButton.position(walletInput.x + walletInput.width + 10, height + 20);
-    addButton.mousePressed(addWallet);
-  }
+  // Use seed-based generation for particles
+  let numParticles = floor(map(mathRand(), 0, 1, 10, 100)); // Adjust the range as needed
 
   // Initialize other elements and variables
   particles = [];
