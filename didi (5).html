@@ -113,8 +113,8 @@ function convertSeedToNumber(seedString) {
   return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
 }
 
-let particles = [];
 let seed; // Declare the seed variable at a higher scope
+let particles = [];
 let interval = 4; // Define the interval for triggering explosions
 
 function setup() {
@@ -122,8 +122,8 @@ function setup() {
   colorMode(HSB, 360, 100, 100);
 
   // Assuming you have a seed value assigned from the sandbox environment
-  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
-  seed = convertSeedToNumber(seedString);
+//  const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
+//  seed = convertSeedToNumber(seedString);
 
   for (let i = 0; i < 100; i++) {
     particles.push(new Particle());
@@ -131,6 +131,8 @@ function setup() {
 
   ambientLight(200); // Add ambient light to illuminate the scene
   pointLight(255, 255, 255, 0, 0, 300); // Add a point light to highlight the particles
+    // Use seed-based generation for particles
+  let numParticles = floor(map(mathRand(), 0, 1, 10, 100)); // Adjust the range as needed
 }
 
 function draw() {
