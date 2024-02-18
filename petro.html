@@ -1,0 +1,261 @@
+// Trait functions
+function T1(seed, colorTrait) {
+  const rand = mathRand();
+  // Additional logic based on colorTrait
+  if (colorTrait) {
+    // Adjust rarity calculation for colorTrait
+    return rand > 0.1;
+  } else {
+    // Original rarity calculation without colorTrait
+    return rand > 0.2;
+  }
+}
+
+function T2(seed) {
+  const rand = mathRand();
+  // calculate rarity by yourself
+  return rand > 0.06;
+}
+
+function T3(seed) {
+  const rand = mathRand();
+  // calculate rarity by yourself
+  return rand > 0.09 ? 2 : 1; // Updated to return a value instead of boolean
+}
+
+function T4(seed) {
+  const rand = mathRand();
+  // Add more traits as needed
+  return rand > 0.5 ? 1 : -1; // Example trait influencing direction
+}
+
+function T5(seed) {
+  const rand = mathRand();
+  // Add more traits as needed
+  return rand > 0.7 ? 3 : 1; // Example trait influencing lifespan
+}
+
+function applyColorChangeTrait(color, seed) {
+  const rand = mathRand();
+  const transparency = map(rand, 0.99, 1, 10, 255); // Adjust alpha/transparency based on rand
+
+  if (rand > 0.7) {
+    color.setAlpha(transparency); // Set alpha directly on the color object
+  } else {
+    color.setAlpha(255); // Set full alpha if the condition is not met
+  }
+
+  return color;
+}
+
+// Populate the $generativeTraits object in the window
+window.$generativeTraits = {
+  "T1": T1,
+  "T2": T2,
+  "T3": T3,
+  "T4": T4,
+  "T5": T5,
+};
+
+// Define the sfc32 function
+function sfc32(a, b, c, d) {
+  return function () {
+    a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
+    let t = (a + b) | 0;
+    a = b ^ b >>> 9;
+    b = c + (c << 3) | 0;
+    c = (c << 21 | c >>> 11);
+    d = d + 1 | 0;
+    t = t + d | 0;
+    c = c + t | 0;
+    return (t >>> 0) / 4294967296;
+  }
+}
+
+let mathRand = sfc32(0, 0, 0, 1);
+
+// Convert seed string to a numerical value
+function convertSeedToNumber(seedString) {
+  let seedNumber = 0;
+  for (let i = 0; i < seedString.length; i++) {
+    seedNumber = (seedNumber * 31 + seedString.charCodeAt(i)) & 0xffffffff;
+  }
+  return seedNumber / 0xffffffff; // Normalize to a value between 0 and 1
+}
+
+let seed; // Declare the seed variable at a higher scope
+let particles = [];
+let interval = 4; // Define the interval for triggering explosions
+
+let petroglyphs = [];
+let densitySlider;
+
+function setup() {
+  createCanvas(800, 600);
+  colorMode(HSB, 360, 100, 100);
+  
+  // Create a slider to adjust the density of Petroglyphs
+  densitySlider = createSlider(1, 10, 5);
+  densitySlider.position(10, height + 20);
+  densitySlider.style('width', '80px');
+  
+  generatePetroglyphs();
+}
+
+function draw() {
+  background(0);
+  
+  // Draw Petroglyphs
+  for (let petroglyph of petroglyphs) {
+    petroglyph.display();
+  }
+}
+
+function generatePetroglyphs() {
+  petroglyphs = [];
+  
+  // Adjust density based on the slider value
+  let density = densitySlider.value();
+  
+  for (let i = 0; i < density; i++) {
+    let x = random(width);
+    let y = random(height);
+    let size = random(20, 180);
+    let rotation = random(TWO_PI);
+    
+    petroglyphs.push(new Petroglyph(x, y, size, rotation));
+  }
+}
+
+class Petroglyph {
+  constructor(x, y, size, rotation) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.rotation = rotation;
+    this.detail = floor(random(5, 15)); // Number of vertices
+    this.noiseScale = random(0.001, 0.05); // Perlin noise scale
+    this.color = color(random(360), 80, 80); // Random color
+  }
+  
+  display() {
+    push();
+    translate(this.x, this.y);
+    rotate(this.rotation);
+    fill(this.color);
+    beginShape();
+    for (let i = 0; i < this.detail; i++) {
+      let angle = map(i, 0, this.detail, 0, TWO_PI);
+      let radius = this.size + noise(i * this.noiseScale) * this.size;
+      let x = cos(angle) * radius;
+      let y = sin(angle) * radius;
+      vertex(x, y);
+    }
+    endShape(CLOSE);
+    pop();
+  }
+}
+
+function generateRandomExplosion(particles) {
+  let randIndex = floor(random(particles.length));
+  let particle = particles[randIndex];
+  let explosionSize = random(3, 10);
+  particles.splice(randIndex, 1);
+  particles.push(new ParticleExplosion(particle.position.x, particle.position.y, explosionSize));
+}
+
+// Define generateRandomColor function here
+function generateRandomColor(alpha) {
+  let hue = random(5, 360); // Random hue value between 5 and 360
+  let saturation = random(5, 250); // Random saturation value between 5 and 200
+  let brightness = random(5, 250); // Random brightness value between 5 and 200
+
+  // Check if alpha is a valid number, otherwise default to a value of 255 (fully opaque)
+  if (typeof alpha !== 'number' || isNaN(alpha)) {
+    alpha = 255;
+  }
+
+  // Ensure that RGB values are close to their maximum when alpha is high
+  let maxRGB = random(2, 255);
+  if (alpha > 200) {
+    brightness = maxRGB;
+  }
+
+  return color(hue, saturation, brightness, alpha);
+}
+
+class ParticleExplosion {
+  constructor(x, y, r) {
+    this.position = createVector(x, y);
+    this.r = r;
+    this.color = generateRandomColor(255);
+    this.life = 245;
+  }
+
+  createExplosion() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    ellipse(this.position.x, this.position.y, this.r * 2);
+    this.life -= 5;
+  }
+}
+
+// Add the missing methods to the Particle class
+Particle.prototype.createParticle = function(seed, T1, T2, T3, T4, T5) {
+  // Apply traits to determine particle characteristics
+  const rarityWithColorTrait = T1(seed, this.colorTrait);
+  const sizeTrait = T2(seed);
+  const additionalTrait = T3(seed);
+  const directionTrait = T4(seed);
+  const lifespanTrait = T5(seed);
+
+  // Adjust particle characteristics based on traits
+  const adjustedSize = this.radius * sizeTrait;
+
+  // Use adjusted values to draw the particle
+  const adjustedColorWithAlpha = applyColorChangeTrait(this.color, seed);
+  const adjustedAlpha = map(adjustedSize, 1, 10, 1, 0.2);
+
+  fill(
+    adjustedColorWithAlpha.levels[0],
+    adjustedColorWithAlpha.levels[1],
+    adjustedColorWithAlpha.levels[2],
+    adjustedAlpha // Use the alpha value directly from the color object
+  );
+
+  ellipse(this.position.x, this.position.y, adjustedSize * 7.1);
+};
+
+Particle.prototype.moveParticle = function() {
+  this.position.x += this.xSpeed;
+  this.position.y += this.ySpeed;
+
+  if (this.position.x < 0 || this.position.x > width) this.xSpeed *= -1;
+  if (this.position.y < 0 || this.position.y > height) this.ySpeed *= -1;
+};
+
+Particle.prototype.joinParticles = function(particles) {
+  particles.forEach((element) => {
+    let disThreshold = random(100, 100); // Randomize the distance threshold for drawing lines
+    let dis = dist(this.position.x, this.position.y, element.position.x, element.position.y);
+
+    if (dis < disThreshold && this.colorTrait && element.colorTrait) {
+      // Draw lines between particles
+      const minAlpha = 55;
+      const maxAlpha = 255;
+      let redValue = random(5, 255);
+      let greenValue = random(20, 255);
+      let blueValue = random(20, 255);
+      let alpha = random(minAlpha, maxAlpha);
+      stroke(redValue, greenValue, blueValue, alpha);
+      line(this.position.x, this.position.y, element.position.x, element.position.y);
+
+      if (dis < this.radius + element.radius) {
+        let newR = max(this.radius, element.radius) * 1.5;
+        let newX = (this.position.x + element.position.x) / 2;
+        let newY = (this.position.y + element.position.y) / 2;
+        particles.push(new ParticleExplosion(newX, newY, newR));
+      }
+    }
+  });
+};
