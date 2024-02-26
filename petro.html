@@ -115,44 +115,36 @@ function convertSeedToNumber(seedString) {
 
 let seed; // Declare the seed variable at a higher scope
 let particles = [];
-let petroglyphs = []; // Array to store Petroglyphs
-let densitySlider;
-
+let petroglyphs = [];
 let interval = 4; // Define the interval for triggering explosions
 
 function setup() {
-  createCanvas(800, 600);
+  createCanvas(800, 600, WEBGL); // Use WEBGL renderer for 3D graphics
   colorMode(HSB, 360, 100, 100);
 
-  // Create a slider to adjust the density of Petroglyphs
-  densitySlider = createSlider(1, 10, 5);
-  densitySlider.position(10, height + 20);
-  densitySlider.style('width', '80px');
-
-  // Assuming you have a seed value assigned from the sandbox environment
-  // const seedString = "21c59c871782b66a3d7411b9a3a4807ff21bb5da6b8fbe7285c0bd57e920c9b6";
-  // seed = convertSeedToNumber(seedString);
-
-  for (let i = 0; i < 100; i++) {
+  // Generate particles
+  let numParticles = floor(map(mathRand(), 0, 1, 10, 100)); // Adjust the range as needed
+  for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
   }
 
-  generatePetroglyphs(); // Generate Petroglyphs
+  // Generate Petroglyphs
+  generatePetroglyphs();
 }
 
 function draw() {
   background(0);
 
+  // Draw particles
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].update(); // Update particle position
+    particles[i].display(); // Display particle
+    interact(particles[i], particles); // Interact with other particles
+  }
+
   // Draw Petroglyphs
   for (let petroglyph of petroglyphs) {
     petroglyph.display();
-  }
-
-  // Update and draw particles
-  for (let i = 0; i < particles.length; i++) {
-    particles[i].update();
-    particles[i].display();
-    interact(particles[i], particles);
   }
 
   if (frameCount % interval === 4) {
@@ -160,48 +152,16 @@ function draw() {
   }
 }
 
-function generatePetroglyphs() {
-  petroglyphs = [];
-
-  // Adjust density based on the slider value
-  let density = densitySlider.value();
-
-  for (let i = 0; i < density; i++) {
-    let x = random(width);
-    let y = random(height);
-    let size = random(20, 180);
-    let rotation = random(TWO_PI);
-
-    petroglyphs.push(new Petroglyph(x, y, size, rotation));
-  }
-}
-
-class Petroglyph {
-  constructor(x, y, size, rotation) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.rotation = rotation;
-    this.detail = floor(random(3, 18)); // Number of vertices
-    this.noiseScale = random(0.001, 0.05); // Perlin noise scale
-    this.color = color(random(360), 80, 80); // Random color
-  }
-
-  display() {
-    push();
-    translate(this.x, this.y);
-    rotate(this.rotation);
-    fill(this.color);
-    beginShape();
-    for (let i = 0; i < this.detail; i++) {
-      let angle = map(i, 0, this.detail, 0, TWO_PI);
-      let radius = this.size + noise(i * this.noiseScale) * this.size;
-      let x = cos(angle) * radius;
-      let y = sin(angle) * radius;
-      vertex(x, y);
+function interact(particle, others) {
+  for (let other of others) {
+    if (other !== particle) {
+      let distance = particle.position.dist(other.position);
+      if (distance < 50) {
+        // Example interaction: attract particles if they are close
+        let force = p5.Vector.sub(other.position, particle.position).normalize().mult(0.1);
+        particle.velocity.add(force);
+      }
     }
-    endShape(CLOSE);
-    pop();
   }
 }
 
@@ -222,11 +182,11 @@ class Particle {
     sphere(this.radius);
 
     for (let i = 0; i < 5; i++) {
-      let alpha = map(i, 0, 4, 0, 300);
+      let alpha = map(i, 0, 4, 0, 100);
       fill(hue(this.color), saturation(this.color), brightness(this.color), alpha);
       sphere(this.radius * 2 + i * 2);
     }
-
+    
     pop();
   }
 
@@ -245,6 +205,21 @@ class Particle {
   }
 }
 
+function generatePetroglyphs() {
+  petroglyphs = [];
+  
+  // Adjust density based on the slider value
+  let density = floor(map(mathRand(), 0, 1, 1, 10)); // Adjust the range as needed
+  
+  for (let i = 0; i < density; i++) {
+    let x = random(-width / 2, width / 2);
+    let y = random(-height / 2, height / 2);
+    let size = random(20, 180);
+    let rotation = random(TWO_PI);
+    
+    petroglyphs.push(new Petroglyph(x, y, size, rotation));
+  }
+}
 
 function generateRandomExplosion(particles) {
   let randIndex = floor(random(particles.length));
@@ -254,102 +229,50 @@ function generateRandomExplosion(particles) {
   particles.push(new ParticleExplosion(particle.position.x, particle.position.y, explosionSize));
 }
 
-// Define generateRandomColor function here
-function generateRandomColor(alpha) {
-  let hue = random(5, 360); // Random hue value between 5 and 360
-  let saturation = random(5, 250); // Random saturation value between 5 and 200
-  let brightness = random(5, 250); // Random brightness value between 5 and 200
-
-  // Check if alpha is a valid number, otherwise default to a value of 255 (fully opaque)
-  if (typeof alpha !== 'number' || isNaN(alpha)) {
-    alpha = 255;
+class Petroglyph {
+  constructor(x, y, size, rotation) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.rotation = rotation;
+    this.detail = floor(random(5, 15)); // Number of vertices
+    this.noiseScale = random(0.001, 0.05); // Perlin noise scale
+    this.color = color(random(360), 80, 80); // Random color
   }
-
-  // Ensure that RGB values are close to their maximum when alpha is high
-  let maxRGB = random(2, 255);
-  if (alpha > 300) {
-    brightness = maxRGB;
+  
+  display() {
+    push();
+    translate(this.x, this.y);
+    rotate(this.rotation);
+    fill(this.color);
+    beginShape();
+    for (let i = 0; i < this.detail; i++) {
+      let angle = map(i, 0, this.detail, 0, TWO_PI);
+      let radius = this.size + noise(i * this.noiseScale) * this.size;
+      let x = cos(angle) * radius;
+      let y = sin(angle) * radius;
+      vertex(x, y);
+    }
+    endShape(CLOSE);
+    pop();
   }
-
-  return color(hue, saturation, brightness, alpha);
 }
 
 class ParticleExplosion {
   constructor(x, y, r) {
     this.position = createVector(x, y);
     this.r = r;
-    this.color = generateRandomColor(255);
-    this.life = 245;
+    this.color = color(random(360), 80, 80); // Random color without alpha
+    this.life = 255; // Initial alpha value
   }
 
-  createExplosion() {
+  display() {
     noStroke();
-    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.life);
+    fill(this.color, this.life); // Use alpha for transparency
     ellipse(this.position.x, this.position.y, this.r * 2);
-    this.life -= 5;
+    this.life -= 5; // Decrease alpha value over time
   }
 }
-
-// Add the missing methods to the Particle class
-Particle.prototype.createParticle = function(seed, T1, T2, T3, T4, T5) {
-  // Apply traits to determine particle characteristics
-  const rarityWithColorTrait = T1(seed, this.colorTrait);
-  const sizeTrait = T2(seed);
-  const additionalTrait = T3(seed);
-  const directionTrait = T4(seed);
-  const lifespanTrait = T5(seed);
-
-  // Adjust particle characteristics based on traits
-  const adjustedSize = this.radius * sizeTrait;
-
-  // Use adjusted values to draw the particle
-  const adjustedColorWithAlpha = applyColorChangeTrait(this.color, seed);
-  const adjustedAlpha = map(adjustedSize, 1, 10, 1, 0.2);
-
-  fill(
-    adjustedColorWithAlpha.levels[0],
-    adjustedColorWithAlpha.levels[1],
-    adjustedColorWithAlpha.levels[2],
-    adjustedAlpha // Use the alpha value directly from the color object
-  );
-
-  ellipse(this.position.x, this.position.y, adjustedSize * 7.1);
-};
-
-Particle.prototype.moveParticle = function() {
-  this.position.x += this.xSpeed;
-  this.position.y += this.ySpeed;
-
-  if (this.position.x < 0 || this.position.x > width) this.xSpeed *= -1;
-  if (this.position.y < 0 || this.position.y > height) this.ySpeed *= -1;
-};
-
-Particle.prototype.joinParticles = function(particles) {
-  particles.forEach((element) => {
-    let disThreshold = random(100, 100); // Randomize the distance threshold for drawing lines
-    let dis = dist(this.position.x, this.position.y, element.position.x, element.position.y);
-
-    if (dis < disThreshold && this.colorTrait && element.colorTrait) {
-      // Draw lines between particles
-      const minAlpha = 55;
-      const maxAlpha = 255;
-      let redValue = random(5, 255);
-      let greenValue = random(20, 255);
-      let blueValue = random(20, 255);
-      let alpha = random(minAlpha, maxAlpha);
-      stroke(redValue, greenValue, blueValue, alpha);
-      line(this.position.x, this.position.y, element.position.x, element.position.y);
-
-      if (dis < this.radius + element.radius) {
-        let newR = max(this.radius, element.radius) * 1.5;
-        let newX = (this.position.x + element.position.x) / 2;
-        let newY = (this.position.y + element.position.y) / 2;
-        particles.push(new ParticleExplosion(newX, newY, newR));
-      }
-    }
-  });
-};
-
       </script>
 
     <script id="snippet-random-code" type="text/javascript">
